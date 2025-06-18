@@ -1,0 +1,17 @@
+[
+  {
+    "id": "8ec65a95-1add-4a1f-985d-4a5670ce8c01",
+    "name": "Milk Chocolate",
+    "type": "collection"
+  },
+  {
+    "id": "1e934d2a-6095-49e2-8cca-1b2c006cf463",
+    "name": "Varung",
+    "type": "dietary"
+  },
+  {
+    "id": "3246c1b8-fa7b-4a5b-9b66-e0f35490608c",
+    "name": "baby",
+    "type": "children"
+  }
+]

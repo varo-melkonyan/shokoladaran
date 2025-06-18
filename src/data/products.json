@@ -1,0 +1,112 @@
+[
+  {
+    "id": "MC4xMjA5MTMz",
+    "name": "New",
+    "price": 3223,
+    "weight": "32g",
+    "discount": 23,
+    "collectionType": "Milk Chocolate",
+    "brand": "Amorre",
+    "image": "/assets/uploads/amorre_milk_chocolate_hero.png",
+    "link": "/amorre/milk_chocolate/new"
+  },
+  {
+    "id": "MC41MzQ4MTI0",
+    "name": "new 21",
+    "price": 23,
+    "weight": "4",
+    "collectionType": "Milk Chocolate",
+    "brand": "Amorre",
+    "image": "/assets/uploads/amorre_milk_chocolate_belgian2.png",
+    "link": "/amorre/milk_chocolate/new_21"
+  },
+  {
+    "id": "MC43NDY0OTgy",
+    "name": "wrwr",
+    "price": 2322323,
+    "weight": "323g",
+    "collectionType": "Varung",
+    "brand": "Amorre",
+    "image": "/assets/uploads/amorre_varung_news2.png",
+    "link": "/amorre/varung/wrwr"
+  },
+  {
+    "id": "MC4xMTA3MTQ2",
+    "name": "awf",
+    "price": 32332,
+    "weight": "113g",
+    "discount": 3,
+    "collectionType": "baby",
+    "brand": "Amorre",
+    "image": "/assets/uploads/amorre_baby_news1.png",
+    "link": "/amorre/baby/awf"
+  },
+  {
+    "id": "MC43Nzk5NzE5",
+    "name": "waf",
+    "price": 2122,
+    "weight": "33g",
+    "collectionType": "Milk Chocolate",
+    "brand": "Amorre",
+    "status": "in_stock",
+    "image": "/assets/uploads/amorre_milk_chocolate_a74d474a-f5c6-4fb7-b2a4-3dc24108d5d5.png",
+    "ingredients": [
+      "323"
+    ],
+    "shelfLife": "f22",
+    "nutritionFacts": {
+      "energy": "32",
+      "fat": "32",
+      "saturatedFat": "1",
+      "carbohydrates": "1",
+      "sugars": "23",
+      "protein": "34",
+      "salt": "3333"
+    },
+    "link": "/amorre/milk_chocolate/waf"
+  },
+  {
+    "id": "MC4yNzc2MTEx",
+    "name": "Queen",
+    "price": 2000,
+    "weight": "100g",
+    "collectionType": "Milk Chocolate",
+    "brand": "Amorre",
+    "status": "in_stock",
+    "image": "/assets/uploads/amorre_milk_chocolate_exclusive-rose.png",
+    "ingredients": [
+      "pnduk",
+      "ax",
+      "max"
+    ],
+    "shelfLife": "6 mounts",
+    "nutritionFacts": {
+      "energy": "230g",
+      "fat": "4g",
+      "carbohydrates": "33g",
+      "protein": "23g"
+    },
+    "link": "/amorre/milk_chocolate/queen"
+  },
+  {
+    "id": "MC45MDk1MTQ0",
+    "name": "EEe",
+    "price": 2221,
+    "weight": "2323g",
+    "collectionType": "Varung",
+    "brand": "Ba3",
+    "status": "in_stock",
+    "image": "/assets/uploads/ba3_varung_news2.png",
+    "ingredients": [
+      "34"
+    ],
+    "shelfLife": "43",
+    "nutritionFacts": {
+      "energy": "43",
+      "fat": "43",
+      "carbohydrates": "4",
+      "protein": "4"
+    },
+    "link": "/ba3/varung/eee"
+  }
+]

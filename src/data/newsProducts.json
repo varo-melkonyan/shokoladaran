@@ -1,0 +1,25 @@
+[
+  {
+    "id": "MC4yNzc2MTEx",
+    "name": "Queen",
+    "price": 2000,
+    "weight": "100g",
+    "collectionType": "Milk Chocolate",
+    "brand": "Amorre",
+    "status": "in_stock",
+    "image": "/assets/uploads/amorre_milk_chocolate_exclusive-rose.png",
+    "ingredients": [
+      "pnduk",
+      "ax",
+      "max"
+    ],
+    "shelfLife": "6 mounts",
+    "nutritionFacts": {
+      "energy": "230g",
+      "fat": "4g",
+      "carbohydrates": "33g",
+      "protein": "23g"
+    },
+    "link": "/amorre/milk_chocolate/queen"
+  }
+]
