@@ -26,11 +26,26 @@ export default function JoinUsPage() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!captcha) {
-      alert("Please complete the reCAPTCHA.");
-      return;
-    }
-    alert("Request sent!");
+    // if (!captcha) {
+    //   alert("Please complete the reCAPTCHA.");
+    //   return;
+    // }
+    fetch("/api/join_us", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form),
+  })
+    .then(async (res) => {
+      if (res.ok) {
+        alert("Request sent!");
+      } else {
+        const data = await res.json();
+        alert("Failed to send: " + (data.error || "Unknown error"));
+      }
+    })
+    .catch((err) => {
+      alert("Failed to send: " + err.message);
+    });
   }
 
   return (
@@ -66,10 +81,10 @@ export default function JoinUsPage() {
             <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="border border-gray-300 focus:border-chocolate outline-none rounded-lg px-4 py-3 text-base min-h-[80px] transition" />
           </div>
           <div className="flex flex-col md:flex-row items-center gap-4 mt-2">
-            {<ReCAPTCHA
+            {/* {<ReCAPTCHA
               sitekey={RECAPTCHA_SITE_KEY}
               onChange={token => setCaptcha(token)}
-            />}
+            />} */}
             <button type="submit" className="bg-chocolate hover:bg-[#5a2d0c] text-white text-lg font-semibold rounded-lg w-full md:w-64 py-3 transition">
               Send request
             </button>

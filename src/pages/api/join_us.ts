@@ -11,10 +11,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Configure your transporter
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    service: "Gmail",
     auth: {
       user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     },
   });
 
@@ -39,7 +39,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true });
+    console.log("Email sent successfully");
   } catch (err) {
+    console.log("Error sending email:", err);
     res.status(500).json({ error: "Failed to send email" });
   }
 }
