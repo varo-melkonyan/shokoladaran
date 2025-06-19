@@ -1,16 +1,37 @@
 "use client";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function CartWidget() {
   const { cart, removeFromCart } = useCart();
   const [open, setOpen] = useState(false);
+  const cartRef = useRef<HTMLDivElement>(null);
 
   const total = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
 
+  // Close on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
+
   return (
     <>
+      {/* Cart button */}
       <button
         onClick={() => setOpen((v) => !v)}
         className="fixed bottom-8 right-8 bg-chocolate text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg z-50"
@@ -21,27 +42,35 @@ export default function CartWidget() {
           <span className="ml-1 bg-red-500 text-xs rounded-full px-2">{cart.length}</span>
         )}
       </button>
+
+      {/* Cart popup */}
       {open && (
-        <div className="fixed bottom-28 right-8 bg-white shadow-xl rounded-lg p-6 w-80 z-50">
-          <h3 className="font-bold text-lg mb-4">Your Cart</h3>
+        <div
+          ref={cartRef}
+          className="fixed bottom-28 right-8 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 p-5"
+        >
+          <h3 className="text-lg font-semibold text-chocolate mb-4">🛍️ Your Cart</h3>
+
           {cart.length === 0 ? (
-            <div className="text-gray-500">Cart is empty.</div>
+            <div className="text-gray-500 text-sm">Cart is empty.</div>
           ) : (
             <>
-              <ul className="mb-4">
+              <ul className="divide-y divide-gray-100 mb-4">
                 {cart.map((item, idx) => (
-                  <li key={item.id + "-" + idx} className="flex items-center justify-between mb-2">
+                  <li key={item.id + "-" + idx} className="py-2 flex justify-between items-center">
                     <div>
-                      <div className="font-semibold">{item.name}</div>
-                      <div className="text-xs text-gray-500">x{item.quantity}</div>
+                      <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                     </div>
-                    <div>
+                    <div className="text-right">
                       {item.price && (
-                        <span className="mr-2">{item.price * item.quantity} AMD</span>
+                        <p className="text-sm text-chocolate font-semibold">
+                          {item.price * item.quantity} AMD
+                        </p>
                       )}
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-red-500 text-xs"
+                        className="text-xs text-red-500 hover:underline"
                       >
                         Remove
                       </button>
@@ -49,13 +78,18 @@ export default function CartWidget() {
                   </li>
                 ))}
               </ul>
-              <div className="font-bold mb-3">Total: {total} AMD</div>
+
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-sm text-gray-600">Total</span>
+                <span className="text-base font-bold text-chocolate">{total} AMD</span>
+              </div>
+
               <Link
                 href="/cart"
-                className="block w-full text-center bg-chocolate text-white py-2 rounded hover:bg-brown-700 transition"
+                className="block text-center bg-chocolate hover:bg-brown-700 text-white font-medium py-2 rounded-lg transition"
                 onClick={() => setOpen(false)}
               >
-                See Cart
+                🛒 See Cart
               </Link>
             </>
           )}
