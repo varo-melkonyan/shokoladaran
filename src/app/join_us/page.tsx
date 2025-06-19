@@ -2,7 +2,7 @@
 import { useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 
-const RECAPTCHA_SITE_KEY = "6Le9I2MrAAAAAMqVxo69rz8BTvaaY8xQdJbkSmCC";
+const RECAPTCHA_SITE_KEY = "6Lfj6GYrAAAAAEYuVmQfKXRrDNceLEqlbJBkXgGL";
 
 export default function JoinUsPage() {
   const [form, setForm] = useState({
