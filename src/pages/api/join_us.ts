@@ -13,8 +13,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "shokoladaranmarketplace@gmail.com",
-      pass: "YOUR_APP_PASSWORD", // Use an App Password, not your Gmail password!
+      user: "contact@shokoladaran.am",
+      pass: "giul vpzw rllw xkmk",
     },
   });
 
