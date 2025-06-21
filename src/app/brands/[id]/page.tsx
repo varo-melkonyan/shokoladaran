@@ -1,5 +1,6 @@
 import VendorClientPage from "./VendorClientPage";
 
-export default function Page({ params }: { params: { _id: string } }) {
-  return <VendorClientPage slug={params._id} />;
+export default async function Page({params}: {params: Promise<{ id: string }>}) {
+    const { id } = await params;
+    return <VendorClientPage slug={id} />;
 }
