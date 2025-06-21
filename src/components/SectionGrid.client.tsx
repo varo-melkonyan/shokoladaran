@@ -66,7 +66,7 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                 <div className="flex items-center gap-2 mt-3">
                   <button
                     onClick={() => addToCart({
-                      id: item.id,
+                      _id: item.id,
                       name: item.name,
                       price: item.price,
                       image: item.image

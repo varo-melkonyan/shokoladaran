@@ -57,7 +57,7 @@ export default function CartWidget() {
             <>
               <ul className="divide-y divide-gray-100 mb-4">
                 {cart.map((item, idx) => (
-                  <li key={item.id + "-" + idx} className="py-2 flex justify-between items-center">
+                  <li key={item._id + "-" + idx} className="py-2 flex justify-between items-center">
                     <div>
                       <p className="text-sm font-medium text-gray-800">{item.name}</p>
                       <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
@@ -69,7 +69,7 @@ export default function CartWidget() {
                         </p>
                       )}
                       <button
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeFromCart(item._id)}
                         className="text-xs text-red-500 hover:underline"
                       >
                         Remove

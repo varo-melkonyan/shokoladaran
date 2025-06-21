@@ -41,7 +41,7 @@ const handlePayOnline = async () => {
       ) : (
         <div className="space-y-6">
           {cart.map((item, idx) => (
-            <div key={item.id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
+            <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
               {item.image && (
                 <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded" />
               )}
@@ -55,7 +55,7 @@ const handlePayOnline = async () => {
                 )}
                 <div className="flex gap-2 mt-2">
                   <button
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeFromCart(item._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded text-xs"
                   >
                     Remove
