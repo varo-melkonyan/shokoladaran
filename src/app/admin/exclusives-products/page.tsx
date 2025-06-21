@@ -46,14 +46,13 @@ export default function AdminExclusivesProducts() {
 
   const handleAddOrEdit = async (newExclusivesProduct: ExclusivesProduct) => {
     if (editIndex !== null) {
+      const oldId = exclusivesProducts[editIndex]._id;
+      await fetch(`/api/admin/exclusives-products?id=${oldId}`, { method: "DELETE" });
       await fetch("/api/admin/exclusives-products", {
-        method: "PUT",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ index: editIndex, ...newExclusivesProduct }),
+        body: JSON.stringify(newExclusivesProduct),
       });
-      const updated = [...exclusivesProducts];
-      updated[editIndex] = newExclusivesProduct;
-      setExclusivesProducts(updated);
       setEditIndex(null);
     } else {
       await fetch("/api/admin/exclusives-products", {
@@ -61,10 +60,11 @@ export default function AdminExclusivesProducts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newExclusivesProduct),
       });
-      const res = await fetch("/api/admin/exclusives-products");
-      const data = await res.json();
-      setExclusivesProducts(data);
     }
+    // Refresh list
+    const res = await fetch("/api/admin/exclusives-products");
+    const data = await res.json();
+    setExclusivesProducts(data);
   };
 
   const saveOrder = async (newList: ExclusivesProduct[]) => {
@@ -91,12 +91,12 @@ export default function AdminExclusivesProducts() {
     saveOrder(newList);
   };
 
-  const handleDelete = async (index: number) => {
-    await fetch(`/api/admin/exclusives-products?index=${index}`, { method: "DELETE" });
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/admin/exclusives-products?id=${id}`, { method: "DELETE" });
     const res = await fetch("/api/admin/exclusives-products");
     const data = await res.json();
     setExclusivesProducts(data);
-    if (editIndex === index) setEditIndex(null);
+    setEditIndex(null);
   };
 
   return (
@@ -128,7 +128,7 @@ export default function AdminExclusivesProducts() {
                 name="Move Down"
               >↓</button>
               <button
-                onClick={() => handleDelete(idx)}
+                onClick={() => handleDelete(ep._id)}
                 className="text-red-500"
                 name="Delete"
               >✕</button>
