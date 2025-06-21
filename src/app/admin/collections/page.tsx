@@ -30,11 +30,11 @@ export default function AdminCollectionTypes() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const method = editId ? "PUT" : "POST";
-    fetch("/api/admin/collection-types", {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editId ? { _id: editId, name, type } : { name, type }),
-    })
+    fetch(editId ? `/api/admin/collection-types/${editId}` : "/api/admin/collection-types", {
+  method: editId ? "PUT" : "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name, type }),
+})
       .then(res => res.json())
       .then(() => {
         setName("");
@@ -47,7 +47,7 @@ export default function AdminCollectionTypes() {
               data.map((c: any) => ({
                 _id: c._id || c.id,
                 name: c.name,
-                type: c.type,
+                type: c.type ?? "collection",
               }))
             )
           );
@@ -57,6 +57,7 @@ export default function AdminCollectionTypes() {
   function handleEdit(collectionType: CollectionType) {
     setEditId(collectionType._id);
     setName(collectionType.name);
+    setType(collectionType.type ?? "collection");
   }
 
   function handleDelete(_id: string | undefined) {

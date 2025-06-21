@@ -3,6 +3,26 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import CollectionType from "@/models/CollectionType";
 
+
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const body = await req.json();
+
+  await connectDB();
+
+  const updated = await CollectionType.findByIdAndUpdate(
+    id,
+    { name: body.name, type: body.type },
+    { new: true }
+  );
+
+  if (!updated) {
+    return NextResponse.json({ success: false, message: "Not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true, id, ...body });
+}
+
 export async function DELETE(
   request: NextRequest,
   { params }: any
