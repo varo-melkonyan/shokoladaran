@@ -70,10 +70,12 @@ export default function AdminProducts() {
     formData.append("file", file);
     formData.append("brand", brand);
     formData.append("collectionType", collectionType);
+
     const res = await fetch("/api/admin/upload", {
       method: "POST",
       body: formData,
     });
+
     if (!res.ok) return null;
     const data = await res.json();
     return data.url;
