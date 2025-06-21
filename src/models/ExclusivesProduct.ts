@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const ExclusivesProductSchema = new Schema({
   name: String,
+  image: String,
   brand: String
 });
 

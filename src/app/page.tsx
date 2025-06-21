@@ -4,7 +4,11 @@ import bestSellers from "@/data/bestSellers.json";
 import newProducts from "@/data/newsProducts.json";
 
 async function fetchExclusivesProducts() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/exclusives-products`, { cache: "no-store" });
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res = await fetch(`${baseUrl}/api/admin/exclusives-products`, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch exclusives products: ${res.status}`);
+  }
   return res.json();
 }
 
