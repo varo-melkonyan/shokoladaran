@@ -38,36 +38,49 @@ export default function AdminProducts() {
   const [error, setError] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
 
+  // Fetch products, brands, and collection types
   useEffect(() => {
     fetch("/api/admin/products")
-  .then(res => res.json())
-  .then(data => setProducts(data.map((p: any) => ({
-    _id: p._id || p.id, // use _id if present, else id
-    name: p.name,
-    price: p.price,
-    weight: p.weight,
-    discount: p.discount,
-    collectionType: p.collectionType,
-    brand: p.brand,
-    image: p.image,
-    link: p.link,
-    status: p.status,
-    ingredients: p.ingredients,
-    shelfLife: p.shelfLife,
-    nutritionFacts: p.nutritionFacts,
-  }))));
+      .then(res => res.json())
+      .then(data => setProducts(data.map((p: any) => ({
+        _id: p._id || p.id,
+        name: p.name,
+        price: p.price,
+        weight: p.weight,
+        discount: p.discount,
+        collectionType: p.collectionType,
+        brand: p.brand,
+        image: p.image,
+        link: p.link,
+        status: p.status,
+        ingredients: p.ingredients,
+        shelfLife: p.shelfLife,
+        nutritionFacts: p.nutritionFacts,
+      }))));
     fetch("/api/admin/brands")
-  .then(res => res.json())
-  .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
-    name: b.name,
-  }))));
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map((b: any) => ({
+          _id: b._id || b.id,
+          name: b.name,
+        }));
+        setBrands(mapped);
+        // Set default brand if not editing
+        if (!editId && mapped.length && !brand) setBrand(mapped[0].name);
+      });
     fetch("/api/admin/collection-types")
-  .then(res => res.json())
-  .then(data => setCollectionTypes(data.map((c: any) => ({
-    _id: c._id || c.id,
-    name: c.name,
-  }))));
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map((c: any) => ({
+          _id: c._id || c.id,
+          name: c.name,
+          type: c.type,
+        }));
+        setCollectionTypes(mapped);
+        // Set default collectionType if not editing
+        if (!editId && mapped.length && !collectionType) setCollectionType(mapped[0].name);
+      });
+    // eslint-disable-next-line
   }, []);
 
   async function uploadImage(file: File, brand: string, collectionType: string): Promise<string | null> {
@@ -177,7 +190,7 @@ export default function AdminProducts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
       });
-      setProducts(products.map((p) => (p._id === editId ? product : p)));
+      setProducts(products.map((p) => (p._id === editId ? { ...product, _id: editId } : p)));
     } else {
       const res = await fetch("/api/admin/products", {
         method: "POST",
@@ -213,7 +226,6 @@ export default function AdminProducts() {
         <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 rounded">
           {brands.map(b => <option key={b._id} value={b.name}>{b.name}</option>)}
         </select>
-        {/* Status select */}
         <select
           value={status}
           onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock")}
@@ -289,7 +301,6 @@ export default function AdminProducts() {
               <span>{p.price} AMD</span>
               <span>{p.collectionType}</span>
               <span>{p.brand}</span>
-              {/* Status display */}
               <span>
                 {p.status === "in_stock" ? (
                   <span className="text-green-600 font-semibold">In Stock</span>
