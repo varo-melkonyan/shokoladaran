@@ -84,20 +84,20 @@ export default function AdminProducts() {
   }, []);
 
   async function uploadImage(file: File, brand: string, collectionType: string): Promise<string | null> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("brand", brand);
-  formData.append("collectionType", collectionType);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("brand", brand);
+    formData.append("collectionType", collectionType);
 
-  const res = await fetch("/api/admin/upload", {
-    method: "POST",
-    body: formData,
-  });
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      body: formData,
+    });
 
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.url;
-}
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.url;
+  }
 
   function handleEdit(product: Product) {
     setEditId(product._id);

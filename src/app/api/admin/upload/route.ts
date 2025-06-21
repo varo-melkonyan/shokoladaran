@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
   const brand = formData.get("brand")?.toString().toLowerCase().replace(/\s+/g, "_") || "unknown";
   const collectionType = formData.get("collectionType")?.toString().toLowerCase().replace(/\s+/g, "_") || "default";
 
+  // Upload to Vercel Blob storage
   const blob = await put(`${brand}_${collectionType}_${file.name}`, file, {
     access: "public",
   });
