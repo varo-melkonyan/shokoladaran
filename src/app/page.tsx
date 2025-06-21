@@ -18,8 +18,18 @@ async function getExclusivesProducts() {
   }));
 }
 
+async function fetchExclusivesProducts() {
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  let res = await fetch(`${baseUrl}/api/admin/exclusives-products`, { cache: "no-store" });
+  if (!res.ok) {
+    baseUrl = "http://localhost:3000";
+    res = await fetch(`${baseUrl}/api/admin/exclusives-products`, { cache: "no-store" });
+  }
+  return res.json();
+}
+
 export default async function HomePage() {
-  const exclusivesProducts = await getExclusivesProducts();
+  const exclusivesProducts = await fetchExclusivesProducts();
   return (
     <>
       <SectionHero />
