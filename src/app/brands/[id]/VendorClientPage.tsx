@@ -18,11 +18,7 @@ type CollectionType = {
   type: string;
 };
 
-type Props = {
-  id: string;
-};
-
-export default function VendorClientPage({ id }: Props) {
+export default function VendorClientPage({ slug }: { slug: string }) {
   const { addToCart } = useCart();
 
   const [brand, setBrand] = useState<Brand | null>(null);
@@ -68,8 +64,9 @@ export default function VendorClientPage({ id }: Props) {
         type: c.type,
       }));
 
+      // Match by slug (id in URL)
       const matchedBrand = brands.find(
-        (b: Brand) => b.name.toLowerCase().replace(/\s+/g, "-") === id
+        (b: Brand) => b.name.toLowerCase().replace(/\s+/g, "-") === slug
       );
       setBrand(matchedBrand || null);
       setCollectionTypes(collections);
@@ -80,7 +77,7 @@ export default function VendorClientPage({ id }: Props) {
       );
       setLoading(false);
     });
-  }, [id]);
+  }, [slug]);
 
   if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
   if (!brand) return notFound();
