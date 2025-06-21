@@ -25,7 +25,7 @@ export default function BrandsPage() {
     fetch("/api/admin/brands")
   .then(res => res.json())
   .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
+    _id: b._id || b.id,
     name: b.name,
   }))));
     fetch("/api/admin/collection-types")
