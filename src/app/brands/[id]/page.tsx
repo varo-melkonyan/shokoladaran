@@ -1,5 +1,5 @@
 import VendorClientPage from "./VendorClientPage";
 
-export default function Page({ params }: { params: { id: string } }) {
-  return <VendorClientPage slug={params.id} />;
+export default function Page({ params }: { params: { _id: string } }) {
+  return <VendorClientPage slug={params._id} />;
 }
