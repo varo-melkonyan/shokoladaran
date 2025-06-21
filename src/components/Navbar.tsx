@@ -15,17 +15,18 @@ export default function Navbar() {
 
   useEffect(() => {
     fetch("/api/admin/brands")
-  .then(res => res.json())
-  .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
-    name: b.name,
-  }))));
+      .then(res => res.json())
+      .then(data => setBrands(data.map((b: any) => ({
+        _id: b._id || b.id,
+        name: b.name,
+      }))));
     fetch("/api/admin/collection-types")
-  .then(res => res.json())
-  .then(data => setCollectionTypes(data.map((c: any) => ({
-    _id: c._id || c.id,
-    name: c.name,
-  }))));
+      .then(res => res.json())
+      .then(data => setCollectionTypes(data.map((c: any) => ({
+        id: c._id || c.id,
+        name: c.name,
+        type: c.type, // <-- include type!
+      }))));
   }, []);
 
   const pathname = usePathname();
