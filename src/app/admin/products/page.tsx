@@ -93,7 +93,6 @@ export default function AdminProducts() {
       method: "POST",
       body: formData,
     });
-
     if (!res.ok) return null;
     const data = await res.json();
     return data.url;

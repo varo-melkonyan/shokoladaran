@@ -10,13 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
   }
 
-  const brand = formData.get("brand")?.toString().toLowerCase().replace(/\s+/g, "_") || "unknown";
-  const collectionType = formData.get("collectionType")?.toString().toLowerCase().replace(/\s+/g, "_") || "default";
-
-  // Upload to Vercel Blob storage
-  const blob = await put(`${brand}_${collectionType}_${file.name}`, file, {
-    access: "public",
-  });
+  const blob = await put(file.name, file, { access: "public" });
 
   return NextResponse.json({ url: blob.url });
 }

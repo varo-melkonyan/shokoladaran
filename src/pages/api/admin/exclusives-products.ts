@@ -10,7 +10,7 @@ function readData() {
 }
 
 function writeData(data: any) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+  // fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

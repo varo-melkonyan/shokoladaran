@@ -12,7 +12,7 @@ function readBestSellers(): BestSeller[] {
 }
 
 function writeBestSellers(bestSellers: BestSeller[]) {
-  fs.writeFileSync(filePath, JSON.stringify(bestSellers, null, 2));
+  // fs.writeFileSync(filePath, JSON.stringify(bestSellers, null, 2));
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -27,7 +27,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
   if (req.method === "PUT") {
     const { bestSellers } = req.body;
-    fs.writeFileSync(filePath, JSON.stringify(bestSellers, null, 2), "utf-8");
+    // fs.writeFileSync(filePath, JSON.stringify(bestSellers, null, 2), "utf-8");
     return res.status(200).json({ success: true });
   }
   
