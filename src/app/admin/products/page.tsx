@@ -15,8 +15,8 @@ function randomBase64Id(length = 12) {
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [brands, setBrands] = useState<{ id: string; name: string }[]>([]);
-  const [collectionTypes, setCollectionTypes] = useState<{ id: string; name: string; type: string }[]>([]);
+  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
+  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string; type: string }[]>([]);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [weight, setWeight] = useState("");
@@ -40,20 +40,34 @@ export default function AdminProducts() {
 
   useEffect(() => {
     fetch("/api/admin/products")
-      .then(res => res.json())
-      .then(data => setProducts(data));
+  .then(res => res.json())
+  .then(data => setProducts(data.map((p: any) => ({
+    _id: p._id || p.id, // use _id if present, else id
+    name: p.name,
+    price: p.price,
+    weight: p.weight,
+    discount: p.discount,
+    collectionType: p.collectionType,
+    brand: p.brand,
+    image: p.image,
+    link: p.link,
+    status: p.status,
+    ingredients: p.ingredients,
+    shelfLife: p.shelfLife,
+    nutritionFacts: p.nutritionFacts,
+  }))));
     fetch("/api/admin/brands")
-      .then(res => res.json())
-      .then(data => {
-        setBrands(data);
-        setBrand(data[0]?.name || "");
-      });
+  .then(res => res.json())
+  .then(data => setBrands(data.map((b: any) => ({
+    _id: b._id || b.id, // use _id if present, else id
+    name: b.name,
+  }))));
     fetch("/api/admin/collection-types")
-      .then(res => res.json())
-      .then(data => {
-        setCollectionTypes(data);
-        setCollectionType(data[0]?.name || "");
-      });
+  .then(res => res.json())
+  .then(data => setCollectionTypes(data.map((c: any) => ({
+    _id: c._id || c.id,
+    name: c.name,
+  }))));
   }, []);
 
   async function uploadImage(file: File, brand: string, collectionType: string): Promise<string | null> {
@@ -71,7 +85,7 @@ export default function AdminProducts() {
   }
 
   function handleEdit(product: Product) {
-    setEditId(product.id);
+    setEditId(product._id);
     setName(product.name);
     setPrice(product.price.toString());
     setWeight(product.weight);
@@ -92,10 +106,10 @@ export default function AdminProducts() {
     setError("");
   }
 
-  async function handleRemove(id: string) {
-    await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
-    setProducts(products.filter((p) => p.id !== id));
-    if (editId === id) {
+  async function handleRemove(_id: string) {
+    await fetch(`/api/admin/products/${_id}`, { method: "DELETE" });
+    setProducts(products.filter((p) => p._id !== _id));
+    if (editId === _id) {
       resetForm();
     }
   }
@@ -142,8 +156,7 @@ export default function AdminProducts() {
     }
 
     const link = `/${slugify(brand)}/${slugify(collectionType)}/${slugify(name)}`;
-    const product: Product = {
-      id: editId || randomBase64Id(),
+    const product: any = {
       name,
       price: Number(price),
       weight,
@@ -164,7 +177,7 @@ export default function AdminProducts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
       });
-      setProducts(products.map((p) => (p.id === editId ? product : p)));
+      setProducts(products.map((p) => (p._id === editId ? product : p)));
     } else {
       const res = await fetch("/api/admin/products", {
         method: "POST",
@@ -192,13 +205,13 @@ export default function AdminProducts() {
         <input value={discount} onChange={e => setDiscount(e.target.value)} placeholder="Discounted Price (optional)" type="number" className="border p-2 rounded" />
         <select value={collectionType} onChange={e => setCollectionType(e.target.value)} className="border p-2 rounded">
           {collectionTypes.map(type => (
-            <option key={type.id} value={type.name}>
+            <option key={type._id} value={type.name}>
               {type.name} {type.type === "dietary" ? "(Dietary)" : ""}
             </option>
           ))}
         </select>
         <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 rounded">
-          {brands.map(b => <option key={b.id} value={b.name}>{b.name}</option>)}
+          {brands.map(b => <option key={b._id} value={b.name}>{b.name}</option>)}
         </select>
         {/* Status select */}
         <select
@@ -266,7 +279,7 @@ export default function AdminProducts() {
       </form>
       <ul>
         {products.map((p) => (
-          <li key={p.id} className="flex flex-col border-b py-2">
+          <li key={p._id} className="flex flex-col border-b py-2">
             <div className="flex items-center gap-2">
               {p.image && (
                 <img src={p.image} alt={p.name} className="w-10 h-10 object-cover rounded" />
@@ -292,7 +305,7 @@ export default function AdminProducts() {
               </button>
               <button
                 className="text-red-600 underline text-xs"
-                onClick={() => handleRemove(p.id)}
+                onClick={() => handleRemove(p._id)}
               >
                 Remove
               </button>

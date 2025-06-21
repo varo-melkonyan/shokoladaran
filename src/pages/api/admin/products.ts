@@ -11,20 +11,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === "POST") {
-    const newProduct = await Product.create(req.body);
-    return res.status(201).json(newProduct);
-  }
-
-  if (req.method === "PUT") {
-    const updated = req.body;
-    const product = await Product.findByIdAndUpdate(updated.id, updated, { new: true });
-    return res.status(200).json(product);
-  }
-
-  if (req.method === "DELETE") {
-    const { id } = req.query;
-    await Product.findByIdAndDelete(id);
-    return res.status(204).end();
+    try {
+      const product = await Product.create(req.body);
+      return res.status(201).json(product);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Failed to create product" });
+    }
   }
 
   res.status(405).end();

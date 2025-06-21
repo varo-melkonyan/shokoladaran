@@ -6,13 +6,13 @@ import { Product } from "@/types/product";
 type Props = {
   onAdd: (newNewsProduct: NewsProduct) => void;
   initialData: NewsProduct | null;
-  brands: { id: string; name: string }[];
-  collectionTypes: { id: string; name: string }[];
+  brands: { _id: string; name: string }[];
+  collectionTypes: { _id: string; name: string }[];
   products: Product[];
 };
 
 export default function NewProductsForm({ onAdd, initialData, brands, collectionTypes, products }: Props) {
-  const [name, setname] = useState(initialData?.name || "");
+  const [name, setName] = useState(initialData?.name || "");
   const [image, setImage] = useState(initialData?.image || "");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [link, setLink] = useState(initialData?.link || "");
@@ -27,7 +27,7 @@ export default function NewProductsForm({ onAdd, initialData, brands, collection
   );
 
   useEffect(() => {
-    setname(initialData?.name || "");
+    setName(initialData?.name || "");
     setImage(initialData?.image || "");
     setLink(initialData?.link || "");
     setImageFile(null);
@@ -37,16 +37,16 @@ export default function NewProductsForm({ onAdd, initialData, brands, collection
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file);
-      setImage(URL.createObjectURL(file)); // For preview only
+      setImage(URL.createObjectURL(file)); 
     }
   }
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const product = products.find(p => p.id === selectedProductId);
-    if (product) {
-      onAdd({ ...product });
-      setname("");
+  e.preventDefault();
+  const product = products.find(p => p._id === selectedProductId);
+  if (product) {
+      onAdd({ ...product, image: product.image || "" });
+      setName("");
       setImage("");
       setLink("");
       setImageFile(null);
@@ -61,19 +61,19 @@ export default function NewProductsForm({ onAdd, initialData, brands, collection
       <select value={selectedBrand} onChange={e => setSelectedBrand(e.target.value)}>
         <option value="">Select Brand</option>
         {brands.map(b => (
-          <option key={b.id} value={b.name}>{b.name}</option>
+          <option key={b._id} value={b.name}>{b.name}</option>
         ))}
       </select>
       <select value={selectedCollectionType} onChange={e => setSelectedCollectionType(e.target.value)}>
         <option value="">Select Collection Type</option>
         {collectionTypes.map(c => (
-          <option key={c.id} value={c.name}>{c.name}</option>
+          <option key={c._id} value={c.name}>{c.name}</option>
         ))}
       </select>
       <select value={selectedProductId} onChange={e => setSelectedProductId(e.target.value)}>
         <option value="">Select Product</option>
         {filteredProducts.map(p => (
-          <option key={p.id} value={p.id}>{p.name}</option>
+          <option key={p._id} value={p._id}>{p.name}</option>
         ))}
       </select>
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">

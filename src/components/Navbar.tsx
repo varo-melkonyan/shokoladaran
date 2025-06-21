@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-type Brand = { id: string; name: string };
+type Brand = { _id: string; name: string };
 type CollectionType = { id: string; name: string; type: "collection" | "children" | "dietary" };
 
 export default function Navbar() {
@@ -15,11 +15,17 @@ export default function Navbar() {
 
   useEffect(() => {
     fetch("/api/admin/brands")
-      .then(res => res.json())
-      .then(data => setBrands(data));
+  .then(res => res.json())
+  .then(data => setBrands(data.map((b: any) => ({
+    _id: b._id || b.id, // use _id if present, else id
+    name: b.name,
+  }))));
     fetch("/api/admin/collection-types")
-      .then(res => res.json())
-      .then(data => setCollectionTypes(data));
+  .then(res => res.json())
+  .then(data => setCollectionTypes(data.map((c: any) => ({
+    _id: c._id || c.id,
+    name: c.name,
+  }))));
   }, []);
 
   const pathname = usePathname();
@@ -173,7 +179,7 @@ export default function Navbar() {
                   <div className="space-y-2">
                     {brandsCol1.map((brand) => (
                       <Link
-                        key={brand.id}
+                        key={brand._id}
                         href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
                         className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                       >
@@ -193,7 +199,7 @@ export default function Navbar() {
                   <div className="space-y-2">
                     {brandsCol2.map((brand) => (
                       <Link
-                        key={brand.id}
+                        key={brand._id}
                         href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
                         className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                       >

@@ -20,7 +20,7 @@ export default function ProductList({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
         {products.map(product => (
           <div
-            key={product.id}
+            key={product._id}
             className="bg-gray-50 rounded-xl shadow-md overflow-hidden"
           >
             <div className="relative">

@@ -1,5 +1,5 @@
 export type ExclusivesProduct ={
-  id: string;
+  _id: string;
   name: string;
   price: number;
   weight: string;

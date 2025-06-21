@@ -6,8 +6,8 @@ import { Product } from "@/types/product";
 type Props = {
   onAdd: (newExclusivesProduct: ExclusivesProduct) => void;
   initialData: ExclusivesProduct | null;
-  brands: { id: string; name: string }[];
-  collectionTypes: { id: string; name: string }[];
+  brands: { _id: string; name: string }[];
+  collectionTypes: { _id: string; name: string }[];
   products: Product[];
 };
 
@@ -37,9 +37,9 @@ export default function ExclusivesProductsForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const product = products.find(p => p.id === selectedProductId);
+    const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onAdd({ ...product });
+      onAdd({ ...product, image: product.image || "", link: product.link || "" });
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");
@@ -51,19 +51,19 @@ export default function ExclusivesProductsForm({
       <select value={selectedBrand} onChange={e => setSelectedBrand(e.target.value)}>
         <option value="">Select Brand</option>
         {brands.map(b => (
-          <option key={b.id} value={b.name}>{b.name}</option>
+          <option key={b._id} value={b.name}>{b.name}</option>
         ))}
       </select>
       <select value={selectedCollectionType} onChange={e => setSelectedCollectionType(e.target.value)}>
         <option value="">Select Collection Type</option>
         {collectionTypes.map(c => (
-          <option key={c.id} value={c.name}>{c.name}</option>
+          <option key={c._id} value={c.name}>{c.name}</option>
         ))}
       </select>
       <select value={selectedProductId} onChange={e => setSelectedProductId(e.target.value)}>
         <option value="">Select Product</option>
         {filteredProducts.map(p => (
-          <option key={p.id} value={p.id}>{p.name}</option>
+          <option key={p._id} value={p._id}>{p.name}</option>
         ))}
       </select>
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">

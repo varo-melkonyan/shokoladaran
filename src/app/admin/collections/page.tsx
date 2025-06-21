@@ -2,15 +2,18 @@
 import { useState, useEffect } from "react";
 
 export default function AdminCollectionTypes() {
-  const [collectionTypes, setCollectionTypes] = useState<{ id: string; name: string; type: string }[]>([]);
+  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string; type: string }[]>([]);
   const [name, setName] = useState("");
   const [type, setType] = useState("collection");
   const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/collection-types")
-      .then(res => res.json())
-      .then(data => setCollectionTypes(data));
+  .then(res => res.json())
+  .then(data => setCollectionTypes(data.map((c: any) => ({
+    _id: c._id || c.id,
+    name: c.name,
+  }))));
   }, []);
 
   function handleSubmit(e: React.FormEvent) {
@@ -19,7 +22,7 @@ export default function AdminCollectionTypes() {
     fetch("/api/admin/collection-types", {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: editId, name, type }),
+      body: JSON.stringify(editId ? { _id: editId, name, type } : { name, type }),
     })
       .then(res => res.json())
       .then(() => {
@@ -32,18 +35,25 @@ export default function AdminCollectionTypes() {
       });
   }
 
-  function handleEdit(ct: { id: string; name: string; type: string }) {
-    setEditId(ct.id);
-    setName(ct.name);
-    setType(ct.type);
+  function handleEdit(collectionType) {
+    setEditId(collectionType._id);
+    setName(collectionType.name);
+    setType(collectionType.type);
   }
 
-  function handleDelete(id: string) {
-    fetch(`/api/admin/collection-types?id=${id}`, { method: "DELETE" })
-      .then(() => {
-        setCollectionTypes(collectionTypes.filter(ct => ct.id !== id));
-      });
+  function handleDelete(_id: string | undefined) {
+  if (!_id || _id === "undefined") {
+    alert("Invalid ID");
+    return;
   }
+
+  fetch(`/api/admin/collection-types/${_id}`, {
+    method: "DELETE",
+  })
+    .then(() => {
+      setCollectionTypes(collectionTypes.filter(ct => ct._id !== _id));
+    });
+}
 
   return (
     <div className="max-w-xl mx-auto mt-10">
@@ -61,24 +71,11 @@ export default function AdminCollectionTypes() {
       </form>
       <ul>
         {collectionTypes.map(ct => (
-          <li key={ct.id} className="flex justify-between items-center border-b py-2">
-            <span>
-  {ct.name} (
-    {ct.type === "collection"
-      ? "Collection Type"
-      : ct.type === "dietary"
-      ? "Dietary Type"
-      : ct.type === "children"
-      ? "Children's Type"
-      : ct.type}
-  )
-</span>
-            <div>
-              <button onClick={() => handleEdit(ct)} className="text-blue-500 mr-2">Edit</button>
-              <button onClick={() => handleDelete(ct.id)} className="text-red-500">Delete</button>
-            </div>
-          </li>
-        ))}
+  <li key={ct._id}>
+    {ct.name}
+    <button onClick={() => handleDelete(ct._id)}>Delete</button>
+  </li>
+))}
       </ul>
     </div>
   );

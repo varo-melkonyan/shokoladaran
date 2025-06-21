@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 type Brand = {
-  id: string;
+  _id: string;
   name: string;
   image?: string;
   description?: string;
@@ -23,14 +23,17 @@ export default function BrandsPage() {
 
   useEffect(() => {
     fetch("/api/admin/brands")
-      .then(res => res.json())
-      .then(data => {
-        setBrands(data);
-        setLoading(false);
-      });
+  .then(res => res.json())
+  .then(data => setBrands(data.map((b: any) => ({
+    _id: b._id || b.id, // use _id if present, else id
+    name: b.name,
+  }))));
     fetch("/api/admin/collection-types")
-      .then(res => res.json())
-      .then(setCollections);
+  .then(res => res.json())
+  .then(data => setCollections(data.map((c: any) => ({
+    _id: c._id || c.id,
+    name: c.name,
+  }))));
   }, []);
 
   if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
@@ -40,7 +43,7 @@ export default function BrandsPage() {
       <h1 className="text-3xl font-bold text-chocolate mb-8">Brands</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {brands.map((brand) => (
-          <div key={brand.id} className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
+          <div key={brand._id} className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
             {brand.image && (
               <img
                 src={brand.image}

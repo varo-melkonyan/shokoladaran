@@ -1,9 +1,18 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, models, model } from "mongoose";
 
-const CollectionTypeSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  type: { type: String, enum: ["collection", "dietary", "children"], required: true },
+const CollectionTypeSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    enum: ["collection", "dietary", "children"],
+    required: true,
+  },
 });
 
-export default mongoose.models.CollectionType ||
-  mongoose.model("CollectionType", CollectionTypeSchema);
+const CollectionType =
+  models.CollectionType || model("CollectionType", CollectionTypeSchema);
+
+export default CollectionType;

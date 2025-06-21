@@ -6,17 +6,22 @@ export type NutritionFacts = {
 };
 
 export type Product = {
-  id: string;
+  _id: string;
   name: string;
   price: number;
   weight: string;
   discount?: number;
   collectionType: string;
   brand: string;
-  image: string;
-  link: string;
+  status: "in_stock" | "out_of_stock";
+  image?: string;
   ingredients?: string[];
-  shelfLife?: string; // e.g. "12 months" or "2025-12-31"
-  nutritionFacts?: NutritionFacts;
-  status?: string
+  shelfLife?: string;
+  nutritionFacts?: {
+    energy?: string;
+    fat?: string;
+    carbohydrates?: string;
+    protein?: string;
+  };
+  link?: string;
 };

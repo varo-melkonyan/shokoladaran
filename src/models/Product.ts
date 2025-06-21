@@ -2,17 +2,17 @@ import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  brand: String,
   price: Number,
-  discount: Number,
-  image: String,
   weight: String,
+  discount: Number,
   collectionType: String,
+  brand: String,
   status: String,
+  image: String,
   ingredients: [String],
   shelfLife: String,
   nutritionFacts: mongoose.Schema.Types.Mixed,
-  // Add other fields as needed
+  link: String,
 });
 
 export default mongoose.models.Product || mongoose.model("Product", ProductSchema);

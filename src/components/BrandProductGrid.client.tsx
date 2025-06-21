@@ -12,7 +12,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {products.map((product) => (
-        <div key={product.id} className="bg-white rounded-lg shadow p-4 relative">
+        <div key={product._id} className="bg-white rounded-lg shadow p-4 relative">
           <div className="relative">
             <img
               src={product.image}
@@ -82,7 +82,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
             <button
               onClick={() =>
                 addToCart({
-                  id: product.id,
+                  _id: product._id,
                   name: product.name,
                   price: product.price,
                   image: product.image,

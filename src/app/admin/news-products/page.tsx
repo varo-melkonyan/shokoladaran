@@ -7,20 +7,40 @@ import { Product } from "@/types/product";
 export default function AdminNewsProducts() {
   const [newsProducts, setNewsProducts] = useState<NewsProduct[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [brands, setBrands] = useState<{ id: string; name: string }[]>([]);
-  const [collectionTypes, setCollectionTypes] = useState<{ id: string; name: string }[]>([]);
+  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
+  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string }[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     fetch("/api/admin/brands")
-      .then(res => res.json())
-      .then(setBrands);
+  .then(res => res.json())
+  .then(data => setBrands(data.map((b: any) => ({
+    _id: b._id || b.id, // use _id if present, else id
+    name: b.name,
+  }))));
     fetch("/api/admin/collection-types")
-      .then(res => res.json())
-      .then(setCollectionTypes);
+  .then(res => res.json())
+  .then(data => setCollectionTypes(data.map((c: any) => ({
+    _id: c._id || c.id,
+    name: c.name,
+  }))));
     fetch("/api/admin/products")
-      .then(res => res.json())
-      .then(setProducts);
+  .then(res => res.json())
+  .then(data => setProducts(data.map((p: any) => ({
+    _id: p._id || p.id, // use _id if present, else id
+    name: p.name,
+    price: p.price,
+    weight: p.weight,
+    discount: p.discount,
+    collectionType: p.collectionType,
+    brand: p.brand,
+    image: p.image,
+    link: p.link,
+    status: p.status,
+    ingredients: p.ingredients,
+    shelfLife: p.shelfLife,
+    nutritionFacts: p.nutritionFacts,
+  }))));
     fetch("/api/admin/news-products")
       .then(res => res.json())
       .then(setNewsProducts);
