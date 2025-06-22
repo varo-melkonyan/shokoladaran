@@ -1,61 +1,28 @@
 "use client";
 import { useState, useEffect, ChangeEvent } from "react";
-import { BestSeller } from "@/types/bestSeller";
+import { BestSellerProduct } from "@/types/bestSellersProduct";
 import { Product } from "@/types/product";
 
 interface Props  {
-  onSubmit: (newBestSeller: BestSeller) => void;
-  initialData: BestSeller | null;
+  onAdd: (newBestSellerProduct: BestSellerProduct) => void;
+  initialData: BestSellerProduct | null;
   brands: { _id: string; name: string }[];
   collectionTypes: { _id: string; name: string }[];
   products: Product[];
 };
 
-export default function BestSellersForm({ onSubmit, initialData }: Props) {
-  const [name, setName] = useState(initialData?.name || "");
-  const [image, setImage] = useState(initialData?.image || "");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [link, setLink] = useState(initialData?.link || "");
+export default function BestSellerProductsForm({
+  onAdd,
+  initialData,
+  brands,
+  collectionTypes,
+  products,
+}: Props) {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCollectionType, setSelectedCollectionType] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
-  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string }[]>([]);
-
-  useEffect(() => {
-    fetch("/api/admin/products")
-  .then(res => res.json())
-  .then(data => setProducts(data.map((p: any) => ({
-    _id: p._id || p.id, // use _id if present, else id
-    name: p.name,
-    price: p.price,
-    weight: p.weight,
-    discount: p.discount,
-    collectionType: p.collectionType,
-    brand: p.brand,
-    image: p.image,
-    link: p.link,
-    status: p.status,
-    ingredients: p.ingredients,
-    shelfLife: p.shelfLife,
-    nutritionFacts: p.nutritionFacts,
-  }))));
-    fetch("/api/admin/brands")
-  .then(res => res.json())
-  .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
-    name: b.name,
-  }))));
-    fetch("/api/admin/collection-types")
-  .then(res => res.json())
-  .then(data => setCollectionTypes(data.map((c: any) => ({
-    _id: c._id || c.id,
-    name: c.name,
-  }))));
-  }, []);
-
+  // Filter products by selected brand and collection type
   const filteredProducts = products.filter(
     p =>
       (!selectedBrand || p.brand === selectedBrand) &&
@@ -63,29 +30,16 @@ export default function BestSellersForm({ onSubmit, initialData }: Props) {
   );
 
   useEffect(() => {
-    setName(initialData?.name || "");
-    setImage(initialData?.image || "");
-    setLink(initialData?.link || "");
-    setImageFile(null);
+    setSelectedBrand("");
+    setSelectedCollectionType("");
+    setSelectedProductId("");
   }, [initialData]);
-
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      setImage(URL.createObjectURL(file));
-    }
-  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onSubmit({ ...product });
-      setName("");
-      setImage("");
-      setLink("");
-      setImageFile(null);
+      onAdd({ ...product, image: product.image || "", link: product.link || "" });
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");
@@ -113,7 +67,7 @@ export default function BestSellersForm({ onSubmit, initialData }: Props) {
         ))}
       </select>
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">
-        Add to Best Sellers
+        Add to Best Seller Products
       </button>
     </form>
   );

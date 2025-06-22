@@ -11,15 +11,18 @@ interface Props  {
   products: Product[];
 };
 
-export default function NewProductsForm({ onAdd, initialData, brands, collectionTypes, products }: Props) {
-  const [name, setName] = useState(initialData?.name || "");
-  const [image, setImage] = useState(initialData?.image || "");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [link, setLink] = useState(initialData?.link || "");
+export default function NewsProductsForm({
+  onAdd,
+  initialData,
+  brands,
+  collectionTypes,
+  products,
+}: Props) {
   const [selectedBrand, setSelectedBrand] = useState("");
   const [selectedCollectionType, setSelectedCollectionType] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
 
+  // Filter products by selected brand and collection type
   const filteredProducts = products.filter(
     p =>
       (!selectedBrand || p.brand === selectedBrand) &&
@@ -27,29 +30,16 @@ export default function NewProductsForm({ onAdd, initialData, brands, collection
   );
 
   useEffect(() => {
-    setName(initialData?.name || "");
-    setImage(initialData?.image || "");
-    setLink(initialData?.link || "");
-    setImageFile(null);
+    setSelectedBrand("");
+    setSelectedCollectionType("");
+    setSelectedProductId("");
   }, [initialData]);
 
-  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      setImage(URL.createObjectURL(file)); 
-    }
-  }
-
   function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  const product = products.find(p => p._id === selectedProductId);
-  if (product) {
-      onAdd({ ...product, image: product.image || "" });
-      setName("");
-      setImage("");
-      setLink("");
-      setImageFile(null);
+    e.preventDefault();
+    const product = products.find(p => p._id === selectedProductId);
+    if (product) {
+      onAdd({ ...product, image: product.image || "", link: product.link || "" });
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");

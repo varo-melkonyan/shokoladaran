@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import NewsProductsForm from "@/components/NewProductsForm";
+import NewsProductsForm from "@/components/NewsProductsForm";
 import { NewsProduct } from "@/types/newsProducts";
 import { Product } from "@/types/product";
 
@@ -41,21 +41,18 @@ export default function AdminNewsProducts() {
     shelfLife: p.shelfLife,
     nutritionFacts: p.nutritionFacts,
   }))));
-    fetch("/api/admin/news-products")
-      .then(res => res.json())
-      .then(setNewsProducts);
+    fetch("/api/admin/news-products").then(res => res.json()).then(setNewsProducts);
   }, []);
 
   const handleAddOrEdit = async (newNewsProduct: NewsProduct) => {
     if (editIndex !== null) {
+      const oldId = newsProducts[editIndex]._id;
+      await fetch(`/api/admin/news-products?id=${oldId}`, { method: "DELETE" });
       await fetch("/api/admin/news-products", {
-        method: "PUT",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ index: editIndex, ...newNewsProduct }),
+        body: JSON.stringify(newNewsProduct),
       });
-      const updated = [...newsProducts];
-      updated[editIndex] = newNewsProduct;
-      setNewsProducts(updated);
       setEditIndex(null);
     } else {
       await fetch("/api/admin/news-products", {
@@ -63,14 +60,11 @@ export default function AdminNewsProducts() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newNewsProduct),
       });
-      setNewsProducts([...newsProducts, newNewsProduct]);
     }
-  };
-
-  const handleDelete = async (index: number) => {
-    await fetch(`/api/admin/news-products?index=${index}`, { method: "DELETE" });
-    setNewsProducts(newsProducts.filter((_, i) => i !== index));
-    if (editIndex === index) setEditIndex(null);
+    // Refresh list
+    const res = await fetch("/api/admin/news-products");
+    const data = await res.json();
+    setNewsProducts(data);
   };
 
   const saveOrder = async (newList: NewsProduct[]) => {
@@ -97,10 +91,18 @@ export default function AdminNewsProducts() {
     saveOrder(newList);
   };
 
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/admin/news-products?id=${id}`, { method: "DELETE" });
+    const res = await fetch("/api/admin/news-products");
+    const data = await res.json();
+    setNewsProducts(data);
+    setEditIndex(null);
+  };
+
   return (
     <div className="max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4">News Products</h1>
-            <NewsProductsForm
+      <NewsProductsForm
         onAdd={handleAddOrEdit}
         initialData={editIndex !== null ? newsProducts[editIndex] : null}
         brands={brands}
@@ -108,35 +110,28 @@ export default function AdminNewsProducts() {
         products={products}
       />
       <ul>
-        {newsProducts.map((np, index) => (
-          <li key={np.name + index} className="flex items-center justify-between border-b py-2 bg-white">
-            <div className="flex items-center gap-3">
-              {np.image && (
-                <img
-                  src={np.image}
-                  alt={np.name}
-                  className="w-12 h-12 object-cover rounded"
-                />
-              )}
-              <span>{np.name}</span>
-            </div>
-            <div className="flex gap-2">
+        {newsProducts.map((ep, idx) => (
+          <li key={ep.name + idx} className="flex items-center gap-2 border-b py-2">
+            {ep.image && <img src={ep.image} alt={ep.name} className="w-12 h-12 object-cover rounded" />}
+            <span>{ep.name}</span>
+            <div className="flex gap-2 ml-auto">
               <button
-                onClick={() => moveUp(index)}
-                disabled={index === 0}
+                onClick={() => moveUp(idx)}
+                disabled={idx === 0}
                 className="text-blue-500 disabled:opacity-50"
                 name="Move Up"
               >↑</button>
               <button
-                onClick={() => moveDown(index)}
-                disabled={index === newsProducts.length - 1}
+                onClick={() => moveDown(idx)}
+                disabled={idx === newsProducts.length - 1}
                 className="text-blue-500 disabled:opacity-50"
                 name="Move Down"
               >↓</button>
               <button
-                onClick={() => handleDelete(index)}
+                onClick={() => handleDelete(ep._id)}
                 className="text-red-500"
-              >Delete</button>
+                name="Delete"
+              >✕</button>
             </div>
           </li>
         ))}

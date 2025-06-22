@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { BestSeller } from "@/types/bestSeller";
+import { BestSeller } from "@/types/bestSellersProduct";
 
 const filePath = path.join(process.cwd(), "src/data/bestSellers.json");
 

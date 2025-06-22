@@ -1,4 +1,4 @@
-export type NewsProduct ={
+export type BestSellerProduct ={
   _id: string;
   name: string;
   price: number;
