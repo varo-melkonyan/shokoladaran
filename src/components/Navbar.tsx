@@ -94,9 +94,10 @@ export default function Navbar() {
 
             {showDropdown && (
               <div
-                className="fixed left-1/2 top-28 -translate-x-1/2 bg-white shadow-xl rounded-lg grid grid-cols-2 gap-12 p-6 z-50 w-[900px]"
-                style={{ maxWidth: "95vw" }}
+                className="fixed left-1/2 top-28 -translate-x-1/2 bg-white shadow-xl rounded-lg grid grid-cols-3 gap-12 p-6 z-50 w-[1200px]"
+                style={{ maxWidth: "98vw" }}
               >
+                {/* Collections Type */}
                 <div>
                   <h3 className="text-md font-bold text-chocolate mt-6 mb-3">Collections Type</h3>
                   <div className="grid grid-cols-2 gap-4">
@@ -116,20 +117,21 @@ export default function Navbar() {
                     </ul>
                   </div>
                 </div>
-{childrenTypes.length > 0 && (
-  <div>
-    <h3 className="text-md font-bold text-chocolate mb-3 mt-6">Children's Type</h3>
-    <ul className="space-y-1">
-      {childrenTypes.map((type) => (
-        <li key={type.id}>
-          <Link href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`} className="text-sm text-gray-700 hover:text-chocolate">{type.name}</Link>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+                {/* Children's Type */}
                 <div>
-                  <h3 className="text-md font-bold text-chocolate mb-3">Dietary Type</h3>
+                  {childrenTypes.length > 0 && (
+                    <>
+                      <h3 className="text-md font-bold text-chocolate mb-3 mt-6">Children's Type</h3>
+                      <ul className="space-y-1">
+                        {childrenTypes.map((type) => (
+                          <li key={type.id}>
+                            <Link href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`} className="text-sm text-gray-700 hover:text-chocolate">{type.name}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  <h3 className="text-md font-bold text-chocolate mb-3 mt-6">Dietary Type</h3>
                   <ul className="space-y-1">
                     {dietaryTypes.map((type) => (
                       <li key={type.id}>
@@ -137,20 +139,21 @@ export default function Navbar() {
                       </li>
                     ))}
                   </ul>
-                  <div className="flex flex-col items-center relative w-full">
-    <img
-      src="/assets/images/exclusive-rose.png"
-      alt="Chocolate Preview"
-      className="w-full h-48 object-cover"
-    />
-    <Link
-      href="/all-products"
-      className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white"
-      style={{ letterSpacing: "2px" }}
-    >
-      ALL PRODUCTS
-    </Link>
-  </div>
+                </div>
+                {/* Image on the right */}
+                <div className="flex flex-col items-center justify-start relative w-full h-full mt-6">
+                  <img
+                    src="/assets/images/exclusive-rose.png"
+                    alt="Chocolate Preview"
+                    className="w-full h-48 object-cover"
+                  />
+                  <Link
+                    href="/all-products"
+                    className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white"
+                    style={{ letterSpacing: "2px" }}
+                  >
+                    ALL PRODUCTS
+                  </Link>
                 </div>
               </div>
             )}
