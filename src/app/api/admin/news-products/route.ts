@@ -30,13 +30,12 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   await connectDB();
-  const { NewsProducts } = await req.json();
-  if (!Array.isArray(NewsProducts)) {
+  const { newsProducts } = await req.json(); // <-- camelCase
+  if (!Array.isArray(newsProducts)) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
-  // Update order for each product in DB
-  for (let i = 0; i < NewsProducts.length; i++) {
-    const p = NewsProducts[i];
+  for (let i = 0; i < newsProducts.length; i++) {
+    const p = newsProducts[i];
     await NewsProduct.findByIdAndUpdate(p._id, { order: i });
   }
   return NextResponse.json({ success: true });

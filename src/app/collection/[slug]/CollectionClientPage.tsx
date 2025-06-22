@@ -7,7 +7,7 @@ import { useCart } from "@/context/CartContext";
 type CollectionType = {
   _id: string;
   name: string;
-  type: "collection" | "dietary";
+  type: "collection" | "children" | "dietary";
 };
 
 export default function CollectionClientPage({ slug }: { slug: string }) {
@@ -50,7 +50,6 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         (c) => c.name.toLowerCase().replace(/\s+/g, "-") === slug
       );
       setMatched(matchedCollection || null);
-
       setProducts(
         matchedCollection
           ? products.filter((p: Product) => p.collectionType === matchedCollection.name)
@@ -66,6 +65,8 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
 
   if (!matched) return notFound();
 
+  console.log("Products to render:", products);
+
   return (
     <main className="max-w-6xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-4">
@@ -80,8 +81,18 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden">
-              {/* ...rest unchanged... */}
+            <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4">
+              <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2" />
+              <h2 className="text-lg font-bold">{product.name}</h2>
+              <p className="text-chocolate">{product.price} AMD</p>
+              <p className="text-sm text-gray-500">{product.weight}</p>
+              {/* Add more fields as needed */}
+              <button
+                className="mt-2 bg-chocolate text-white px-4 py-2 rounded"
+                onClick={() => addToCart(product)}
+              >
+                Add to Cart
+              </button>
             </div>
           ))}
         </div>
