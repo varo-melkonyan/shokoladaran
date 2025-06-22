@@ -41,34 +41,34 @@ export default function AdminBestSellerProducts() {
     shelfLife: p.shelfLife,
     nutritionFacts: p.nutritionFacts,
   }))));
-    fetch("/api/admin/bestSeller-products").then(res => res.json()).then(setBestSellerProducts);
+    fetch("/api/admin/best-sellers").then(res => res.json()).then(setBestSellerProducts);
   }, []);
 
   const handleAddOrEdit = async (newBestSellerProduct: BestSellerProduct) => {
     if (editIndex !== null) {
       const oldId = bestSellerProducts[editIndex]._id;
-      await fetch(`/api/admin/bestSeller-products?id=${oldId}`, { method: "DELETE" });
-      await fetch("/api/admin/bestSeller-products", {
+      await fetch(`/api/admin/best-sellers?id=${oldId}`, { method: "DELETE" });
+      await fetch("/api/admin/best-sellers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newBestSellerProduct),
       });
       setEditIndex(null);
     } else {
-      await fetch("/api/admin/bestSeller-products", {
+      await fetch("/api/admin/best-sellers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newBestSellerProduct),
       });
     }
     // Refresh list
-    const res = await fetch("/api/admin/bestSeller-products");
+    const res = await fetch("/api/admin/best-sellers");
     const data = await res.json();
     setBestSellerProducts(data);
   };
 
   const saveOrder = async (newList: BestSellerProduct[]) => {
-    await fetch("/api/admin/bestSeller-products", {
+    await fetch("/api/admin/best-sellers", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bestSellerProducts: newList }),
@@ -92,8 +92,8 @@ export default function AdminBestSellerProducts() {
   };
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/admin/bestSeller-products?id=${id}`, { method: "DELETE" });
-    const res = await fetch("/api/admin/bestSeller-products");
+    await fetch(`/api/admin/best-sellers?id=${id}`, { method: "DELETE" });
+    const res = await fetch("/api/admin/best-sellers");
     const data = await res.json();
     setBestSellerProducts(data);
     setEditIndex(null);

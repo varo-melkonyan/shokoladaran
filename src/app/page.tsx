@@ -19,11 +19,11 @@ async function fetchBestSellersProducts() {
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   let res;
   try {
-    res = await fetch(`${baseUrl}/api/admin/best-sellers-products`, { cache: "no-store" });
+    res = await fetch(`${baseUrl}/api/admin/best-sellers`, { cache: "no-store" });
     if (!res.ok) throw new Error();
   } catch {
     baseUrl = "http://localhost:3000";
-    res = await fetch(`${baseUrl}/api/admin/best-sellers-products`, { cache: "no-store" });
+    res = await fetch(`${baseUrl}/api/admin/best-sellers`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch best sellers products");
   }
   return res.json();
