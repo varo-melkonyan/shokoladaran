@@ -16,4 +16,4 @@ const BestSellersProductSchema = new Schema({
 });
 
 export default mongoose.models.BestSellersProduct ||
-  mongoose.model("BestSellersProduct", BestSellersProductSchema);
+  mongoose.model("BestSellersProduct", BestSellersProductSchema, "bestsellersproducts");

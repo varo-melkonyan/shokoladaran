@@ -44,6 +44,7 @@ async function fetchNewsProducts() {
 }
 export default async function HomePage() {
   const bestSellers = await fetchBestSellersProducts();
+  console.log("Best Sellers:", bestSellers);
   const newsProducts = await fetchNewsProducts();
   const exclusivesProducts = await fetchExclusivesProducts();
   return (

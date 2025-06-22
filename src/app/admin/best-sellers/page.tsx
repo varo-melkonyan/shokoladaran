@@ -71,7 +71,7 @@ export default function AdminBestSellerProducts() {
     await fetch("/api/admin/best-sellers", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ bestSellerProducts: newList }),
+      body: JSON.stringify({ bestSellersProducts: newList }),
     });
   };
 
