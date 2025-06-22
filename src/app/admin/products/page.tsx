@@ -298,7 +298,7 @@ export default function AdminProducts() {
                 <img src={p.image} alt={p.name} className="w-10 h-10 object-cover rounded" />
               )}
               <span className="font-bold">{p.name}</span>
-              <span>{p.weight}</span>
+              <span>{p.weight} g</span>
               <span>{p.price} AMD</span>
               <span>{p.collectionType}</span>
               <span>{p.brand}</span>

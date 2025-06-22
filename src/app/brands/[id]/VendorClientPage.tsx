@@ -176,7 +176,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                     <>{product.price} AMD</>
                   )}
                   {" • "}
-                  {product.weight}
+                  {product.weight} g
                 </p>
                 <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
                 <div className="flex gap-2 mt-3">

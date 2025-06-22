@@ -83,7 +83,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
               <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2" />
               <h2 className="text-lg font-bold">{product.name}</h2>
               <p className="text-chocolate">{product.price} AMD</p>
-              <p className="text-sm text-gray-500">{product.weight}</p>
+              <p className="text-sm text-gray-500">{product.weight} g</p>
               {/* Add more fields as needed */}
               <button
                 className="mt-2 bg-chocolate text-white px-4 py-2 rounded"

@@ -73,7 +73,7 @@ export default async function AllProductsPage({ searchParams }: { searchParams: 
               <div className="text-sm text-gray-600">{product.brand}</div>
               <div className="text-sm text-gray-500">{product.collectionType}</div>
               <div className="mt-2 text-chocolate font-bold">{product.price} AMD</div>
-              <div className="text-xs text-gray-400">{product.weight}</div>
+              <div className="text-xs text-gray-400">{product.weight} g</div>
               {product.status && (
                 <div className="text-xs mt-1">
                   <span

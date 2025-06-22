@@ -37,7 +37,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
                 <div className="mb-1"><b>Name:</b> {product.name}</div>
                 <div className="mb-1"><b>Price:</b> {product.discount ? `${product.discount} AMD (Discounted)` : `${product.price} AMD`}</div>
                 <div className="mb-1"><b>Brand:</b> {product.brand}</div>
-                <div className="mb-1"><b>Weight:</b> {product.weight}</div>
+                <div className="mb-1"><b>Weight:</b> {product.weight} g</div>
                 <div className="mb-1"><b>Collection Type:</b> {product.collectionType}</div>
                 { product.status && (
                   <div className="mb-1"><b>Status:</b> {product.status}</div>
