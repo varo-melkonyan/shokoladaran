@@ -1,0 +1,21 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getRecommendations, setRecommendations } from "@/lib/recommendations";
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const productId = searchParams.get("productId");
+  if (!productId) {
+    return NextResponse.json({ error: "Missing productId" }, { status: 400 });
+  }
+  const rec = await getRecommendations(productId);
+  return NextResponse.json(rec || { recommendedProductIds: [] });
+}
+
+export async function POST(req: NextRequest) {
+  const { productId, recommendedProductIds } = await req.json();
+  if (!productId || !Array.isArray(recommendedProductIds)) {
+    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+  }
+  await setRecommendations(productId, recommendedProductIds);
+  return NextResponse.json({ ok: true });
+}

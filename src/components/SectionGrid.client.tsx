@@ -14,11 +14,13 @@ export default function SectionGrid({ title, items }: { title: string; items: an
               className="bg-gray-50 rounded-xl shadow-md overflow-hidden"
             >
               <div className="relative">
-                <img
-                  src={item.image}
-                  alt={item.name || item.title}
-                  className="w-full h-48 object-cover"
-                />
+                <a href={`/product/${item._id || item.id}`}>
+                  <img
+                    src={item.image}
+                    alt={item.name || item.title}
+                    className="w-full h-48 object-cover cursor-pointer"
+                  />
+                </a>
                 {/* Info Button in top-right */}
                 <div className="absolute top-2 right-2 group">
                   <button

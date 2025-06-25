@@ -25,11 +25,13 @@ export default function ProductList({
           >
             <div className="relative">
               {product.image && (
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
+                <a href={`/product/${product._id}`}>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-48 object-cover cursor-pointer"
+                  />
+                </a>
               )}
               {/* Info Button in top-right */}
               <div className="absolute top-2 right-2 group">

@@ -156,11 +156,13 @@ export default function VendorClientPage({ slug }: { slug: string }) {
               <div key={product._id} className="bg-white rounded-lg shadow p-4 relative">
                 <div className="relative">
                   {product.image && (
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-40 object-cover rounded mb-4"
-                    />
+                    <a href={`/product/${product._id}`}>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
+                      />
+                    </a>
                   )}
                   {/* Info Button in top-right */}
                   <div className="absolute top-2 right-2 group">

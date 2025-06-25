@@ -37,6 +37,7 @@ export default function Navbar() {
     { name: "Discounts", href: "/discounts" },
     { name: "Special", href: "/special" },
     { name: "Join Us", href: "/join_us" },
+    { name: "About Us", href: "/about_us" },
   ];
 
   // Split brands into two columns for dropdown

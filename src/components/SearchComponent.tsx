@@ -3,8 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProductList from "@/components/ProductList";
+import { useCart } from "@/context/CartContext";
+
 
 export default function SearchComponent() {
+  const { addToCart } = useCart();
   const searchParams = useSearchParams();
   const query = searchParams?.get("query") || "";
   const [products, setProducts] = useState<any[]>([]);
@@ -24,10 +27,6 @@ export default function SearchComponent() {
     }
     fetchProducts();
   }, []);
-
-  function handleAddToCart(product: any) {
-    alert(`Added "${product.name}" to cart!`);
-  }
 
   // Filter and normalize products
   const filtered = products
@@ -53,7 +52,7 @@ export default function SearchComponent() {
       ) : filtered.length === 0 ? (
         <p className="text-gray-500">No products found.</p>
       ) : (
-        <ProductList products={filtered} onAddToCart={handleAddToCart} />
+        <ProductList products={filtered} onAddToCart={addToCart} />
       )}
     </div>
   );

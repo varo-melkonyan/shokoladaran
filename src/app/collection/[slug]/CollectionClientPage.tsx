@@ -81,7 +81,9 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
           {products.map((product) => (
             <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
               <div className="relative">
-                <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2" />
+                <a href={`/product/${product._id}`}>
+                  <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2 cursor-pointer" />
+                </a>
                 {/* Info Button in top-right */}
                 <div className="absolute top-2 right-2 group">
                   <button
