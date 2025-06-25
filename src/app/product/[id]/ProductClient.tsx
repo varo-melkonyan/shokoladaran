@@ -4,7 +4,7 @@ import { useCart } from "@/context/CartContext";
 
 export default function ProductClient({ product, recommendations }: { product: any, recommendations: any[] }) {
   const [quantity, setQuantity] = useState(1);
-    const { addToCart } = useCart();
+  const { addToCart } = useCart();
 
   return (
     <div>
@@ -44,15 +44,28 @@ export default function ProductClient({ product, recommendations }: { product: a
                 <p className="text-gray-700">{product.collectionType}</p>
               </div>
             </div>
+            {/* Quantity Selector */}
+            <div className="flex items-center gap-2 mb-6">
+              <span className="font-semibold">Quantity:</span>
+              <button
+                className="w-8 h-8 rounded bg-gray-200 text-chocolate font-bold text-xl hover:bg-chocolate hover:text-white transition"
+                onClick={() => setQuantity(q => Math.max(1, q - 1))}
+              >-</button>
+              <span className="px-3">{quantity}</span>
+              <button
+                className="w-8 h-8 rounded bg-gray-200 text-chocolate font-bold text-xl hover:bg-chocolate hover:text-white transition"
+                onClick={() => setQuantity(q => q + 1)}
+              >+</button>
+            </div>
           </div>
           <button
             className="w-full bg-chocolate text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-brown-700 transition"
             onClick={() => addToCart({
-                      _id: product._id,
-                      name: product.name,
-                      price: product.price,
-                      image: product.image
-                    })}
+              _id: product._id,
+              name: product.name,
+              price: product.price,
+              image: product.image,
+            })}
           >
             Add to Cart
           </button>
