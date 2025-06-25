@@ -2,7 +2,11 @@ import { notFound } from "next/navigation";
 import { getProductById } from "@/lib/products";
 import ProductClient from "./ProductClient";
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const product = await getProductById(params.id);
   if (!product) return notFound();
 
