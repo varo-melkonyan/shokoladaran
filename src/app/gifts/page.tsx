@@ -26,7 +26,9 @@ export default function GiftsPage() {
           <div key={i} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
             <img src={item.image} alt={item.title} className="w-full h-56 object-cover" />
             <div className="p-4">
-              <h3 className="text-lg font-semibold text-chocolate">{item.title}</h3>
+              <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
+  {item.title}
+</h2>
               <a href={item.link} className="mt-3 inline-block text-white bg-chocolate px-4 py-2 rounded hover:bg-brown-700">
                 Shop Now
               </a>

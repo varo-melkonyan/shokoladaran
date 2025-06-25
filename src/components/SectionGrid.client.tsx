@@ -7,7 +7,7 @@ export default function SectionGrid({ title, items }: { title: string; items: an
     <section className="py-6 bg-white">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-chocolate mb-8 text-center">{title}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-8 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
           {items.map((item, i) => (
             <div
               key={i}
@@ -61,7 +61,9 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="text-lg font-semibold text-chocolate">{item.name || item.title}</h3>
+                <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
+                  {item.name || item.title}
+                </h2>
                 <p className="text-xs text-gray-400 mt-1">{item.collectionType}</p>
                 <div className="flex items-center gap-2 mt-3">
                   <button

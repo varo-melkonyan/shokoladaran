@@ -78,7 +78,9 @@ export default function ProductList({
               </div>
             </div>
             <div className="p-4">
-              <h3 className="text-lg font-semibold text-chocolate">{product.name}</h3>
+              <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
+  {product.name}
+</h2>
               <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
               <div className="flex items-center gap-2 mt-3">
                 <button

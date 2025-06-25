@@ -10,7 +10,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
       {products.map((product) => (
         <div key={product._id} className="bg-white rounded-lg shadow p-4 relative">
           <div className="relative">
@@ -33,36 +33,36 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
                 </svg>
               </button>
               {/* Tooltip */}
-              <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-xs text-gray-700 z-20 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
-                <div className="mb-1"><b>Name:</b> {product.name}</div>
-                <div className="mb-1"><b>Price:</b> {product.discount ? `${product.discount} AMD (Discounted)` : `${product.price} AMD`}</div>
-                <div className="mb-1"><b>Brand:</b> {product.brand}</div>
-                <div className="mb-1"><b>Weight:</b> {product.weight} g</div>
-                <div className="mb-1"><b>Collection Type:</b> {product.collectionType}</div>
-                { product.status && (
-                  <div className="mb-1"><b>Status:</b> {product.status}</div>
-                )}
-                { product.ingredients && (
-                  <div className="mb-1">
-                    <b>Ingredients:</b> {Array.isArray(product.ingredients)
-                      ? product.ingredients.join(", ")
-                      : product.ingredients}
-                  </div>
-                )}
-                { product.shelfLife && (
-                  <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>
-                )}
-                { product.nutritionFacts && (
-                  <div className="mb-1">
-                    <b>Nutrition Facts:</b>
-                    <ul className="ml-2 list-disc">
-                      {Object.entries(product.nutritionFacts).map(([key, value]) => (
-                        <li key={key}><b>{key}:</b> {value}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+                <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-xs text-gray-700 z-20 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
+                  <div className="mb-1"><b>Name:</b> {product.name}</div>
+                  <div className="mb-1"><b>Price:</b> {product.discount ? `${product.discount} AMD (Discounted)` : `${product.price} AMD`}</div>
+                  <div className="mb-1"><b>Brand:</b> {product.brand}</div>
+                  <div className="mb-1"><b>Weight:</b> {product.weight} g</div>
+                  <div className="mb-1"><b>Collection Type:</b> {product.collectionType}</div>
+                  { (product.status) && (
+                    <div className="mb-1"><b>Status:</b> {product.status}</div>
+                  )}
+                  { (product.ingredients) && (
+                    <div className="mb-1">
+                      <b>Ingredients:</b> {Array.isArray(product.ingredients)
+                        ? (product.ingredients).join(", ")
+                        : (product.ingredients)}
+                    </div>
+                  )}
+                  { (product.shelfLife) && (
+                    <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>
+                  )}
+                  { (product.nutritionFacts) && (
+                    <div className="mb-1">
+                      <b>Nutrition Facts:</b>
+                      <ul className="ml-2 list-disc">
+                        {Object.entries(product.nutritionFacts).map(([key, value]) => (
+                          <li key={key}><b>{key}:</b> {value}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
             </div>
           </div>
           <p className="text-sm text-gray-500">
