@@ -20,12 +20,15 @@ export type Product = {
 
 export async function getProductById(id: string): Promise<Product | null> {
   await connectDB();
-  const db = mongoose.connection.db;
-  if (!db) throw new Error("Database connection failed");
+  const db = mongoose.connection?.db;
+  if (!db) throw new Error("DB not connected");
+
   const product = await db
     .collection("products")
     .findOne({ _id: new mongoose.Types.ObjectId(id) });
+
   if (!product) return null;
+
   return {
     _id: product._id.toString(),
     name: product.name,
@@ -42,4 +45,57 @@ export async function getProductById(id: string): Promise<Product | null> {
     link: product.link,
     description: product.description,
   };
+}
+
+export async function getAllProducts(): Promise<Product[]> {
+  await connectDB();
+  const db = mongoose.connection?.db;
+  if (!db) throw new Error("Database connection failed");
+
+  const products = await db.collection("products").find({}).toArray();
+
+  return products.map((product) => ({
+    _id: product._id.toString(),
+    name: product.name,
+    price: product.price,
+    weight: product.weight,
+    discount: product.discount,
+    collectionType: product.collectionType,
+    brand: product.brand,
+    status: product.status,
+    image: product.image,
+    ingredients: product.ingredients,
+    shelfLife: product.shelfLife,
+    nutritionFacts: product.nutritionFacts,
+    link: product.link,
+    description: product.description,
+  }));
+}
+
+export async function getProductsByIds(ids: string[]) {
+  if (!ids.length) return [];
+  await connectDB();
+  const db = mongoose.connection?.db;
+  if (!db) throw new Error("DB not connected");
+  const objectIds = ids.map((id) => new mongoose.Types.ObjectId(id));
+  const products = await db
+    .collection("products")
+    .find({ _id: { $in: objectIds } })
+    .toArray();
+  return products.map((product) => ({
+    _id: product._id.toString(),
+    name: product.name,
+    price: product.price,
+    weight: product.weight,
+    discount: product.discount,
+    collectionType: product.collectionType,
+    brand: product.brand,
+    status: product.status,
+    image: product.image,
+    ingredients: product.ingredients,
+    shelfLife: product.shelfLife,
+    nutritionFacts: product.nutritionFacts,
+    link: product.link,
+    description: product.description,
+  }));
 }

@@ -10,15 +10,16 @@ function getDb() {
 export async function getRecommendations(productId: string) {
   await connectDB();
   const db = getDb();
+  // Returns: { productId, recommendedByCollection: { [collectionType]: productId } }
   return db.collection("recommendations").findOne({ productId });
 }
 
-export async function setRecommendations(productId: string, recommendedProductIds: string[]) {
+export async function setRecommendations(productId: string, recommendedByCollection: Record<string, string>) {
   await connectDB();
   const db = getDb();
   return db.collection("recommendations").updateOne(
     { productId },
-    { $set: { recommendedProductIds } },
+    { $set: { recommendedByCollection } },
     { upsert: true }
   );
 }

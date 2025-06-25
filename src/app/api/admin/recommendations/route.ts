@@ -8,14 +8,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing productId" }, { status: 400 });
   }
   const rec = await getRecommendations(productId);
-  return NextResponse.json(rec || { recommendedProductIds: [] });
+  return NextResponse.json(rec || { recommendedByCollection: {} });
 }
 
 export async function POST(req: NextRequest) {
-  const { productId, recommendedProductIds } = await req.json();
-  if (!productId || !Array.isArray(recommendedProductIds)) {
+  const { productId, recommendedByCollection } = await req.json();
+  if (
+    !productId ||
+    typeof recommendedByCollection !== "object" ||
+    Array.isArray(recommendedByCollection)
+  ) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
-  await setRecommendations(productId, recommendedProductIds);
+  await setRecommendations(productId, recommendedByCollection);
   return NextResponse.json({ ok: true });
 }

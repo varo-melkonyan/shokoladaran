@@ -1,8 +1,15 @@
 "use client";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
+import Link from "next/link";
 
-export default function ProductClient({ product, recommendations }: { product: any, recommendations: any[] }) {
+export default function ProductClient({
+  product,
+  recommendations,
+}: {
+  product: any;
+  recommendations: any[];
+}) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
 
@@ -36,12 +43,12 @@ export default function ProductClient({ product, recommendations }: { product: a
             </div>
             <div className="flex gap-6 mb-4">
               <div>
-                <p className="font-semibold text-chocolate">Brand:</p>{" "}
+                <span className="font-semibold text-chocolate">Brand:</span>{" "}
                 <span className="text-gray-700">{product.brand}</span>
               </div>
               <div>
-                <p className="font-semibold text-chocolate">Collection:</p>{" "}
-                <p className="text-gray-700">{product.collectionType}</p>
+                <span className="font-semibold text-chocolate">Collection:</span>{" "}
+                <span className="text-gray-700">{product.collectionType}</span>
               </div>
             </div>
             {/* Quantity Selector */}
@@ -77,9 +84,17 @@ export default function ProductClient({ product, recommendations }: { product: a
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {recommendations.map((rec) => (
             <div key={rec._id} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
-              <img src={rec.image} alt={rec.name} className="w-full h-40 object-contain mb-2 rounded" />
+              <Link href={`/product/${rec._id}`}>
+                <img
+                  src={rec.image}
+                  alt={rec.name}
+                  className="w-full h-40 object-contain mb-2 rounded cursor-pointer"
+                />
+              </Link>
               <div className="font-semibold text-chocolate">{rec.name}</div>
-              <div className="text-red-600 font-bold">{rec.discount ? `${rec.discount} AMD` : `${rec.price} AMD`}</div>
+              <div className="text-red-600 font-bold">
+                {rec.discount ? `${rec.discount} AMD` : `${rec.price} AMD`}
+              </div>
             </div>
           ))}
         </div>
