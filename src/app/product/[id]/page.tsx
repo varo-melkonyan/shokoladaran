@@ -5,9 +5,9 @@ import ProductClient from "./ProductClient";
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: { _id: string };
 }) {
-  const product = await getProductById(params.id);
+  const product = await getProductById(params._id);
   if (!product) return notFound();
 
   // Fetch recommendations (replace with your logic)
