@@ -230,8 +230,8 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                   </div>
                   <div className="flex items-center justify-between mb-1 mt-2">
                     <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-  {product.name}
-</h2>
+                      {product.name}
+                    </h2>
                   </div>
                   <p className="text-sm text-gray-500">
                     {product.discount ? (
