@@ -11,7 +11,11 @@ export default function ProductClient({
   recommendations: any[];
 }) {
   const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
+
+  // Find this product in the cart
+  const cartItem = cart.find((item) => item._id === product._id);
+  const cartQuantity = cartItem?.quantity ?? 0;
 
   return (
     <div>
@@ -66,15 +70,23 @@ export default function ProductClient({
             </div>
           </div>
           <button
-            className="w-full bg-chocolate text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-brown-700 transition"
-            onClick={() => addToCart({
-              _id: product._id,
-              name: product.name,
-              price: product.price,
-              image: product.image,
-            })}
+            className="w-full bg-chocolate text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-brown-700 transition flex items-center justify-center relative"
+            onClick={() =>
+              addToCart({
+                _id: product._id,
+                name: product.name,
+                price: product.price,
+                discount: product.discount,
+                image: product.image,
+              })
+            }
           >
-            Add to Cart
+            🛒 Add to Cart
+            {cartQuantity > 0 && (
+              <span className="ml-3 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
+                {cartQuantity}
+              </span>
+            )}
           </button>
         </div>
       </div>

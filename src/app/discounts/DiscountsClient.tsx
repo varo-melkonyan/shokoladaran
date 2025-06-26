@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart(); // <-- get cart
 
   // Get unique brands and collections for filters
   const brands = useMemo(() => Array.from(new Set(discounted.map(p => p.brand)).values()).filter(Boolean), [discounted]);
@@ -62,31 +62,38 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-        {filtered.map((item) => (
-          <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
-            <a href={`/product/${item._id}`}>
-              <img src={item.image} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
-            </a>
-            <div className="p-4">
-              <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">
-                {item.name}
-              </h2>
-              <div className="mt-2">
-                <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
-                <span className="text-red-600 font-bold">{item.discount} AMD</span>
+        {filtered.map((item) => {
+          const cartItem = cart.find((ci) => ci._id === item._id);
+          const quantity = cartItem?.quantity ?? 0;
+
+          return (
+            <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
+              <a href={`/product/${item._id}`}>
+                <img src={item.image} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
+              </a>
+              <div className="p-4">
+                <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">
+                  {item.name}
+                </h2>
+                <div className="mt-2">
+                  <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
+                  <span className="text-red-600 font-bold">{item.discount} AMD</span>
+                </div>
+                <button
+                  className="mt-4 bg-chocolate text-white px-4 py-2 rounded hover:bg-brown-700 flex items-center gap-2 relative"
+                  onClick={() => addToCart(item)}
+                >
+                  🛒 Add to Cart
+                  {quantity > 0 && (
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
+                      {quantity}
+                    </span>
+                  )}
+                </button>
               </div>
-              {/* <a href={`/product/${item._id}`} className="mt-3 inline-block text-white bg-chocolate px-4 py-2 rounded hover:bg-brown-700">
-                  Shop Now
-                </a> */}
-              <button
-                className="mt-4 bg-chocolate text-white px-4 py-2 rounded hover:bg-brown-700"
-                onClick={() => addToCart(item)}
-              >
-                Add to Cart
-              </button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       {filtered.length === 0 && (
         <div className="text-center text-gray-500 mt-8">No discounted products found.</div>

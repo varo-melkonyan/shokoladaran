@@ -67,17 +67,39 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                   {item.name || item.title}
                 </h2>
                 <p className="text-xs text-gray-400 mt-1">{item.collectionType}</p>
+                {/* Show product price */}
+                <p className="text-chocolate font-bold mt-2">
+                  {item.discount ? (
+                    <>
+                      <span className="line-through text-gray-400 mr-2">{item.price} ֏</span>
+                      <span className="text-red-600 font-extrabold">{item.discount} ֏</span>
+                    </>
+                  ) : (
+                    item.price ? `${item.price} ֏` : "Price not available"
+                  )}
+                </p>
                 <div className="flex items-center gap-2 mt-3">
                   <button
                     onClick={() => addToCart({
-                      _id: item.id,
+                      _id: item._id,
                       name: item.name,
                       price: item.price,
+                      discount: item.discount,
                       image: item.image
                     })}
-                    className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1"
+                    className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1 relative"
                   >
                     🛒 Add to Cart
+                    {/* Show green badge if in cart */}
+                    {(() => {
+                      const cartItem = cart.find((ci) => ci._id === item._id);
+                      const quantity = cartItem?.quantity ?? 0;
+                      return quantity > 0 ? (
+                        <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
+                          {quantity}
+                        </span>
+                      ) : null;
+                    })()}
                   </button>
                 </div>
               </div>

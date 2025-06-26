@@ -11,7 +11,7 @@ type CollectionType = {
 };
 
 export default function CollectionClientPage({ slug }: { slug: string }) {
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart(); // <-- get cart
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -78,81 +78,91 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         <div className="text-gray-500">No products found in this collection.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
-              <div className="relative">
-                <a href={`/product/${product._id}`}>
-                  <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2 cursor-pointer" />
-                </a>
-                {/* Info Button in top-right */}
-                <div className="absolute top-2 right-2 group">
-                  <button
-                    className="bg-white/90 hover:bg-chocolate text-chocolate hover:text-white rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors duration-200 border border-gray-200"
-                    type="button"
-                    aria-label="Product info"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                      <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="white"/>
-                      <rect x="9.25" y="8" width="1.5" height="5" rx="0.75" fill="currentColor"/>
-                      <rect x="9.25" y="5" width="1.5" height="1.5" rx="0.75" fill="currentColor"/>
-                    </svg>
-                  </button>
-                  {/* Tooltip */}
-                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-xs text-gray-700 z-20 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
-                    {product.name && (
-                      <div className="mb-1"><b>Name:</b> {product.name}</div>
-                    )}
-                    {(product.discount || product.price) && (
-                      <div className="mb-1">
-                        <b>Price:</b> {product.discount ? `${product.discount} AMD (Discounted)` : `${product.price} AMD`}
-                      </div>
-                    )}
-                    {product.brand && (
-                      <div className="mb-1"><b>Brand:</b> {product.brand}</div>
-                    )}
-                    {product.weight && (
-                      <div className="mb-1"><b>Weight:</b> {product.weight} g</div>
-                    )}
-                    {product.collectionType && (
-                      <div className="mb-1"><b>Collection Type:</b> {product.collectionType}</div>
-                    )}
-                    {product.status && (
-                      <div className="mb-1"><b>Status:</b> {product.status}</div>
-                    )}
-                    {product.ingredients && (
-                      <div className="mb-1">
-                        <b>Ingredients:</b> {Array.isArray(product.ingredients)
-                          ? product.ingredients.join(", ")
-                          : product.ingredients}
-                      </div>
-                    )}
-                    {product.shelfLife && (
-                      <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>
-                    )}
-                    {product.nutritionFacts && (
-                      <div className="mb-1">
-                        <b>Nutrition Facts:</b>
-                        <ul className="ml-2 list-disc">
-                          {Object.entries(product.nutritionFacts).map(([key, value]) => (
-                            <li key={key}><b>{key}:</b> {value}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+          {products.map((product) => {
+            const cartItem = cart.find((item) => item._id === product._id);
+            const quantity = cartItem?.quantity ?? 0;
+
+            return (
+              <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
+                <div className="relative">
+                  <a href={`/product/${product._id}`}>
+                    <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2 cursor-pointer" />
+                  </a>
+                  {/* Info Button in top-right */}
+                  <div className="absolute top-2 right-2 group">
+                    <button
+                      className="bg-white/90 hover:bg-chocolate text-chocolate hover:text-white rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors duration-200 border border-gray-200"
+                      type="button"
+                      aria-label="Product info"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="9" stroke="currentColor" strokeWidth="1.5" fill="white"/>
+                        <rect x="9.25" y="8" width="1.5" height="5" rx="0.75" fill="currentColor"/>
+                        <rect x="9.25" y="5" width="1.5" height="1.5" rx="0.75" fill="currentColor"/>
+                      </svg>
+                    </button>
+                    {/* Tooltip */}
+                    <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-xs text-gray-700 z-20 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
+                      {product.name && (
+                        <div className="mb-1"><b>Name:</b> {product.name}</div>
+                      )}
+                      {(product.discount || product.price) && (
+                        <div className="mb-1">
+                          <b>Price:</b> {product.discount ? `${product.discount} AMD (Discounted)` : `${product.price} AMD`}
+                        </div>
+                      )}
+                      {product.brand && (
+                        <div className="mb-1"><b>Brand:</b> {product.brand}</div>
+                      )}
+                      {product.weight && (
+                        <div className="mb-1"><b>Weight:</b> {product.weight} g</div>
+                      )}
+                      {product.collectionType && (
+                        <div className="mb-1"><b>Collection Type:</b> {product.collectionType}</div>
+                      )}
+                      {product.status && (
+                        <div className="mb-1"><b>Status:</b> {product.status}</div>
+                      )}
+                      {product.ingredients && (
+                        <div className="mb-1">
+                          <b>Ingredients:</b> {Array.isArray(product.ingredients)
+                            ? product.ingredients.join(", ")
+                            : product.ingredients}
+                        </div>
+                      )}
+                      {product.shelfLife && (
+                        <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>
+                      )}
+                      {product.nutritionFacts && (
+                        <div className="mb-1">
+                          <b>Nutrition Facts:</b>
+                          <ul className="ml-2 list-disc">
+                            {Object.entries(product.nutritionFacts).map(([key, value]) => (
+                              <li key={key}><b>{key}:</b> {value}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
+                <h2 className="text-lg font-bold">{product.name}</h2>
+                <p className="text-chocolate">{product.price} AMD</p>
+                <p className="text-sm text-gray-500">{product.weight} g</p>
+                <button
+                  className="mt-2 bg-chocolate text-white px-4 py-2 rounded flex items-center gap-2 relative"
+                  onClick={() => addToCart(product)}
+                >
+                  🛒 Add to Cart
+                  {quantity > 0 && (
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
+                      {quantity}
+                    </span>
+                  )}
+                </button>
               </div>
-              <h2 className="text-lg font-bold">{product.name}</h2>
-              <p className="text-chocolate">{product.price} AMD</p>
-              <p className="text-sm text-gray-500">{product.weight} g</p>
-              <button
-                className="mt-2 bg-chocolate text-white px-4 py-2 rounded"
-                onClick={() => addToCart(product)}
-              >
-                Add to Cart
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </main>

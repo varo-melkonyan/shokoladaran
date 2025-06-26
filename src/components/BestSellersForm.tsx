@@ -4,7 +4,7 @@ import { BestSellerProduct } from "@/types/bestSellersProduct";
 import { Product } from "@/types/product";
 
 interface Props  {
-  onAdd: (newBestSellerProduct: BestSellerProduct) => void;
+  onAdd: (newBestSellerProduct: Pick<BestSellerProduct, "_id">) => void;
   initialData: BestSellerProduct | null;
   brands: { _id: string; name: string }[];
   collectionTypes: { _id: string; name: string }[];
@@ -37,9 +37,8 @@ export default function BestSellerProductsForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const product = products.find(p => p._id === selectedProductId);
-    if (product) {
-      onAdd({ ...product, image: product.image || "", link: product.link || "" });
+    if (selectedProductId) {
+      onAdd({ _id: selectedProductId } as BestSellerProduct);
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");

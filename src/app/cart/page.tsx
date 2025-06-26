@@ -13,26 +13,29 @@ export default function CartPage() {
     phone: "",
   });
 
-  const total = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + (item.discount ?? item.price ?? 0) * item.quantity,
+    0
+  );
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handlePayOnline = async () => {
-  // Send cart and form data to your backend API to create a Stripe Checkout session
-  const res = await fetch("/api/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cart, form, deliveryType }),
-  });
-  const data = await res.json();
-  if (data.url) {
-    window.location.href = data.url; // Redirect to Stripe Checkout
-  } else {
-    alert("Payment error. Please try again.");
-  }
-};
+  const handlePayOnline = async () => {
+    // Send cart and form data to your backend API to create a Stripe Checkout session
+    const res = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cart, form, deliveryType }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url; // Redirect to Stripe Checkout
+    } else {
+      alert("Payment error. Please try again.");
+    }
+  };
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-8">Your Cart</h1>
@@ -47,12 +50,6 @@ const handlePayOnline = async () => {
               )}
               <div className="flex-1">
                 <div className="font-semibold text-lg">{item.name}</div>
-                {item.price && (
-                  <div className="text-gray-700 mb-1">
-                    Price: {item.price} AMD &times; {item.quantity} ={" "}
-                    <span className="font-bold">{item.price * item.quantity} AMD</span>
-                  </div>
-                )}
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => removeFromCart(item._id)}
@@ -62,6 +59,20 @@ const handlePayOnline = async () => {
                   </button>
                 </div>
               </div>
+              {item.discount ? (
+                <div className="text-right">
+                  <div className="text-gray-700 mb-1 line-through">
+                    {item.price} AMD
+                  </div>
+                  <div className="text-chocolate font-bold">
+                    {item.discount} AMD
+                  </div>
+                </div>
+              ) : (
+                <div className="text-right font-bold text-xl mt-6">
+                  {item.price} AMD
+                </div>
+              )}
             </div>
           ))}
           <div className="text-right font-bold text-xl mt-6">
@@ -140,11 +151,11 @@ const handlePayOnline = async () => {
                 />
               </div>
               <button
-  onClick={handlePayOnline}
-  className="block ml-auto bg-green-600 text-white px-6 py-2 rounded text-base mt-4"
->
-  Pay Online
-</button>
+                onClick={handlePayOnline}
+                className="block ml-auto bg-green-600 text-white px-6 py-2 rounded text-base mt-4"
+              >
+                Pay Online
+              </button>
             </section>
           )}
         </div>

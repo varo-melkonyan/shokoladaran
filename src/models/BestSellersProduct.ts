@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const BestSellersProductSchema = new Schema({
   name: String,
   price: Number,
+  discount: Number,
   weight: String,
   collectionType: String,
   brand: String,

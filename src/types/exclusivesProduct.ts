@@ -2,6 +2,7 @@ export type ExclusivesProduct ={
   _id: string;
   name: string;
   price: number;
+  discount?: number;
   weight: string;
   collectionType: string;
   brand: string;

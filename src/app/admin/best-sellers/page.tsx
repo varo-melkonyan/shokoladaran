@@ -13,52 +13,66 @@ export default function AdminBestSellerProducts() {
 
   useEffect(() => {
     fetch("/api/admin/brands")
-  .then(res => res.json())
-  .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
-    name: b.name,
-  }))));
+      .then(res => res.json())
+      .then(data => setBrands(data.map((b: any) => ({
+        _id: b._id || b.id,
+        name: b.name,
+      }))));
     fetch("/api/admin/collection-types")
-  .then(res => res.json())
-  .then(data => setCollectionTypes(data.map((c: any) => ({
-    _id: c._id || c.id,
-    name: c.name,
-  }))));
+      .then(res => res.json())
+      .then(data => setCollectionTypes(data.map((c: any) => ({
+        _id: c._id || c.id,
+        name: c.name,
+      }))));
     fetch("/api/admin/products")
-  .then(res => res.json())
-  .then(data => setProducts(data.map((p: any) => ({
-    _id: p._id || p.id, // use _id if present, else id
-    name: p.name,
-    price: p.price,
-    weight: p.weight,
-    discount: p.discount,
-    collectionType: p.collectionType,
-    brand: p.brand,
-    image: p.image,
-    link: p.link,
-    status: p.status,
-    ingredients: p.ingredients,
-    shelfLife: p.shelfLife,
-    nutritionFacts: p.nutritionFacts,
-  }))));
-    fetch("/api/admin/best-sellers").then(res => res.json()).then(setBestSellerProducts);
+      .then(res => res.json())
+      .then(data => setProducts(data.map((p: any) => ({
+        _id: p._id || p.id,
+        name: p.name,
+        price: p.price,
+        weight: p.weight,
+        discount: p.discount,
+        collectionType: p.collectionType,
+        brand: p.brand,
+        image: p.image,
+        link: p.link,
+        status: p.status,
+        ingredients: p.ingredients,
+        shelfLife: p.shelfLife,
+        nutritionFacts: p.nutritionFacts,
+      }))));
+    fetch("/api/admin/best-sellers")
+      .then(res => res.json())
+      .then(setBestSellerProducts);
   }, []);
 
   const handleAddOrEdit = async (newBestSellerProduct: BestSellerProduct) => {
+    // Always find by _id
+    const product = products.find(p => p._id === newBestSellerProduct._id);
+    if (!product) return;
+
+    // Ensure required fields are always strings
+    const productWithDiscount: BestSellerProduct = {
+      ...product,
+      discount: product.discount ?? undefined,
+      image: product.image || "",
+      link: product.link || "",
+    };
+
     if (editIndex !== null) {
       const oldId = bestSellerProducts[editIndex]._id;
       await fetch(`/api/admin/best-sellers?id=${oldId}`, { method: "DELETE" });
       await fetch("/api/admin/best-sellers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newBestSellerProduct),
+        body: JSON.stringify(productWithDiscount),
       });
       setEditIndex(null);
     } else {
       await fetch("/api/admin/best-sellers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newBestSellerProduct),
+        body: JSON.stringify(productWithDiscount),
       });
     }
     // Refresh list

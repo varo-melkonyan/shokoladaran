@@ -8,7 +8,11 @@ export default function CartWidget() {
   const [open, setOpen] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
 
-  const total = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+  // Use discount if available, otherwise price
+  const total = cart.reduce(
+    (sum, item) => sum + ((item.discount ?? item.price ?? 0) * item.quantity),
+    0
+  );
 
   // Close on outside click
   useEffect(() => {
@@ -63,9 +67,14 @@ export default function CartWidget() {
                       <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
                     </div>
                     <div className="text-right">
-                      {item.price && (
+                      {item.discount ? (
                         <p className="text-sm text-chocolate font-semibold">
-                          {item.price * item.quantity} AMD
+                          <span className="line-through text-gray-400 mr-1">{item.price} ֏</span>
+                          <span className="text-red-600 font-extrabold">{item.discount * item.quantity} ֏</span>
+                        </p>
+                      ) : (
+                        <p className="text-sm text-chocolate font-semibold">
+                          {item.price && (item.price * item.quantity)} ֏
                         </p>
                       )}
                       <button
@@ -81,7 +90,7 @@ export default function CartWidget() {
 
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm text-gray-600">Total</span>
-                <span className="text-base font-bold text-chocolate">{total} AMD</span>
+                <span className="text-base font-bold text-chocolate">{total} ֏</span>
               </div>
 
               <Link
