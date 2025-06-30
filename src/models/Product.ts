@@ -8,6 +8,7 @@ const ProductSchema = new mongoose.Schema({
   collectionType: String,
   brand: String,
   status: String,
+  readyAfter: String,
   image: String,
   ingredients: [String],
   shelfLife: String,
