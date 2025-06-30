@@ -23,7 +23,7 @@ export default function AdminProducts() {
   const [discount, setDiscount] = useState("");
   const [collectionType, setCollectionType] = useState("");
   const [brand, setBrand] = useState("");
-  const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "order">("in_stock");
+  const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "pre_order">("in_stock");
   const [image, setImage] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -54,6 +54,7 @@ export default function AdminProducts() {
         image: p.image,
         link: p.link,
         status: p.status,
+        readyAfter: p.readyAfter,
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
@@ -107,7 +108,7 @@ export default function AdminProducts() {
     setDiscount(product.discount ? product.discount.toString() : "");
     setCollectionType(product.collectionType);
     setBrand(product.brand);
-    setStatus((product.status as "in_stock" | "out_of_stock" | "order") || "in_stock");
+    setStatus((product.status as "in_stock" | "out_of_stock" | "pre_order") || "in_stock");
     setImage(product.image || "");
     setImageFile(null);
     setIngredientsInput(product.ingredients?.join(", ") || "");
@@ -181,12 +182,12 @@ export default function AdminProducts() {
       collectionType,
       brand,
       status,
+      readyAfter,
       image: imageUrl,
       ingredients: ingredientsInput.split(",").map(i => i.trim()).filter(Boolean),
       shelfLife,
       nutritionFacts: { ...nutritionFacts },
-      link,
-      readyAfter
+      link
     };
 
     if (editId) {
@@ -234,15 +235,15 @@ export default function AdminProducts() {
         <select
           value={status}
           onChange={e => {
-            const value = e.target.value as "in_stock" | "out_of_stock" | "order";
+            const value = e.target.value as "in_stock" | "out_of_stock" | "pre_order";
             setStatus(value);
-            if (value !== "order") setReadyAfter(""); 
+            if (value !== "pre_order") setReadyAfter(""); 
           }}
           className="border p-2 rounded"
         >
           <option value="in_stock">In Stock</option>
           <option value="out_of_stock">No Product</option>
-          <option value="order">Order (Pre-order)</option>
+          <option value="pre_order">Order (Pre-order)</option>
         </select>
         <input
           type="file"
@@ -277,7 +278,7 @@ export default function AdminProducts() {
           placeholder="Shelf Life / Expiry (e.g. 3 months, 2 days)"
           className="border p-2 rounded"
         />
-        {status === "order" && (
+        {status === "pre_order" && (
           <input
             value={readyAfter}
             onChange={e => setReadyAfter(e.target.value)}

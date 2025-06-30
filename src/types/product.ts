@@ -1,12 +1,11 @@
 export type NutritionFacts = {
-  energy: string; // e.g. "550 kcal"
-  fat: string; // e.g. "35g"
-  carbohydrates: string; // e.g. "50g"
-  protein: string; // e.g. "6g"
+  energy: string;
+  fat: string;
+  carbohydrates: string;
+  protein: string;
 };
 
 export type Product = {
-  readyAfter: string | undefined;
   _id: string;
   name: string;
   price: number;
@@ -15,6 +14,7 @@ export type Product = {
   collectionType: string;
   brand: string;
   status: "in_stock" | "out_of_stock" | "pre_order";
+  readyAfter: string | undefined;
   image?: string;
   ingredients?: string[];
   shelfLife?: string;

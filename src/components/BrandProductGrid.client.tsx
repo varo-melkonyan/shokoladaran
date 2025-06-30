@@ -93,7 +93,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
                     price: product.price,
                     discount: product.discount,
                     image: product.image,
-                    status: product.status === "pre_order" ? "order" : product.status,
+                    status: product.status === "pre_order" ? "pre_order" : product.status,
                     readyAfter: product.readyAfter,
                   })
                 }
