@@ -13,7 +13,8 @@ export type Product = {
   discount?: number;
   collectionType: string;
   brand: string;
-  status: "in_stock" | "out_of_stock";
+  status: "in_stock" | "out_of_stock" | "pre_order";
+  readyAfter?: string; // e.g. "2 days"
   image?: string;
   ingredients?: string[];
   shelfLife?: string;

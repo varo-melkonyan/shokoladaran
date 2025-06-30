@@ -22,6 +22,7 @@ export default function ProductInfoModal({ product, onClose }: Props) {
               <b>Ingredients:</b> {Array.isArray(product.ingredients) ? product.ingredients.join(", ") : product.ingredients}
             </li>
           )}
+          {product.readyAfter && <li><b>Ready After:</b> {product.readyAfter}</li>}
           {product.shelfLife && <li><b>Shelf Life:</b> {product.shelfLife}</li>}
           {product.nutritionFacts && (
             <li>

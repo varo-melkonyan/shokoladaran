@@ -54,6 +54,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
         image: p.image,
         link: p.link,
         status: p.status ?? "in_stock",
+        readyAfter: p.readyAfter,
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
@@ -211,6 +212,9 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                               ? product.ingredients.join(", ")
                               : product.ingredients}
                           </div>
+                        )}
+                        {product.readyAfter && (
+                          <div className="mb-1"><b>Ready After:</b> {product.readyAfter}</div>
                         )}
                         {product.shelfLife && (
                           <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>

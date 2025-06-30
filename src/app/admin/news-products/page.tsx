@@ -37,6 +37,7 @@ export default function AdminNewsProducts() {
     image: p.image,
     link: p.link,
     status: p.status,
+    readyAfter: p.readyAfter,
     ingredients: p.ingredients,
     shelfLife: p.shelfLife,
     nutritionFacts: p.nutritionFacts,

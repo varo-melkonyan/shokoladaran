@@ -10,6 +10,7 @@ export type Product = {
   collectionType?: string;
   brand?: string;
   status?: string;
+  readyAfter?: string; // e.g. "2 days"
   image?: string;
   ingredients?: string[];
   shelfLife?: string;
@@ -38,6 +39,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     collectionType: product.collectionType,
     brand: product.brand,
     status: product.status,
+    readyAfter: product.readyAfter,
     image: product.image,
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,
@@ -63,6 +65,7 @@ export async function getAllProducts(): Promise<Product[]> {
     collectionType: product.collectionType,
     brand: product.brand,
     status: product.status,
+    readyAfter: product.readyAfter,
     image: product.image,
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,
@@ -91,6 +94,7 @@ export async function getProductsByIds(ids: string[]) {
     collectionType: product.collectionType,
     brand: product.brand,
     status: product.status,
+    readyAfter: product.readyAfter,
     image: product.image,
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,

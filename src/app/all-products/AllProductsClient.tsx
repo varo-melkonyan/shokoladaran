@@ -10,6 +10,7 @@ type Product = {
   brand: string;
   image: string;
   status?: string;
+  readyAfter?: string; // e.g. "2 days"
   discount?: number;
   ingredients?: string[];
   shelfLife?: string;
@@ -158,10 +159,19 @@ export default function AllProductsClient({ products }: { products: Product[] })
                   className={`px-2 py-1 rounded ${
                     product.status === "in_stock"
                       ? "bg-green-100 text-green-700"
+                      : product.status === "pre_order"
+                      ? "bg-orange-100 text-orange-700"
                       : "bg-red-100 text-red-700"
                   }`}
                 >
-                  {product.status === "in_stock" ? "In Stock" : "No Product"}
+                  {product.status === "in_stock" && "In Stock"}
+                  {product.status === "pre_order" && (
+                    <>
+                      Pre-order
+                      {product.readyAfter ? ` (Ready in ${product.readyAfter})` : ""}
+                    </>
+                  )}
+                  {product.status === "out_of_stock" && "No Product"}
                 </span>
               </div>
             )}

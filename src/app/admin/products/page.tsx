@@ -23,12 +23,13 @@ export default function AdminProducts() {
   const [discount, setDiscount] = useState("");
   const [collectionType, setCollectionType] = useState("");
   const [brand, setBrand] = useState("");
-  const [status, setStatus] = useState<"in_stock" | "out_of_stock">("in_stock");
+  const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "pre_order">("in_stock");
   const [image, setImage] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientsInput, setIngredientsInput] = useState(""); 
   const [shelfLife, setShelfLife] = useState("");
+  const [readyAfter, setReadyAfter] = useState("");
   const [nutritionFacts, setNutritionFacts] = useState({
     energy: "",
     fat: "",
@@ -53,6 +54,7 @@ export default function AdminProducts() {
         image: p.image,
         link: p.link,
         status: p.status,
+        readyAfter: p.readyAfter,
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
@@ -106,11 +108,13 @@ export default function AdminProducts() {
     setDiscount(product.discount ? product.discount.toString() : "");
     setCollectionType(product.collectionType);
     setBrand(product.brand);
-    setStatus((product.status as "in_stock" | "out_of_stock") || "in_stock");
+    setStatus((product.status as "in_stock" | "out_of_stock" | "pre_order") || "in_stock");
+    setReadyAfter(product.readyAfter || "");
     setImage(product.image || "");
     setImageFile(null);
     setIngredientsInput(product.ingredients?.join(", ") || "");
     setShelfLife(product.shelfLife || "");
+    setReadyAfter(product.readyAfter || "");
     setNutritionFacts({
       energy: product.nutritionFacts?.energy || "",
       fat: product.nutritionFacts?.fat || "",
@@ -136,6 +140,7 @@ export default function AdminProducts() {
     setCollectionType(collectionTypes[0]?.name || "");
     setBrand(brands[0]?.name || "");
     setStatus("in_stock");
+    setReadyAfter("");
     setImage("");
     setImageFile(null);
     setIngredients([]);
@@ -178,6 +183,7 @@ export default function AdminProducts() {
       collectionType,
       brand,
       status,
+      readyAfter: readyAfter || undefined,
       image: imageUrl,
       ingredients: ingredientsInput.split(",").map(i => i.trim()).filter(Boolean),
       shelfLife,
@@ -229,10 +235,11 @@ export default function AdminProducts() {
         </select>
         <select
           value={status}
-          onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock")}
+          onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock" | "pre_order")}
           className="border p-2 rounded"
         >
           <option value="in_stock">In Stock</option>
+          <option value="pre_order">Pre Order</option>
           <option value="out_of_stock">No Product</option>
         </select>
         <input
@@ -260,6 +267,12 @@ export default function AdminProducts() {
           value={ingredientsInput}
           onChange={e => setIngredientsInput(e.target.value)}
           placeholder="Ingredients (comma separated), sugars, salt"
+          className="border p-2 rounded"
+        />
+        <input
+          value={readyAfter}
+          onChange={e => setReadyAfter(e.target.value)}
+          placeholder="Ready order date(e.g. 3 months, 2 days)"
           className="border p-2 rounded"
         />
         <input
@@ -303,10 +316,16 @@ export default function AdminProducts() {
               <span>{p.collectionType}</span>
               <span>{p.brand}</span>
               <span>
-                {p.status === "in_stock" ? (
+                {p.status === "in_stock" && (
                   <span className="text-green-600 font-semibold">In Stock</span>
-                ) : (
+                )}
+                {p.status === "out_of_stock" && (
                   <span className="text-red-600 font-semibold">No Product</span>
+                )}
+                {p.status === "pre_order" && (
+                  <span className="text-orange-600 font-semibold">
+                    Pre-order{p.readyAfter ? ` (Ready in ${p.readyAfter})` : ""}
+                  </span>
                 )}
               </span>
               <button

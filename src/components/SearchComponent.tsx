@@ -37,7 +37,9 @@ export default function SearchComponent() {
       ...product,
       _id: product._id || product.id,
       status:
-        product.status === "in_stock" || product.status === "out_of_stock"
+        product.status === "in_stock" ||
+        product.status === "out_of_stock" ||
+        product.status === "pre_order"
           ? product.status
           : "in_stock",
     }));

@@ -48,6 +48,7 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                           : item.ingredients}
                       </div>
                     )}
+                    {item.readyAfter && <div className="mb-1"><b>Ready After:</b> {item.readyAfter}</div>}
                     {item.shelfLife && <div className="mb-1"><b>Shelf Life:</b> {item.shelfLife}</div>}
                     {item.nutritionFacts && typeof item.nutritionFacts === "object" && Object.keys(item.nutritionFacts).length > 0 && (
                       <div className="mb-1">

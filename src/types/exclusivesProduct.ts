@@ -7,6 +7,7 @@ export type ExclusivesProduct ={
   collectionType: string;
   brand: string;
   status?: string;
+  readyAfter?: string; // e.g. "2 days"
   image: string;
   ingredients?: string[];
   shelfLife?: string;

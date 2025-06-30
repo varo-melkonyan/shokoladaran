@@ -81,6 +81,9 @@ export default function ProductList({
                         : product.ingredients}
                     </div>
                   )}
+                  {product.readyAfter && (
+                    <div className="mb-1"><b>Ready After:</b> {product.readyAfter}</div>
+                  )}
                   {product.shelfLife && (
                     <div className="mb-1"><b>Shelf Life:</b> {product.shelfLife}</div>
                   )}

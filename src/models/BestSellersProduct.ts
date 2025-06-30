@@ -8,6 +8,7 @@ const BestSellersProductSchema = new Schema({
   collectionType: String,
   brand: String,
   status: String,
+  readyAfter: String, // e.g. "2 days"
   image: String,
   ingredients: [String],
   shelfLife: String,
