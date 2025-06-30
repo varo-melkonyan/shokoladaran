@@ -11,7 +11,7 @@ type CollectionType = {
 };
 
 export default function CollectionClientPage({ slug }: { slug: string }) {
-  const { addToCart, cart } = useCart(); // <-- get cart
+  const { addToCart, cart } = useCart();
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
