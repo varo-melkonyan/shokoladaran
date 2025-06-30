@@ -233,7 +233,11 @@ export default function AdminProducts() {
         </select>
         <select
           value={status}
-          onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock" | "order")}
+          onChange={e => {
+            const value = e.target.value as "in_stock" | "out_of_stock" | "order";
+            setStatus(value);
+            if (value !== "order") setReadyAfter(""); 
+          }}
           className="border p-2 rounded"
         >
           <option value="in_stock">In Stock</option>
@@ -273,12 +277,14 @@ export default function AdminProducts() {
           placeholder="Shelf Life / Expiry (e.g. 3 months, 2 days)"
           className="border p-2 rounded"
         />
-        <input
-          value={readyAfter}
-          onChange={e => setReadyAfter(e.target.value)}
-          placeholder="Ready after (e.g. 2 days, 1 week)"
-          className="border p-2 rounded"
-        />
+        {status === "order" && (
+          <input
+            value={readyAfter}
+            onChange={e => setReadyAfter(e.target.value)}
+            placeholder="Ready after (e.g. 2 days, 1 week)"
+            className="border p-2 rounded"
+          />
+        )}
         <div className="grid grid-cols-2 gap-2">
           <input name="energy" value={nutritionFacts.energy} onChange={e => setNutritionFacts({ ...nutritionFacts, energy: e.target.value })} placeholder="Energy (kcal)" className="border rounded px-2 py-1" />
           <input name="fat" value={nutritionFacts.fat} onChange={e => setNutritionFacts({ ...nutritionFacts, fat: e.target.value })} placeholder="Fat (g)" className="border rounded px-2 py-1" />

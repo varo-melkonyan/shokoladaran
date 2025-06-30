@@ -56,14 +56,14 @@ export default function CartPage() {
                     Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
                   </div>
                 )}
-                {/* <div className="flex gap-2 mt-2">
+                <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => removeFromCart(item._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded text-xs"
                   >
                     Remove
                   </button>
-                </div> */}
+                </div>
               </div>
               {item.discount ? (
                 <div className="text-right">
