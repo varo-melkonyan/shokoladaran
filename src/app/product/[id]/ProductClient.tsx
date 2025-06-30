@@ -79,7 +79,8 @@ export default function ProductClient({
                 discount: product.discount,
                 image: product.image,
                 quantity,
-                status: ""
+                status: product.status || "in_stock",
+                readyAfter: product.readyAfter, // e.g., "30 minutes"
               })
             }
           >

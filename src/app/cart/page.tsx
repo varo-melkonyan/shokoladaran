@@ -43,44 +43,47 @@ export default function CartPage() {
         <div className="text-gray-500">Your cart is empty.</div>
       ) : (
         <div className="space-y-6">
-          {cart.map((item, idx) => (
-            <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
-              {item.image && (
-                <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded" />
-              )}
-              <div className="flex-1">
-                <div className="font-semibold text-lg">{item.name}</div>
-                {/* Show readyAfter for pre-order items */}
-                {item.status === "pre_order" && (
-                  <div className="text-orange-600 text-sm mt-1">
-                    Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
-                  </div>
+          {cart.map((item, idx) => {
+            console.log(item.status); // <-- This will print for each item
+            return (
+              <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
+                {item.image && (
+                  <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded" />
                 )}
-                <div className="flex gap-2 mt-2">
-                  <button
-                    onClick={() => removeFromCart(item._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded text-xs"
-                  >
-                    Remove
-                  </button>
+                <div className="flex-1">
+                  <div className="font-semibold text-lg">{item.name}</div>
+                  {/* Show readyAfter for pre-order items */}
+                  {item.status === "pre_order" && (
+                    <div className="text-orange-600 text-sm mt-1">
+                      Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
+                    </div>
+                  )}
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      onClick={() => removeFromCart(item._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded text-xs"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
-              </div>
-              {item.discount ? (
-                <div className="text-right">
-                  <div className="text-gray-700 mb-1 line-through">
+                {item.discount ? (
+                  <div className="text-right">
+                    <div className="text-gray-700 mb-1 line-through">
+                      {item.price} AMD
+                    </div>
+                    <div className="text-chocolate font-bold">
+                      {item.discount} AMD
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-right font-bold text-xl mt-6">
                     {item.price} AMD
                   </div>
-                  <div className="text-chocolate font-bold">
-                    {item.discount} AMD
-                  </div>
-                </div>
-              ) : (
-                <div className="text-right font-bold text-xl mt-6">
-                  {item.price} AMD
-                </div>
-              )}
-            </div>
-          ))}
+                )}
+              </div>
+            );
+          })}
           <div className="text-right font-bold text-xl mt-6">
             Total: {total} AMD
           </div>
