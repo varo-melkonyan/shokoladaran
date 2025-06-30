@@ -50,14 +50,20 @@ export default function CartPage() {
               )}
               <div className="flex-1">
                 <div className="font-semibold text-lg">{item.name}</div>
-                <div className="flex gap-2 mt-2">
+                <div className="text-sm text-gray-600 mt-1">Qty: {item.quantity}</div>
+                {item.status === "order" && (
+                  <div className="text-orange-600 text-sm mt-1">
+                    Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
+                  </div>
+                )}
+                {/* <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => removeFromCart(item._id)}
                     className="bg-red-500 text-white px-3 py-1 rounded text-xs"
                   >
                     Remove
                   </button>
-                </div>
+                </div> */}
               </div>
               {item.discount ? (
                 <div className="text-right">

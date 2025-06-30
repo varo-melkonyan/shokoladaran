@@ -8,6 +8,8 @@ export type CartItem = {
   price?: number;
   discount?: number;
   quantity: number;
+  status?: "in_stock" | "out_of_stock" | "order"; 
+  readyAfter?: string;
 };
 
 type CartContextType = {

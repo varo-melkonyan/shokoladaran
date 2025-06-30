@@ -23,7 +23,7 @@ export default function AdminProducts() {
   const [discount, setDiscount] = useState("");
   const [collectionType, setCollectionType] = useState("");
   const [brand, setBrand] = useState("");
-  const [status, setStatus] = useState<"in_stock" | "out_of_stock">("in_stock");
+  const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "order">("in_stock");
   const [image, setImage] = useState(""); 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -37,6 +37,7 @@ export default function AdminProducts() {
   });
   const [error, setError] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
+  const [readyAfter, setReadyAfter] = useState("");
 
   // Fetch products, brands, and collection types
   useEffect(() => {
@@ -106,7 +107,7 @@ export default function AdminProducts() {
     setDiscount(product.discount ? product.discount.toString() : "");
     setCollectionType(product.collectionType);
     setBrand(product.brand);
-    setStatus((product.status as "in_stock" | "out_of_stock") || "in_stock");
+    setStatus((product.status as "in_stock" | "out_of_stock" | "order") || "in_stock");
     setImage(product.image || "");
     setImageFile(null);
     setIngredientsInput(product.ingredients?.join(", ") || "");
@@ -117,6 +118,7 @@ export default function AdminProducts() {
       carbohydrates: product.nutritionFacts?.carbohydrates || "",
       protein: product.nutritionFacts?.protein || "",
     });
+    setReadyAfter(product.readyAfter || "");
     setError("");
   }
 
@@ -147,6 +149,7 @@ export default function AdminProducts() {
       carbohydrates: "",
       protein: "",
     });
+    setReadyAfter("");
     setEditId(null);
     setError("");
   }
@@ -183,6 +186,7 @@ export default function AdminProducts() {
       shelfLife,
       nutritionFacts: { ...nutritionFacts },
       link,
+      readyAfter
     };
 
     if (editId) {
@@ -229,11 +233,12 @@ export default function AdminProducts() {
         </select>
         <select
           value={status}
-          onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock")}
+          onChange={e => setStatus(e.target.value as "in_stock" | "out_of_stock" | "order")}
           className="border p-2 rounded"
         >
           <option value="in_stock">In Stock</option>
           <option value="out_of_stock">No Product</option>
+          <option value="order">Order (Pre-order)</option>
         </select>
         <input
           type="file"
@@ -266,6 +271,12 @@ export default function AdminProducts() {
           value={shelfLife}
           onChange={e => setShelfLife(e.target.value)}
           placeholder="Shelf Life / Expiry (e.g. 3 months, 2 days)"
+          className="border p-2 rounded"
+        />
+        <input
+          value={readyAfter}
+          onChange={e => setReadyAfter(e.target.value)}
+          placeholder="Ready after (e.g. 2 days, 1 week)"
           className="border p-2 rounded"
         />
         <div className="grid grid-cols-2 gap-2">

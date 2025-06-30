@@ -6,6 +6,7 @@ export type NutritionFacts = {
 };
 
 export type Product = {
+  readyAfter: string | undefined;
   _id: string;
   name: string;
   price: number;
@@ -13,7 +14,7 @@ export type Product = {
   discount?: number;
   collectionType: string;
   brand: string;
-  status: "in_stock" | "out_of_stock";
+  status: "in_stock" | "out_of_stock" | "pre_order";
   image?: string;
   ingredients?: string[];
   shelfLife?: string;
