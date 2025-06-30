@@ -6,6 +6,8 @@ export type CartItem = {
   name: string;
   image?: string;
   price?: number;
+  status: string;
+  readyAfter?: string; // e.g., "30 minutes"
   discount?: number;
   quantity: number;
 };

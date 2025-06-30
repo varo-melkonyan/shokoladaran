@@ -50,6 +50,12 @@ export default function CartPage() {
               )}
               <div className="flex-1">
                 <div className="font-semibold text-lg">{item.name}</div>
+                {/* Show readyAfter for pre-order items */}
+                {item.status === "pre_order" && (
+                  <div className="text-orange-600 text-sm mt-1">
+                    Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
+                  </div>
+                )}
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => removeFromCart(item._id)}
