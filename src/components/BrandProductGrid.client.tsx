@@ -96,6 +96,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
                     price: product.price,
                     discount: product.discount,
                     image: product.image,
+                    status: ""
                   })
                 }
                 className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1 relative"

@@ -86,7 +86,8 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                       name: item.name,
                       price: item.price,
                       discount: item.discount,
-                      image: item.image
+                      image: item.image,
+                      status: ""
                     })}
                     className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1 relative"
                   >

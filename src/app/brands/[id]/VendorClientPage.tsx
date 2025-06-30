@@ -257,7 +257,8 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                         name: product.name,
                         price: product.price,
                         discount: product.discount,
-                        image: product.image
+                        image: product.image,
+                        status: ""
                       })}
                       className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1 relative"
                     >

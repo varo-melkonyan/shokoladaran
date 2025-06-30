@@ -151,7 +151,16 @@ export default function AllProductsClient({ products }: { products: Product[] })
             </h2>
             <div className="text-sm text-gray-600">{product.brand}</div>
             <div className="text-sm text-gray-500">{product.collectionType}</div>
-            <div className="mt-2 text-chocolate font-bold">{product.price} AMD</div>
+            <div className="mt-2">
+              {product.discount ? (
+                <>
+                  <span className="line-through text-gray-400 mr-2">{product.price} AMD</span>
+                  <span className="text-chocolate font-bold">{product.discount} AMD</span>
+                </>
+              ) : (
+                <span className="text-chocolate font-bold">{product.price} AMD</span>
+              )}
+            </div>
             <div className="text-xs text-gray-400">{product.weight} g</div>
             {product.status && (
               <div className="text-xs mt-1">

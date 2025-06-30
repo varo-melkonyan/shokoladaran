@@ -78,7 +78,8 @@ export default function ProductClient({
                 price: product.price,
                 discount: product.discount,
                 image: product.image,
-                quantity, // Pass the selected quantity!
+                quantity,
+                status: ""
               })
             }
           >
