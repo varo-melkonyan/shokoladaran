@@ -24,6 +24,12 @@ export default function AdminDashboard() {
           <Link href="/admin/products" className="text-blue-600 hover:underline">Products</Link>
         </li>
         <li>
+          <Link href="/admin/gifts" className="text-blue-600 hover:underline">Gifts</Link>
+        </li>
+        <li>
+          <Link href="/admin/special" className="text-blue-600 hover:underline">Special</Link>
+        </li>
+        <li>
           <Link href="/admin/recommendations" className="text-blue-600 hover:underline">Recommendations</Link>
         </li>
       </ul>
