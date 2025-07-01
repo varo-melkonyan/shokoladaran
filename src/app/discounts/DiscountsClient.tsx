@@ -28,7 +28,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
-      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">Disounts</h1>
+      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">Discounts</h1>
       <div className="flex flex-wrap gap-4 mb-8">
         <select
           className="border p-2 rounded"
