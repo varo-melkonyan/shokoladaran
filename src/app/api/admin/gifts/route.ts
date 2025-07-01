@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import Product from "@/models/Product";
-import Gift from "@/models/Gifts";
+import Gifts from "@/models/Gifts";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -11,35 +10,29 @@ async function connectDB() {
   }
 }
 
-// GET all gifts (products with collectionType: "Gift")
+// GET all gifts
 export async function GET() {
   await connectDB();
-  const products = await Product.find({ collectionType: "Gift" }).sort({ order: 1 }).lean();
-  const plainProducts = products.map((p: any) => ({
-    ...p,
-    _id: p._id.toString(),
+  const gifts = await Gifts.find().sort({ order: 1 }).lean();
+  const plainGifts = gifts.map((g: any) => ({
+    ...g,
+    _id: g._id.toString(),
   }));
-  return NextResponse.json(plainProducts);
+  return NextResponse.json(plainGifts);
 }
 
-// POST a new gift (ensure collectionType is "Gift")
+// POST a new gift
 export async function POST(req: NextRequest) {
   await connectDB();
   const body = await req.json();
 
   // Validate required fields
-  if (!body.name || !body.price || !body.weight || !body.brand) {
+  if (!body.name || !body.price || !body.weight || !body.brand || !body.collectionType || !body.status) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
-  // Force collectionType to "Gift"
-  const created = await Product.create({ ...body, collectionType: "Gift" });
-  const plain = { ...created.toObject(), _id: created._id.toString() };
-
-  // Create a corresponding Gift document
-  await Gift.create({ productId: created._id });
-
-  return NextResponse.json(plain, { status: 201 });
+  const createdGift = await Gifts.create(body);
+  return NextResponse.json(createdGift, { status: 201 });
 }
 
 // PUT for reordering gifts (optional, if you use order)
@@ -50,8 +43,8 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Invalid data" }, { status: 400 });
   }
   for (let i = 0; i < gifts.length; i++) {
-    const p = gifts[i];
-    await Product.findByIdAndUpdate(p._id, { order: i });
+    const g = gifts[i];
+    await Gifts.findByIdAndUpdate(g._id, { order: i });
   }
   return NextResponse.json({ success: true });
 }
@@ -64,7 +57,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
   }
-  await Product.findByIdAndDelete(id);
-  await Gift.findOneAndDelete({ productId: id }); // Delete the corresponding Gift document
+  await Gifts.findByIdAndDelete(id);
   return NextResponse.json({ success: true });
 }
