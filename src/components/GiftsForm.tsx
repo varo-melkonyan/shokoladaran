@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Product } from "@/types/product";
 
 interface Props {
-  onAdd: (newGift: Product) => void;
+  onAdd: (newGift: Omit<Product, "_id">) => void;
   initialData: Product | null;
   brands: { _id: string; name: string }[];
   products: Product[];
@@ -32,7 +32,7 @@ export default function GiftsForm({
       setDiscount(initialData.discount?.toString() || "");
       setBrand(initialData.brand || "");
       setWeight(initialData.weight || "");
-      setStatus((initialData.status as "in_stock" | "out_of_stock" | "pre_order") || "in_stock");
+      setStatus(initialData.status || "in_stock");
       setReadyAfter(initialData.readyAfter || "");
       setImage(initialData.image || "");
       setImageFile(null);
@@ -79,8 +79,7 @@ export default function GiftsForm({
       setImage(imageUrl);
     }
 
-    const newGift: Product = {
-      _id: "", // Will be set by backend
+    const newGift = {
       name,
       price: Number(price),
       weight,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import Product from "@/models/Product"; // Use your Product model
+import Product from "@/models/Product";
+import Gift from "@/models/Gifts";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -25,9 +26,19 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   await connectDB();
   const body = await req.json();
+
+  // Validate required fields
+  if (!body.name || !body.price || !body.weight || !body.brand) {
+    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+
   // Force collectionType to "Gift"
   const created = await Product.create({ ...body, collectionType: "Gift" });
   const plain = { ...created.toObject(), _id: created._id.toString() };
+
+  // Create a corresponding Gift document
+  await Gift.create({ productId: created._id });
+
   return NextResponse.json(plain, { status: 201 });
 }
 
@@ -54,5 +65,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Missing id" }, { status: 400 });
   }
   await Product.findByIdAndDelete(id);
+  await Gift.findOneAndDelete({ productId: id }); // Delete the corresponding Gift document
   return NextResponse.json({ success: true });
 }
