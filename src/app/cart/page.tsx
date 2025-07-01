@@ -44,7 +44,6 @@ export default function CartPage() {
       ) : (
         <div className="space-y-6">
           {cart.map((item, idx) => {
-            console.log(item.status); // <-- This will print for each item
             return (
               <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
                 {item.image && (
