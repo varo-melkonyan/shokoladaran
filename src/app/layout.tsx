@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div>
               <h3 className="text-lg font-bold text-chocolate mb-3">Shokoladaran</h3>
               <p>
-                Your trusted destination for handcrafted chocolate brands,
+                Your trusted destination for handcrafted and imported international chocolate brands,
                 connecting lovers of sweets to the best artisans.
               </p>
             </div>
