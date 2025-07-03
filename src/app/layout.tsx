@@ -31,7 +31,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             </div>
             <div className="rounded-xl flex flex-col items-start">
               <h3 className="text-lg font-bold text-chocolate mb-2">Delivery & Pickup</h3>
-              <h4 className="text-md font-semibold text-chocolate mb-2">Delivery price</h4>
               <div className="grid grid-cols-4">
                 <img src="https://static.4u.am/origin/icon/13.png?v=1605895937" alt="Visa" className="bg-gray-100 rounded-lg p-2 h-10 w-auto" />
                 <img src="https://static.4u.am/origin/icon/14.png?v=1605896065" alt="Mastercard" className="bg-gray-100 rounded-lg p-2 h-10 w-auto" />
