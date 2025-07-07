@@ -24,6 +24,8 @@ export default function SpecialsForm({
   const [image, setImage] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [error, setError] = useState("");
+  const [stockCount, setStockCount] = useState(0);
+  const [quantityType, setQuantityType] = useState<"pieces" | "kg">("pieces");
 
   useEffect(() => {
     if (initialData) {
@@ -36,6 +38,8 @@ export default function SpecialsForm({
       setReadyAfter(initialData.readyAfter || "");
       setImage(initialData.image || "");
       setImageFile(null);
+      setStockCount(initialData.stockCount ?? 0);
+      setQuantityType((initialData.quantityType as "pieces" | "kg") ?? "pieces");
     } else {
       setName("");
       setPrice("");
@@ -46,6 +50,8 @@ export default function SpecialsForm({
       setReadyAfter("");
       setImage("");
       setImageFile(null);
+      setStockCount(0);
+      setQuantityType("pieces");
     }
   }, [initialData]);
 
@@ -89,6 +95,8 @@ export default function SpecialsForm({
       status,
       readyAfter: status === "pre_order" ? readyAfter : "",
       image: imageUrl,
+      stockCount,
+      quantityType,
     };
     onAdd(newSpecial);
     setName("");
@@ -100,6 +108,8 @@ export default function SpecialsForm({
     setReadyAfter("");
     setImage("");
     setImageFile(null);
+    setStockCount(0);
+    setQuantityType("pieces");
     setError("");
   }
 
@@ -179,6 +189,21 @@ export default function SpecialsForm({
       {image && (
         <img src={image} alt="Preview" className="w-32 h-32 object-cover rounded" />
       )}
+      <input
+        value={stockCount}
+        onChange={e => setStockCount(Number(e.target.value))}
+        placeholder="Stock Count"
+        type="number"
+        className="border p-2 rounded"
+      />
+      <select
+        value={quantityType}
+        onChange={e => setQuantityType(e.target.value as "pieces" | "kg")}
+        className="border p-2 rounded"
+      >
+        <option value="pieces">Pieces</option>
+        <option value="kg">Kilograms</option>
+      </select>
       {error && <div className="text-red-500">{error}</div>}
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">
         {initialData ? "Save Special" : "Add Special"}
