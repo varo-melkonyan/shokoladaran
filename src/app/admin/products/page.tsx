@@ -38,6 +38,8 @@ export default function AdminProducts() {
   });
   const [error, setError] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
+  const [stockCount, setStockCount] = useState(0);
+  const [quantityType, setQuantityType] = useState<"pieces" | "kg">("pieces");
 
   // Fetch products, brands, and collection types
   useEffect(() => {
@@ -121,6 +123,8 @@ export default function AdminProducts() {
       carbohydrates: product.nutritionFacts?.carbohydrates || "",
       protein: product.nutritionFacts?.protein || "",
     });
+    setStockCount(product.stockCount || 0);
+    setQuantityType(product.quantityType || "pieces");
     setError("");
   }
 
@@ -152,6 +156,8 @@ export default function AdminProducts() {
       carbohydrates: "",
       protein: "",
     });
+    setStockCount(0);
+    setQuantityType("pieces");
     setEditId(null);
     setError("");
   }
@@ -189,6 +195,8 @@ export default function AdminProducts() {
       shelfLife,
       nutritionFacts: { ...nutritionFacts },
       link,
+      stockCount,
+      quantityType,
     };
 
     if (editId) {
@@ -287,6 +295,21 @@ export default function AdminProducts() {
           <input name="carbohydrates" value={nutritionFacts.carbohydrates} onChange={e => setNutritionFacts({ ...nutritionFacts, carbohydrates: e.target.value })} placeholder="Carbohydrates (g)" className="border rounded px-2 py-1" />
           <input name="protein" value={nutritionFacts.protein} onChange={e => setNutritionFacts({ ...nutritionFacts, protein: e.target.value })} placeholder="Protein (g)" className="border rounded px-2 py-1" />
         </div>
+        <input
+          value={stockCount}
+          onChange={e => setStockCount(Number(e.target.value))}
+          placeholder="Stock Count"
+          type="number"
+          className="border p-2 rounded"
+        />
+        <select
+          value={quantityType}
+          onChange={e => setQuantityType(e.target.value as "pieces" | "kg")}
+          className="border p-2 rounded"
+        >
+          <option value="pieces">Pieces</option>
+          <option value="kg">Kilograms</option>
+        </select>
         {error && <div className="text-red-500">{error}</div>}
         <div className="flex gap-2">
           <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">

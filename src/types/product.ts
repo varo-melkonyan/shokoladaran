@@ -14,6 +14,8 @@ export type Product = {
   collectionType: string;
   brand: string;
   status: "in_stock" | "out_of_stock" | "pre_order";
+  stockCount,
+  quantityType,
   readyAfter?: string; // e.g. "2 days"
   image?: string;
   ingredients?: string[];
