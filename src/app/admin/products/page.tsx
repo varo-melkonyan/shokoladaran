@@ -60,6 +60,8 @@ export default function AdminProducts() {
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
+        stockCount: p.stockCount,
+        quantityType: p.quantityType || "pieces",
       }))));
     fetch("/api/admin/brands")
       .then(res => res.json())
