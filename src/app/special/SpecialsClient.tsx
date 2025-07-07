@@ -15,12 +15,12 @@ type Special = {
   collectionType?: string;
   link?: string;
   status?: string;
-  weight?: number; // Add this if some specials are grams-based
+  weight?: number;
 };
 
 export default function SpecialsClient() {
   const [specials, setSpecials] = useState<Special[]>([]);
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
 
   useEffect(() => {
     fetch("/api/admin/special")
@@ -33,12 +33,10 @@ export default function SpecialsClient() {
     [specials]
   );
 
-  // Filter and sort state
   const [brandFilter, setBrandFilter] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("");
   const [sortBy, setSortBy] = useState("price-asc");
 
-  // Filter and sort logic
   let filtered = specials.filter(
     g =>
       (!brandFilter || g.brand === brandFilter) &&
@@ -104,6 +102,7 @@ export default function SpecialsClient() {
                       product={item}
                       cartItem={cartItem}
                       addToCart={addToCart}
+                      removeFromCart={removeFromCart}
                     />
                 </div>
               </div>

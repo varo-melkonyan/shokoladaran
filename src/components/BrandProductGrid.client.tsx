@@ -5,7 +5,7 @@ import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 
 export default function BrandProductGrid({ products }: { products: Product[] }) {
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
 
   if (!products || products.length === 0) {
     return <div className="text-gray-500 mt-12">No products found for this brand.</div>;
@@ -100,6 +100,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
                   product={product}
                   cartItem={cartItem}
                   addToCart={addToCart}
+                  removeFromCart={removeFromCart}
                 />
               )}
             </div>

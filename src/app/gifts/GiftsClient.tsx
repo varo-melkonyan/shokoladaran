@@ -20,7 +20,7 @@ type Gift = {
 
 export default function GiftsClient() {
   const [gifts, setGifts] = useState<Gift[]>([]);
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
 
   useEffect(() => {
     fetch("/api/admin/gifts")
@@ -101,6 +101,7 @@ export default function GiftsClient() {
                       product={item}
                       cartItem={cartItem}
                       addToCart={addToCart}
+                      removeFromCart={removeFromCart}
                     />
                 </div>
               </div>

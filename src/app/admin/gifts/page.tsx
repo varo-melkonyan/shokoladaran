@@ -33,6 +33,8 @@ export default function AdminGifts() {
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
+        stockCount: p.stockCount,
+        quantityType: p.quantityType || "pieces",
       }))));
     fetch("/api/admin/gifts").then(res => res.json()).then(setGifts);
   }, []);
@@ -119,6 +121,11 @@ export default function AdminGifts() {
                 className="text-blue-500 disabled:opacity-50"
                 name="Move Down"
               >↓</button>
+              <button
+                onClick={() => setEditIndex(idx)}
+                className="text-green-600"
+                name="Edit"
+              >Edit</button>
               <button
                 onClick={() => handleDelete(gift._id)}
                 className="text-red-500"

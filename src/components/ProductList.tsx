@@ -14,7 +14,7 @@ export default function ProductList({
   onAddToCart?: (product: Product) => void;
 }) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { cart, addToCart } = useCart();
+  const { cart, removeFromCart, addToCart } = useCart();
 
   if (!products.length) {
     return <div className="text-center text-gray-500 mt-8">No products found.</div>;
@@ -119,6 +119,7 @@ export default function ProductList({
                       product={product}
                       cartItem={cartItem}
                       addToCart={addToCart}
+                      removeFromCart={removeFromCart}
                     />
                   )}
                 </div>

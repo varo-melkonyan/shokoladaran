@@ -11,7 +11,7 @@ export default function ProductClient({
   product: any;
   recommendations: any[];
 }) {
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
 
   // Find this product in the cart
   const cartItem = cart.find((item) => item._id === product._id);
@@ -67,6 +67,7 @@ export default function ProductClient({
                   product={product}
                   cartItem={cartItem}
                   addToCart={addToCart}
+                  removeFromCart={removeFromCart}
                 />
               )}
             </div>

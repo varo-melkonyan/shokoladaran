@@ -13,7 +13,7 @@ type CollectionType = {
 };
 
 export default function CollectionClientPage({ slug }: { slug: string }) {
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
+        quantityType: p.quantityType || (p.weight ? "kg" : "piece"),
       }));
 
       const collections = collectionsRaw.map((c: any) => ({
@@ -166,20 +167,19 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                 {/* Cart controls */}
                 <div className="mt-2">
                   {product.quantityType === "kg" ? (
-                      <KgCartControl
-                        product={product}
-                        cartItem={cartItem}
-                        addToCart={addToCart}
-                      />
-                    )
-                    : (
-                      <PieceCartControl
-                        product={product}
-                        cartItem={cartItem}
-                        addToCart={addToCart}
-                      />
-                    )
-                  }
+                    <KgCartControl
+                      product={product}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
+                  ) : (
+                    <PieceCartControl
+                      product={product}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                      removeFromCart={removeFromCart}
+                    />
+                  )}
                 </div>
               </div>
             );

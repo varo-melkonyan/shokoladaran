@@ -5,18 +5,15 @@ import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
-  const { addToCart, cart } = useCart();
+  const { addToCart, removeFromCart, cart } = useCart();
 
-  // Get unique brands and collections for filters
   const brands = useMemo(() => Array.from(new Set(discounted.map(p => p.brand)).values()).filter(Boolean), [discounted]);
   const collections = useMemo(() => Array.from(new Set(discounted.map(p => p.collectionType)).values()).filter(Boolean), [discounted]);
 
-  // State for filters and sort
   const [brandFilter, setBrandFilter] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("");
   const [sortBy, setSortBy] = useState("price-asc");
 
-  // Filter and sort logic
   let filtered = discounted.filter(
     p =>
       (!brandFilter || p.brand === brandFilter) &&
@@ -93,6 +90,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
                       product={item}
                       cartItem={cartItem}
                       addToCart={addToCart}
+                      removeFromCart={removeFromCart}
                     />
                   )}
                 </div>

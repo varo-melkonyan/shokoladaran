@@ -4,7 +4,7 @@ import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 
 export default function SectionGrid({ title, items }: { title: string; items: any[] }) {
-  const { cart, addToCart } = useCart(); 
+  const { cart, removeFromCart, addToCart } = useCart(); 
   return (
     <section className="py-6 bg-white">
       <div className="max-w-6xl mx-auto px-4">
@@ -95,6 +95,7 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                         product={item}
                         cartItem={cartItem}
                         addToCart={addToCart}
+                        removeFromCart={removeFromCart}
                       />
                     )}
                   </div>
