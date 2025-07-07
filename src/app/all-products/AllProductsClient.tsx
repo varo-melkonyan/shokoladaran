@@ -15,6 +15,8 @@ type Product = {
   ingredients?: string[];
   shelfLife?: string;
   nutritionFacts?: { [key: string]: string };
+  stockCount?: number;
+  quantityType?: string;
 };
 
 function getUnique<T>(arr: T[]): T[] {

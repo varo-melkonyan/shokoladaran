@@ -33,6 +33,8 @@ export default function AdminSpecials() {
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
+        stockCount: p.stockCount,
+        quantityType: p.quantityType || "pieces",
       }))));
     fetch("/api/admin/special").then(res => res.json()).then(setSpecials);
   }, []);
@@ -119,6 +121,11 @@ export default function AdminSpecials() {
                 className="text-blue-500 disabled:opacity-50"
                 name="Move Down"
               >↓</button>
+              <button
+                onClick={() => setEditIndex(idx)}
+                className="text-green-600"
+                name="Edit"
+              >Edit</button>
               <button
                 onClick={() => handleDelete(special._id)}
                 className="text-red-500"
