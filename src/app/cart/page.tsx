@@ -13,10 +13,14 @@ export default function CartPage() {
     phone: "",
   });
 
-  const total = cart.reduce(
-    (sum, item) => sum + (item.discount ?? item.price ?? 0) * item.quantity,
-    0
-  );
+  // Calculate total for both grams and quantity products
+  const total = cart.reduce((sum, item) => {
+    if (typeof item.grams === "number") {
+      const unitPrice = item.discount ?? item.price ?? 0;
+      return sum + Math.round((unitPrice / 100) * item.grams);
+    }
+    return sum + ((item.discount ?? item.price ?? 0) * item.quantity);
+  }, 0);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,6 +40,7 @@ export default function CartPage() {
       alert("Payment error. Please try again.");
     }
   };
+
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-8">Your Cart</h1>
@@ -44,6 +49,13 @@ export default function CartPage() {
       ) : (
         <div className="space-y-6">
           {cart.map((item, idx) => {
+            // Calculate item price
+            let itemPrice = 0;
+            if (typeof item.grams === "number") {
+              itemPrice = Math.round(((item.discount ?? item.price ?? 0) / 100) * item.grams);
+            } else {
+              itemPrice = (item.discount ?? item.price ?? 0) * item.quantity;
+            }
             return (
               <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
                 {item.image && (
@@ -57,6 +69,11 @@ export default function CartPage() {
                       Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
                     </div>
                   )}
+                  <div className="text-xs text-gray-500 mt-1">
+                    {typeof item.grams === "number"
+                      ? `Grams: ${item.grams}g`
+                      : `Qty: ${item.quantity}`}
+                  </div>
                   <div className="flex gap-2 mt-2">
                     <button
                       onClick={() => removeFromCart(item._id)}
@@ -69,15 +86,17 @@ export default function CartPage() {
                 {item.discount ? (
                   <div className="text-right">
                     <div className="text-gray-700 mb-1 line-through">
-                      {item.price} AMD
+                      {typeof item.grams === "number"
+                        ? Math.round(((item.price ?? 0) / 100) * item.grams) + " AMD"
+                        : (item.price ?? 0) * item.quantity + " AMD"}
                     </div>
                     <div className="text-chocolate font-bold">
-                      {item.discount} AMD
+                      {itemPrice} AMD
                     </div>
                   </div>
                 ) : (
                   <div className="text-right font-bold text-xl mt-6">
-                    {item.price} AMD
+                    {itemPrice} AMD
                   </div>
                 )}
               </div>

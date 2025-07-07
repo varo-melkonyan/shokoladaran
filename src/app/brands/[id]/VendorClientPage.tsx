@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
-import clsx from "clsx"; // If you want to use conditional classnames (optional)
+import clsx from "clsx";
+import KgCartControl from "@/components/KgCartControl";
+import PieceCartControl from "@/components/PieceCartControl";
 
 type Brand = {
   _id: string;
@@ -20,7 +22,7 @@ type CollectionType = {
 };
 
 export default function VendorClientPage({ slug }: { slug: string }) {
-  const { addToCart, cart } = useCart(); // <-- get cart from context
+  const { addToCart, cart, setCart } = useCart();
 
   const [brand, setBrand] = useState<Brand | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
@@ -58,6 +60,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
         ingredients: p.ingredients,
         shelfLife: p.shelfLife,
         nutritionFacts: p.nutritionFacts,
+        quantityType: p.quantityType || "pieces",
       }));
 
       const collections = collectionsRaw.map((c: any) => ({
@@ -80,6 +83,10 @@ export default function VendorClientPage({ slug }: { slug: string }) {
       setLoading(false);
     });
   }, [slug]);
+
+  function removeFromCart(productId: string) {
+    setCart(cart => cart.filter(item => item._id !== productId));
+  }
 
   if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
   if (!brand) return notFound();
@@ -155,26 +162,35 @@ export default function VendorClientPage({ slug }: { slug: string }) {
         {filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {filteredProducts.map((product) => {
-              // Find quantity in cart
               const cartItem = cart.find((item) => item._id === product._id);
               const quantity = cartItem?.quantity ?? 0;
 
               return (
-                <div key={product._id} className="bg-white rounded-lg shadow p-4 relative">
+                <div
+                  key={product._id}
+                  className="bg-white rounded-2xl shadow-lg p-4 relative transition-transform hover:scale-105 hover:shadow-2xl flex flex-col"
+                >
                   <div className="relative">
                     {product.image && (
                       <a href={`/product/${product._id}`}>
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
+                          className="w-full h-40 object-cover rounded-xl mb-4"
                         />
                       </a>
                     )}
-                    {/* Info Button in top-right */}
+                    {quantity > 0 && (
+                      <span className="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold shadow">
+                        {product.quantityType === "kg" && cartItem?.grams
+                          ? `${cartItem.grams}g`
+                          : quantity}
+                      </span>
+                    )}
+                    {/* Info Button */}
                     <div className="absolute top-2 right-2 group">
                       <button
-                        className="bg-white/90 hover:bg-chocolate text-chocolate hover:text-white rounded-full w-8 h-8 flex items-center justify-center shadow transition-colors duration-200 border border-gray-200"
+                        className="bg-white/90 hover:bg-chocolate text-chocolate hover:text-white rounded-full w-8 h-8 flex items-center justify-center shadow border border-gray-200"
                         type="button"
                         aria-label="Product info"
                       >
@@ -184,8 +200,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                           <rect x="9.25" y="5" width="1.5" height="1.5" rx="0.75" fill="currentColor"/>
                         </svg>
                       </button>
-                      {/* Tooltip */}
-                      <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg p-4 text-xs text-gray-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
+                      <div className="absolute right-0 mt-2 w-64 bg-white border border-chocolate rounded-lg shadow-lg p-4 text-xs text-gray-700 z-50 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200">
                         {product.name && (
                           <div className="mb-1"><b>Name:</b> {product.name}</div>
                         )}
@@ -232,49 +247,39 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mb-1 mt-2">
-                    <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-                      {product.name}
-                    </h2>
-                  </div>
-                  <p className="text-sm text-gray-500">
-                    {product.discount ? (
-                      <>
-                        <span className="line-through mr-2">{product.price} AMD</span>
-                        <span className="text-red-600">{product.discount} AMD</span>
-                      </>
-                    ) : (
-                      <>{product.price} AMD</>
-                    )}
-                    {" • "}
-                    {product.weight} g
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      onClick={() => addToCart({
-                        _id: product._id,
-                        name: product.name,
-                        price: product.price,
-                        discount: product.discount,
-                        image: product.image,
-                        status: product.status || "in_stock",
-                        readyAfter: product.readyAfter,
-                      })}
-                      className="bg-chocolate text-white px-3 py-1 rounded text-xs flex items-center gap-1 relative"
-                    >
-                      🛒 Add to Cart
-                      {quantity > 0 && (
-                        <span
-                          className={clsx(
-                            "ml-2 px-2 py-0.5 rounded-full text-xs font-bold",
-                            quantity > 0 ? "bg-green-500" : "bg-red-500"
-                          )}
-                        >
-                          {quantity}
-                        </span>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <h2 className="font-semibold text-chocolate text-lg mb-1">{product.name}</h2>
+                      <p className="text-sm text-gray-500 mb-1">
+                        {product.discount ? (
+                          <>
+                            <span className="line-through mr-2">{product.price} AMD</span>
+                            <span className="text-red-600">{product.discount} AMD</span>
+                          </>
+                        ) : (
+                          <>{product.price} AMD</>
+                        )}
+                        {" • "}
+                        {product.weight} g
+                      </p>
+                      <p className="text-xs text-gray-400">{product.collectionType}</p>
+                    </div>
+                    <div className="mt-4">
+                      {product.quantityType === "kg" ? (
+                        <KgCartControl
+                          product={product}
+                          cartItem={cartItem}
+                          addToCart={addToCart}
+                        />
+                      ) : (
+                        <PieceCartControl
+                          product={product}
+                          cartItem={cartItem}
+                          addToCart={addToCart}
+                          removeFromCart={removeFromCart}
+                        />
                       )}
-                    </button>
+                    </div>
                   </div>
                 </div>
               );

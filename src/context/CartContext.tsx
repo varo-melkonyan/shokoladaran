@@ -7,15 +7,17 @@ export type CartItem = {
   image?: string;
   price?: number;
   status: string;
-  readyAfter?: string; // e.g., "30 minutes"
+  readyAfter?: string;
   discount?: number;
   quantity: number;
+  grams?: number;
 };
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void;
+  addToCart: (item: Omit<CartItem, "quantity"> & { quantity?: number; grams?: number }) => void;
   removeFromCart: (id: string) => void;
+  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -34,16 +36,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (item: Omit<CartItem, "quantity"> & { quantity?: number }) => {
+  const addToCart = (item: Omit<CartItem, "quantity"> & { quantity?: number; grams?: number }) => {
     setCart((prev) => {
       const existing = prev.find((i) => i._id === item._id);
+
+      // If grams is provided, handle grams-based products
+      if (typeof item.grams === "number") {
+        // Remove from cart if grams is 0
+        if (item.grams === 0) {
+          return prev.filter((i) => i._id !== item._id);
+        }
+        if (existing) {
+          return prev.map((i) =>
+            i._id === item._id
+              ? { ...i, grams: item.grams, quantity: 1 }
+              : i
+          );
+        }
+        return [...prev, { ...item, grams: item.grams, quantity: 1 }];
+      }
+
+      // Otherwise, handle quantity-based products (pieces)
       const addQty = item.quantity ?? 1;
       if (existing) {
+        const newQty = existing.quantity + addQty;
+        // Remove from cart if quantity is 0 or less
+        if (newQty <= 0) {
+          return prev.filter((i) => i._id !== item._id);
+        }
         return prev.map((i) =>
-          i._id === item._id ? { ...i, quantity: i.quantity + addQty } : i
+          i._id === item._id
+            ? { ...i, quantity: newQty, grams: undefined }
+            : i
         );
       }
-      return [...prev, { ...item, quantity: addQty }];
+      // Only add if quantity is positive
+      if (addQty > 0) {
+        return [...prev, { ...item, quantity: addQty, grams: undefined }];
+      }
+      return prev;
     });
   };
 
@@ -52,7 +83,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, setCart }}>
       {children}
     </CartContext.Provider>
   );

@@ -3,16 +3,20 @@ import { useCart } from "@/context/CartContext";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
-export default function CartWidget() {
+// Accept products as a prop
+export default function CartWidget({ products = [] }: { products?: any[] }) {
   const { cart, removeFromCart } = useCart();
   const [open, setOpen] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
 
   // Use discount if available, otherwise price
-  const total = cart.reduce(
-    (sum, item) => sum + ((item.discount ?? item.price ?? 0) * item.quantity),
-    0
-  );
+  const total = cart.reduce((sum, item) => {
+    if (typeof item.grams === "number") {
+      const unitPrice = item.discount ?? item.price ?? 0;
+      return sum + Math.round((unitPrice / 100) * item.grams);
+    }
+    return sum + ((item.discount ?? item.price ?? 0) * item.quantity);
+  }, 0);
 
   // Close on outside click
   useEffect(() => {
@@ -60,32 +64,43 @@ export default function CartWidget() {
           ) : (
             <>
               <ul className="divide-y divide-gray-100 mb-4">
-                {cart.map((item, idx) => (
-                  <li key={item._id + "-" + idx} className="py-2 flex justify-between items-center">
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">{item.name}</p>
-                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="text-right">
-                      {item.discount ? (
-                        <p className="text-sm text-chocolate font-semibold">
-                          <span className="line-through text-gray-400 mr-1">{item.price} ֏</span>
-                          <span className="text-red-600 font-extrabold">{item.discount * item.quantity} ֏</span>
+                {cart.map((item, idx) => {
+                  const product = products.find((p) => p._id === item._id);
+                  return (
+                    <li key={item._id + "-" + idx} className="py-2 flex justify-between items-center">
+                      <div>
+                        <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                        <p className="text-xs text-gray-500">
+                          {typeof item.grams === "number"
+                            ? `Grams: ${item.grams}g`
+                            : `Qty: ${item.quantity}`}
                         </p>
-                      ) : (
-                        <p className="text-sm text-chocolate font-semibold">
-                          {item.price && (item.price * item.quantity)} ֏
-                        </p>
-                      )}
-                      <button
-                        onClick={() => removeFromCart(item._id)}
-                        className="text-xs text-red-500 hover:underline"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                      </div>
+                      <div className="text-right">
+                        {typeof item.grams === "number" ? (
+                          <p className="text-sm text-chocolate font-semibold">
+                            {item.discount
+                              ? Math.round((item.discount / 100) * item.grams)
+                              : Math.round(((item.price ?? 0) / 100) * item.grams)
+                            } ֏
+                          </p>
+                        ) : (
+                          <p className="text-sm text-chocolate font-semibold text-red-600">
+                            {product && !product.weight
+                              ? "No weight"
+                              : item.price && (item.price * item.quantity) + " ֏"}
+                          </p>
+                        )}
+                        <button
+                          onClick={() => removeFromCart(item._id)}
+                          className="text-xs text-red-500 hover:underline"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
 
               <div className="flex justify-between items-center mb-4">
