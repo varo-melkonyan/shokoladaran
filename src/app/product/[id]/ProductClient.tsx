@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
+import KgCartControl from "@/components/KgCartControl";
+import PieceCartControl from "@/components/PieceCartControl";
 
 export default function ProductClient({
   product,
@@ -10,12 +11,10 @@ export default function ProductClient({
   product: any;
   recommendations: any[];
 }) {
-  const [quantity, setQuantity] = useState(1);
   const { addToCart, cart } = useCart();
 
   // Find this product in the cart
   const cartItem = cart.find((item) => item._id === product._id);
-  const cartQuantity = cartItem?.quantity ?? 0;
 
   return (
     <div>
@@ -55,42 +54,23 @@ export default function ProductClient({
                 <span className="text-gray-700">{product.collectionType}</span>
               </div>
             </div>
-            {/* Quantity Selector */}
-            <div className="flex items-center gap-2 mb-6">
-              <span className="font-semibold">Quantity:</span>
-              <button
-                className="w-8 h-8 rounded bg-gray-200 text-chocolate font-bold text-xl hover:bg-chocolate hover:text-white transition"
-                onClick={() => setQuantity(q => Math.max(1, q - 1))}
-              >-</button>
-              <span className="px-3">{quantity}</span>
-              <button
-                className="w-8 h-8 rounded bg-gray-200 text-chocolate font-bold text-xl hover:bg-chocolate hover:text-white transition"
-                onClick={() => setQuantity(q => q + 1)}
-              >+</button>
+            {/* Cart Control */}
+            <div className="mt-6">
+              {product.weight ? (
+                <KgCartControl
+                  product={product}
+                  cartItem={cartItem}
+                  addToCart={addToCart}
+                />
+              ) : (
+                <PieceCartControl
+                  product={product}
+                  cartItem={cartItem}
+                  addToCart={addToCart}
+                />
+              )}
             </div>
           </div>
-          <button
-            className="w-full bg-chocolate text-white py-4 rounded-xl text-lg font-bold shadow hover:bg-brown-700 transition flex items-center justify-center relative"
-            onClick={() =>
-              addToCart({
-                _id: product._id,
-                name: product.name,
-                price: product.price,
-                discount: product.discount,
-                image: product.image,
-                quantity,
-                status: product.status || "in_stock",
-                readyAfter: product.readyAfter, // e.g., "30 minutes"
-              })
-            }
-          >
-            🛒 Add to Cart
-            {cartQuantity > 0 && (
-              <span className="ml-3 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
-                {cartQuantity}
-              </span>
-            )}
-          </button>
         </div>
       </div>
       {/* Recommendations */}

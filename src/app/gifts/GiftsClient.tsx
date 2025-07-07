@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import PieceCartControl from "@/components/PieceCartControl";
+import KgCartControl from "@/components/KgCartControl";
 
 type Gift = {
   _id: string;
@@ -13,6 +15,7 @@ type Gift = {
   collectionType?: string;
   link?: string;
   status?: string;
+  weight?: number; // Add this if some gifts are grams-based
 };
 
 export default function GiftsClient() {
@@ -32,14 +35,11 @@ export default function GiftsClient() {
 
   // Filter and sort state
   const [brandFilter, setBrandFilter] = useState("");
-  const [collectionFilter, setCollectionFilter] = useState("");
   const [sortBy, setSortBy] = useState("price-asc");
 
   // Filter and sort logic
   let filtered = gifts.filter(
-    g =>
-      (!brandFilter || g.brand === brandFilter) &&
-      (!collectionFilter || g.collectionType === collectionFilter)
+    g => (!brandFilter || g.brand === brandFilter)
   );
 
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
@@ -75,7 +75,6 @@ export default function GiftsClient() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {filtered.map((item) => {
           const cartItem = cart.find((ci: any) => ci._id === item._id);
-          const quantity = cartItem?.quantity ?? 0;
 
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
@@ -96,17 +95,22 @@ export default function GiftsClient() {
                     <span className="text-chocolate font-bold">{item.price} AMD</span>
                   )}
                 </div>
-                <button
-                  className="mt-4 bg-chocolate text-white px-4 py-2 rounded hover:bg-brown-700 flex items-center gap-2 relative"
-                  onClick={() => addToCart({ ...item, status: item.status ?? "in_stock" })}
-                >
-                  🛒 Add to Cart
-                  {quantity > 0 && (
-                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
-                      {quantity}
-                    </span>
+                {/* Cart controls */}
+                <div className="mt-4">
+                  {item.weight ? (
+                    <KgCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
+                  ) : (
+                    <PieceCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
                   )}
-                </button>
+                </div>
               </div>
             </div>
           );

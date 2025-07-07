@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
+import KgCartControl from "@/components/KgCartControl";
+import PieceCartControl from "@/components/PieceCartControl";
 
 type CollectionType = {
   _id: string;
@@ -11,7 +13,7 @@ type CollectionType = {
 };
 
 export default function CollectionClientPage({ slug }: { slug: string }) {
-  const { addToCart, cart } = useCart(); // <-- get cart
+  const { addToCart, cart } = useCart();
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,6 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {products.map((product) => {
             const cartItem = cart.find((item) => item._id === product._id);
-            const quantity = cartItem?.quantity ?? 0;
 
             return (
               <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
@@ -162,17 +163,25 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                   )}
                 </div>
                 <p className="text-sm text-gray-500">{product.weight} g</p>
-                <button
-                  className="mt-2 bg-chocolate text-white px-4 py-2 rounded flex items-center gap-2 relative"
-                  onClick={() => addToCart(product)}
-                >
-                  🛒 Add to Cart
-                  {quantity > 0 && (
-                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
-                      {quantity}
-                    </span>
-                  )}
-                </button>
+                {/* Cart controls */}
+                <div className="mt-2">
+                  {product.weight
+                    ? (
+                      <KgCartControl
+                        product={product}
+                        cartItem={cartItem}
+                        addToCart={addToCart}
+                      />
+                    )
+                    : (
+                      <PieceCartControl
+                        product={product}
+                        cartItem={cartItem}
+                        addToCart={addToCart}
+                      />
+                    )
+                  }
+                </div>
               </div>
             );
           })}

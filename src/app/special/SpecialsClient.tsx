@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import PieceCartControl from "@/components/PieceCartControl";
+import KgCartControl from "@/components/KgCartControl";
 
 type Special = {
   _id: string;
@@ -13,6 +15,7 @@ type Special = {
   collectionType?: string;
   link?: string;
   status?: string;
+  weight?: number; // Add this if some specials are grams-based
 };
 
 export default function SpecialsClient() {
@@ -75,7 +78,6 @@ export default function SpecialsClient() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {filtered.map((item) => {
           const cartItem = cart.find((ci: any) => ci._id === item._id);
-          const quantity = cartItem?.quantity ?? 0;
 
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
@@ -96,17 +98,22 @@ export default function SpecialsClient() {
                     <span className="text-chocolate font-bold">{item.price} AMD</span>
                   )}
                 </div>
-                <button
-                  className="mt-4 bg-chocolate text-white px-4 py-2 rounded hover:bg-brown-700 flex items-center gap-2 relative"
-                  onClick={() => addToCart({ ...item, status: item.status ?? "in_stock" })}
-                >
-                  🛒 Add to Cart
-                  {quantity > 0 && (
-                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
-                      {quantity}
-                    </span>
+                {/* Cart controls */}
+                <div className="mt-4">
+                  {item.weight ? (
+                    <KgCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
+                  ) : (
+                    <PieceCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
                   )}
-                </button>
+                </div>
               </div>
             </div>
           );

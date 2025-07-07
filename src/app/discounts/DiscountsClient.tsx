@@ -1,9 +1,11 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
+import KgCartControl from "@/components/KgCartControl";
+import PieceCartControl from "@/components/PieceCartControl";
 
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
-  const { addToCart, cart } = useCart(); // <-- get cart
+  const { addToCart, cart } = useCart();
 
   // Get unique brands and collections for filters
   const brands = useMemo(() => Array.from(new Set(discounted.map(p => p.brand)).values()).filter(Boolean), [discounted]);
@@ -64,7 +66,6 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {filtered.map((item) => {
           const cartItem = cart.find((ci) => ci._id === item._id);
-          const quantity = cartItem?.quantity ?? 0;
 
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
@@ -79,17 +80,22 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
                   <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
                   <span className="text-red-600 font-bold">{item.discount} AMD</span>
                 </div>
-                <button
-                  className="mt-4 bg-chocolate text-white px-4 py-2 rounded hover:bg-brown-700 flex items-center gap-2 relative"
-                  onClick={() => addToCart(item)}
-                >
-                  🛒 Add to Cart
-                  {quantity > 0 && (
-                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-green-500">
-                      {quantity}
-                    </span>
+                {/* Cart controls */}
+                <div className="mt-4">
+                  {item.weight ? (
+                    <KgCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
+                  ) : (
+                    <PieceCartControl
+                      product={item}
+                      cartItem={cartItem}
+                      addToCart={addToCart}
+                    />
                   )}
-                </button>
+                </div>
               </div>
             </div>
           );
