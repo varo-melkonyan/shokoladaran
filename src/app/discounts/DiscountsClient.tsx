@@ -82,7 +82,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
                 </div>
                 {/* Cart controls */}
                 <div className="mt-4">
-                  {item.weight ? (
+                  {item.quantityType === "kg" ? (
                     <KgCartControl
                       product={item}
                       cartItem={cartItem}

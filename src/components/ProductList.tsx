@@ -108,7 +108,7 @@ export default function ProductList({
                 </h2>
                 <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
                 <div className="mt-3">
-                  {product.weight ? (
+                  {product.quantityType === "kg" ? (
                     <KgCartControl
                       product={product}
                       cartItem={cartItem}

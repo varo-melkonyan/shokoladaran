@@ -165,8 +165,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                 <p className="text-sm text-gray-500">{product.weight} g</p>
                 {/* Cart controls */}
                 <div className="mt-2">
-                  {product.weight
-                    ? (
+                  {product.quantityType === "kg" ? (
                       <KgCartControl
                         product={product}
                         cartItem={cartItem}

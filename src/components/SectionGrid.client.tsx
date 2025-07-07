@@ -84,7 +84,7 @@ export default function SectionGrid({ title, items }: { title: string; items: an
                     )}
                   </p>
                   <div className="mt-3">
-                    {item.weight ? (
+                    {item.quantityType === "kg" ? (
                       <KgCartControl
                         product={item}
                         cartItem={cartItem}

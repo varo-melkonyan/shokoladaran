@@ -100,19 +100,11 @@ export default function SpecialsClient() {
                 </div>
                 {/* Cart controls */}
                 <div className="mt-4">
-                  {item.weight ? (
-                    <KgCartControl
-                      product={item}
-                      cartItem={cartItem}
-                      addToCart={addToCart}
-                    />
-                  ) : (
                     <PieceCartControl
                       product={item}
                       cartItem={cartItem}
                       addToCart={addToCart}
                     />
-                  )}
                 </div>
               </div>
             </div>

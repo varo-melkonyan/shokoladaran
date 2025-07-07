@@ -56,7 +56,7 @@ export default function ProductClient({
             </div>
             {/* Cart Control */}
             <div className="mt-6">
-              {product.weight ? (
+              {product.quantityType === "kg" ? (
                 <KgCartControl
                   product={product}
                   cartItem={cartItem}
