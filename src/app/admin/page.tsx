@@ -32,6 +32,9 @@ export default function AdminDashboard() {
         <li>
           <Link href="/admin/recommendations" className="text-blue-600 hover:underline">Recommendations</Link>
         </li>
+        <li>
+          <Link href="/admin/ads" className="text-blue-600 hover:underline">Ads</Link>
+        </li>
       </ul>
     </div>
   );

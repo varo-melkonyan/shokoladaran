@@ -129,7 +129,11 @@ export default function AdminAds() {
             <span className="text-xs text-gray-500 ml-2">Place: {PLACES.find(p => p.value === ad.place)?.label || ad.place}</span>
             <div className="flex gap-2 ml-auto">
               <button
-                onClick={() => { setEditIndex(idx); setForm(ad); setFiles([]); }}
+                onClick={() => {
+                  setEditIndex(idx);
+                  setForm(ad);
+                  setFiles([]);
+                }}
                 className="text-green-600"
               >Edit</button>
               <button
