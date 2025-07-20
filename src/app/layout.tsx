@@ -22,18 +22,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
         </CartProvider>
         <footer className="bg-[#f8f8f8] border-t border-gray-200 mt-20 text-sm text-gray-700">
-          <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+          <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-5 gap-10">
             <div>
               <h3 className="text-lg font-bold text-chocolate mb-3">Shokoladaran</h3>
               <p>
                 Your trusted destination for handcrafted and imported international chocolate brands,
                 connecting lovers of sweets to the best artisans.
               </p>
-              {/* Add links here */}
-              <div className="mt-4 flex flex-col gap-2">
-                <Link href="/about_us" className="hover:underline text-chocolate">About Us</Link>
-                <Link href="/join_us" className="hover:underline text-chocolate">Join Us</Link>
-              </div>
             </div>
             <div className="rounded-xl flex flex-col items-start">
               <h3 className="text-lg font-bold text-chocolate mb-2">Delivery & Pickup</h3>
@@ -53,6 +48,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <h4 className="text-md font-semibold text-chocolate mb-2">Follow Us</h4>
               <div className="flex space-x-4">
                 <a href="#" className="hover:text-chocolate">Instagram</a>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-md font-semibold text-chocolate mb-2">Company</h4>
+              <div className="flex flex-col space-y-2">
+                <Link href="/about_us" className="hover:underline text-chocolate flex items-center gap-2">
+                  <span>About Us</span>
+                </Link>
+                <Link href="/join_us" className="hover:underline text-chocolate flex items-center gap-2">
+                  <span>Join Us</span>
+                </Link>
               </div>
             </div>
           </div>
