@@ -11,7 +11,7 @@ type Brand = {
 };
 
 type Collection = {
-  id: string;
+  _id: string;
   name: string;
   brand: string;
 };
@@ -22,18 +22,24 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/brands")
-  .then(res => res.json())
-  .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id,
-    name: b.name,
-  }))));
-    fetch("/api/admin/collection-types")
-  .then(res => res.json())
-  .then(data => setCollections(data.map((c: any) => ({
-    _id: c._id || c.id,
-    name: c.name,
-  }))));
+    Promise.all([
+      fetch("/api/admin/brands")
+        .then(res => res.json())
+        .then(data => setBrands(data.map((b: any) => ({
+          _id: b._id || b.id,
+          name: b.name,
+          image: b.image,
+          description: b.description,
+          website: b.website,
+        })))),
+      fetch("/api/admin/collection-types")
+        .then(res => res.json())
+        .then(data => setCollections(data.map((c: any) => ({
+          _id: c._id || c.id,
+          name: c.name,
+          brand: c.brand,
+        }))))
+    ]).finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
@@ -44,14 +50,16 @@ export default function BrandsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {brands.map((brand) => (
           <div key={brand._id} className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-            {brand.image && (
-              <img
-                src={brand.image}
-                alt={brand.name}
-                className="w-24 h-24 object-cover rounded-full mb-4"
-              />
-            )}
-            <h2 className="text-xl font-bold text-chocolate mb-2">{brand.name}</h2>
+            <Link href={`/brands/${brand.name.toLowerCase()}`} className="flex flex-col items-center w-full">
+              {brand.image && (
+                <img
+                  src={brand.image}
+                  alt={brand.name}
+                  className="w-24 h-24 object-cover rounded-full mb-4"
+                />
+              )}
+              <h2 className="text-xl font-bold text-chocolate mb-2 hover:underline">{brand.name}</h2>
+            </Link>
             {brand.description && (
               <p className="text-gray-600 text-center mb-2">{brand.description}</p>
             )}
@@ -65,21 +73,6 @@ export default function BrandsPage() {
                 Visit Website
               </a>
             )}
-            <h3 className="text-md font-semibold text-chocolate mt-4 mb-2">Collections</h3>
-            <ul className="mb-2">
-              {collections
-                .filter(col => col.brand === brand.name)
-                .map(col => (
-                  <li key={col.id}>
-                    <Link
-                      href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      {col.name}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
           </div>
         ))}
       </div>
