@@ -98,7 +98,7 @@ export default function AdminAds() {
           multiple
           onChange={e => {
             if (e.target.files) {
-              setFiles(Array.from(e.target.files).slice(0, 3)); // max 3 images
+              setFiles(Array.from(e.target.files).slice(0, 3));
             }
           }}
           className="border p-2 rounded"
