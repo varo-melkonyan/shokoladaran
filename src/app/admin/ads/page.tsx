@@ -1,4 +1,5 @@
 "use client";
+import { log } from "console";
 import { useState, useEffect } from "react";
 
 type Ad = {

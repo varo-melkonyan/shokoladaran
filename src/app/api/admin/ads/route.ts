@@ -31,6 +31,8 @@ export async function PUT(req: Request) {
   const db = client.db();
   const { ObjectId } = await import("mongodb");
 
+  if ("_id" in body) delete body._id;
+
   try {
     await db.collection("ads").updateOne(
       { _id: new ObjectId(id) },
