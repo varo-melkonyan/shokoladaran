@@ -44,14 +44,65 @@ export default function ProductClient({
                 <span className="text-chocolate font-bold text-2xl">{product.price} AMD</span>
               )}
             </div>
-            <div className="flex gap-6 mb-4">
-              <div>
-                <span className="font-semibold text-chocolate">Brand:</span>{" "}
-                <span className="text-gray-700">{product.brand}</span>
+            <div className="flex gap-6 mb-4 items-start">
+              <div className="flex flex-col gap-2">
+                <div>
+                  <span className="font-semibold text-chocolate">Brand:</span>{" "}
+                  <span className="text-gray-700">{product.brand}</span>
+                </div>
+                <div>
+                  <span className="font-semibold text-chocolate">Collection:</span>{" "}
+                  <span className="text-gray-700">{product.collectionType}</span>
+                </div>
               </div>
-              <div>
-                <span className="font-semibold text-chocolate">Collection:</span>{" "}
-                <span className="text-gray-700">{product.collectionType}</span>
+              {/* Product Details Card - visually separated */}
+              <div className="bg-gray-50 rounded-xl shadow-md p-4 min-w-[220px] ml-8">
+                <h3 className="text-lg font-bold text-chocolate mb-2">Details</h3>
+                <ul className="space-y-1 text-gray-700 text-sm">
+                  <li>
+                    <span className="font-semibold text-chocolate">Quantity Type:</span>{" "}
+                    <span>{product.quantityType === "kg" ? "Weight (kg)" : "Piece"}</span>
+                  </li>
+                  {product.ingredients && product.ingredients.length > 0 && (
+                    <li>
+                      <span className="font-semibold text-chocolate">Ingredients:</span>{" "}
+                      <span>{product.ingredients.join(", ")}</span>
+                    </li>
+                  )}
+                  {product.shelfLife && (
+                    <li>
+                      <span className="font-semibold text-chocolate">Shelf Life:</span>{" "}
+                      <span>{product.shelfLife}</span>
+                    </li>
+                  )}
+                  {product.nutritionFacts && (
+                    <li>
+                      <span className="font-semibold text-chocolate">Nutrition Facts:</span>
+                      <ul className="ml-4 space-y-1">
+                        {product.nutritionFacts.energy && (
+                          <li>
+                            <span className="font-semibold">Energy:</span> {product.nutritionFacts.energy}
+                          </li>
+                        )}
+                        {product.nutritionFacts.fat && (
+                          <li>
+                            <span className="font-semibold">Fat:</span> {product.nutritionFacts.fat}
+                          </li>
+                        )}
+                        {product.nutritionFacts.carbohydrates && (
+                          <li>
+                            <span className="font-semibold">Carbohydrates:</span> {product.nutritionFacts.carbohydrates}
+                          </li>
+                        )}
+                        {product.nutritionFacts.protein && (
+                          <li>
+                            <span className="font-semibold">Protein:</span> {product.nutritionFacts.protein}
+                          </li>
+                        )}
+                      </ul>
+                    </li>
+                  )}
+                </ul>
               </div>
             </div>
             {/* Cart Control */}
