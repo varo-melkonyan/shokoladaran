@@ -188,7 +188,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                       </span>
                     )}
                     {/* Info Button */}
-                    <div className="absolute top-2 right-2 group">
+                    {/* <div className="absolute top-2 right-2 group">
                       <button
                         className="bg-white/90 hover:bg-chocolate text-chocolate hover:text-white rounded-full w-8 h-8 flex items-center justify-center shadow border border-gray-200"
                         type="button"
@@ -244,8 +244,8 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                             </ul>
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </div> */}
+                    {/* </div> */}
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
