@@ -176,7 +176,9 @@ export default function Navbar() {
 
             {showBrandsDropdown && (
               <div className="fixed left-1/2 top-28 -translate-x-1/2 bg-white shadow-xl rounded-lg p-8 z-50 w-[700px] max-w-[98vw]">
-                <h3 className="text-lg font-bold text-chocolate mb-6 text-center">All Brands</h3>
+                <h3 className="text-lg font-bold text-chocolate mb-6 text-center">
+                  <Link href="/brands" className="hover:underline">All Brands</Link>
+                </h3>
                 <div className="grid grid-cols-3 gap-6 items-center">
                   {/* First column of brands */}
                   <div className="space-y-2">
