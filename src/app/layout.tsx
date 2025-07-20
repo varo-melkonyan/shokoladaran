@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import { CartProvider } from "../context/CartContext";
 import CartWidget from "@/components/CartWidget";
+import Link from "next/link";
 
 export const metadata = { 
   title: 'Shokoladaran',
@@ -28,6 +29,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 Your trusted destination for handcrafted and imported international chocolate brands,
                 connecting lovers of sweets to the best artisans.
               </p>
+              {/* Add links here */}
+              <div className="mt-4 flex flex-col gap-2">
+                <Link href="/about_us" className="hover:underline text-chocolate">About Us</Link>
+                <Link href="/join_us" className="hover:underline text-chocolate">Join Us</Link>
+              </div>
             </div>
             <div className="rounded-xl flex flex-col items-start">
               <h3 className="text-lg font-bold text-chocolate mb-2">Delivery & Pickup</h3>
