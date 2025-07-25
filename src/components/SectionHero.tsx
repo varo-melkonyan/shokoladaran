@@ -24,7 +24,7 @@ export default function SectionHero() {
       <p className="text-base md:text-lg text-gray-100 mb-6 text-center max-w-xl drop-shadow">
         Curated collections from Armenian brands – pure indulgence in every bite.
       </p>
-      <form
+      {/* <form
         onSubmit={handleSearch}
         className="w-full max-w-md flex items-center justify-center mb-2"
       >
@@ -54,7 +54,7 @@ export default function SectionHero() {
             Search
           </button>
         </div>
-      </form>
+      </form> */}
     </section>
   );
 }
