@@ -281,7 +281,7 @@ export default function Navbar() {
           <div className="relative">
             <form
   onSubmit={handleSearch}
-  className="w-full max-w-md flex items-center justify-center mb-4"
+  className="w-full max-w-md flex items-center justify-center"
 >
   <div className="relative w-full flex items-center">
     {/* Search Input */}
