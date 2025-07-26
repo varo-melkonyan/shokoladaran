@@ -2,7 +2,7 @@ import './globals.css';
 import { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import { CartProvider } from "../context/CartContext";
-import CartWidget from "@/components/CartWidget";
+// import CartWidget from "@/components/CartWidget";
 import Link from "next/link";
 
 export const metadata = { 
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen flex flex-col">
         <CartProvider>
           <Navbar />
-          <CartWidget />
+          {/* <CartWidget /> */}
           <main className="flex-1">
             {children}
           </main>
