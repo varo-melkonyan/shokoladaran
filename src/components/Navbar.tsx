@@ -88,6 +88,18 @@ export default function Navbar() {
     }
   };
 
+  // Prevent body scroll when cart drawer is open
+  useEffect(() => {
+    if (showCart) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showCart]);
+
   return (
     <>
       <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50"
