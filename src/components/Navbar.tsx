@@ -390,7 +390,7 @@ export default function Navbar() {
             &times;
           </button>
         </div>
-        <div className="p-6 space-y-4">
+       <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 220px)" }}>
           {cart.length === 0 ? (
             <div className="text-gray-500">Your cart is empty.</div>
           ) : (
