@@ -390,7 +390,7 @@ export default function Navbar() {
       >
         {/* Free Shipping Banner */}
         <div className="bg-yellow-100 text-yellow-800 text-center px-4 py-2 font-semibold text-sm border-b border-yellow-200">
-          Unlock Free Shipping with AMD 20,000.00 more in your cart!
+          Free shipping from 20,000 AMD
         </div>
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-xl font-bold text-chocolate">Your Cart</h2>
