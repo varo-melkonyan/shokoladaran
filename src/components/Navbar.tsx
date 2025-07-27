@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
 type Brand = { _id: string; name: string };
@@ -22,9 +22,6 @@ export default function Navbar() {
   const searchRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
-  const searchParams = useSearchParams();
-  const query = searchParams?.get("query") || "";
-
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -126,21 +123,6 @@ export default function Navbar() {
   const collectionsCol2 = sortedCollections.slice(midCol);
 
   const { cart, addToCart, removeFromCart } = useCart();
-
- const filtered = products
-    .filter((product) =>
-      product.name.toLowerCase().includes(query.toLowerCase())
-    )
-    .map((product) => ({
-      ...product,
-      _id: product._id || product.id,
-      status:
-        product.status === "in_stock" ||
-        product.status === "out_of_stock" ||
-        product.status === "pre_order"
-          ? product.status
-          : "in_stock",
-    }));
 
   // Calculate total
   const total = cart.reduce((sum, item) => {
