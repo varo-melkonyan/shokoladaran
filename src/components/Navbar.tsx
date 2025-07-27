@@ -232,55 +232,74 @@ export default function Navbar() {
           </form>
           {/* Mobile Search Dropdown */}
           {showSearchDropdown && (
-            <div className="absolute left-0 top-[100%] w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown">
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
-                {loading ? (
-                  <div className="flex items-center justify-center py-8">
-                    {/* ...loading spinner... */}
-                  </div>
-                ) : searchResults.length === 0 ? (
-                  <div className="flex items-center justify-center py-8 text-gray-500 text-lg font-semibold">
-                    Oops! We didn’t find anything matching that.
-                  </div>
-                ) : (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      {searchResults.slice(0, 4).map((item) => (
-                        <Link
-                          key={item._id}
-                          href={`/product/${item.slug || item._id}`}
-                          className="flex flex-col items-center p-2 rounded hover:bg-chocolate/10 transition"
-                          onClick={() => setShowSearchDropdown(false)}
-                        >
-                          {item.image && (
-                            <img
-                              src={item.image}
-                              alt={item.name}
-                              className="w-24 h-24 object-cover rounded mb-2"
-                            />
-                          )}
-                          <div className="text-base font-medium text-gray-900 text-center">{item.name}</div>
-                          <div className="text-gray-700 text-center mt-1">
-                            {item.price ? `$ ${item.price.toFixed(2)}` : ""}
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
-                    <div className="flex justify-center mt-6">
-                      <Link
-                        href={`/search?query=${encodeURIComponent(search)}`}
-                        className="bg-chocolate text-white px-6 py-2 rounded text-base font-semibold hover:bg-[#a06a1b] transition"
-                        onClick={() => setShowSearchDropdown(false)}
-                      >
-                        See all results
-                      </Link>
-                    </div>
-                  </>
+  <div className="absolute left-0 top-[100%] w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown pointer-events-auto">
+    <div className="p-4">
+      <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-8">
+          {/* You can put your spinner here */}
+        </div>
+      ) : searchResults.length === 0 ? (
+        <div className="flex items-center justify-center py-8 text-gray-500 text-lg font-semibold">
+          Oops! We didn’t find anything matching that.
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-4">
+            {searchResults.slice(0, 4).map((item) => (
+              <button
+                key={item._id}
+                className="flex flex-col items-center p-2 rounded hover:bg-chocolate/10 transition w-full"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowSearchDropdown(false);
+                  setTimeout(() => {
+                    router.push(`/product/${item.slug || item._id}`);
+                  }, 100);
+                }}
+                type="button"
+              >
+                {item.image && (
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-24 h-24 object-cover rounded mb-2"
+                  />
                 )}
-              </div>
-            </div>
-          )}
+                <div className="text-base font-medium text-gray-900 text-center">
+                  {item.name}
+                </div>
+                <div className="text-gray-700 text-center mt-1">
+                  {item.price ? `$ ${item.price.toFixed(2)}` : ""}
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex justify-center mt-6">
+            <button
+              className="bg-chocolate text-white px-6 py-2 rounded text-base font-semibold hover:bg-[#a06a1b] transition"
+              onClick={async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowSearchDropdown(false);
+                setTimeout(() => {
+                  router.push(`/search?query=${encodeURIComponent(search)}`);
+                }, 100);
+              }}
+              type="button"
+            >
+              See all results
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
         </div>
 
         {/* Mobile Menu Drawer */}
