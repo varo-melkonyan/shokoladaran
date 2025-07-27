@@ -167,37 +167,39 @@ export default function Navbar() {
       {/* --- MOBILE NAVBAR --- */}
       <div className="block md:hidden">
         {/* Mobile Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-50">
-          {/* Hamburger */}
-          <button
-            className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-chocolate"
-            onClick={() => setIsMobileMenuOpen(true)}
-            aria-label="Open menu"
-          >
-            <svg className="w-7 h-7 text-chocolate" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          {/* Logo */}
-          <Link href="/" className="text-xl font-cursive font-bold text-chocolate">Shokoladaran</Link>
-          {/* Cart */}
-          <button
-            onClick={() => setShowCart(true)}
-            className="relative h-7 w-7 flex items-center justify-center"
-            aria-label="Open cart"
-            type="button"
-          >
-            <img
-              src="https://cdn.animaapp.com/projects/632aa472e54a449a6cf9dc9a/releases/6883652fe1f55f4c5df6a2b6/img/component-2-46.svg"
-              alt="Cart"
-              className="h-7 w-7"
-            />
-            {cart.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-chocolate text-white text-xs font-bold rounded-full px-1.5 py-0.5 shadow">
-                {cart.length}
-              </span>
-            )}
-          </button>
+        <div className="fixed top-0 left-0 w-full z-50 bg-white border-b border-gray-200">
+          <div className="flex items-center justify-between px-4 py-3">
+            {/* Hamburger */}
+            <button
+              className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-chocolate"
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <svg className="w-7 h-7 text-chocolate" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            {/* Logo */}
+            <Link href="/" className="text-xl font-cursive font-bold text-chocolate">Shokoladaran</Link>
+            {/* Cart */}
+            <button
+              onClick={() => setShowCart(true)}
+              className="relative h-7 w-7 flex items-center justify-center"
+              aria-label="Open cart"
+              type="button"
+            >
+              <img
+                src="https://cdn.animaapp.com/projects/632aa472e54a449a6cf9dc9a/releases/6883652fe1f55f4c5df6a2b6/img/component-2-46.svg"
+                alt="Cart"
+                className="h-7 w-7"
+              />
+              {cart.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-chocolate text-white text-xs font-bold rounded-full px-1.5 py-0.5 shadow">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Search Bar */}
@@ -580,7 +582,7 @@ export default function Navbar() {
 
       {/* --- DESKTOP NAVBAR --- */}
       <div className="hidden md:block">
-        <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50"
+        <header className="fixed top-0 left-0 w-full bg-white shadow-sm border-b border-gray-200 z-50"
                 onMouseLeave={() => {
                   setShowDropdown(false);
                   setShowBrandsDropdown(false);
