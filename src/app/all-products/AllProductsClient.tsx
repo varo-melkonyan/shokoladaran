@@ -43,7 +43,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
   if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
+    <div className="max-w-7xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold mb-6 text-chocolate">All Products</h1>
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">

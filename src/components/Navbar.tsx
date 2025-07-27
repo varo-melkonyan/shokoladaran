@@ -194,7 +194,7 @@ export default function Navbar() {
 
                   {showDropdown && (
                     <div className="absolute left-0 top-full w-screen bg-white shadow-xl z-50 animate-slideDown">
-                      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-4 gap-10">
+                      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-3 gap-10">
                         {/* Product Type */}
                         <div>
                           <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">Product Type</h3>
@@ -423,7 +423,7 @@ export default function Navbar() {
                 </form>
                 {/* Search Dropdown */}
                 {showSearchDropdown && (
-                  <div className="absolute left-0 top-full mt-2 w-[600px] bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown">
+                  <div className="fixed left-0 top-[70px] mt-0 w-[600px] bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown">
                     <div className="flex">
                       <div className="flex-1 p-6">
                         <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>

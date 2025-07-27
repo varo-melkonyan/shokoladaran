@@ -64,13 +64,13 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   }, [slug]);
 
   if (loading) {
-    return <div className="max-w-6xl mx-auto px-4 py-12">Loading...</div>;
+    return <div className="max-w-7xl mx-auto px-4 py-12">Loading...</div>;
   }
 
   if (!matched) return notFound();
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-12">
+    <main className="max-w-7xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-4">
         {matched.name}
       </h1>

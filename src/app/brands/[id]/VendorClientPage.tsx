@@ -88,7 +88,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
     setCart(cart => cart.filter(item => item._id !== productId));
   }
 
-  if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">Loading...</div>;
   if (!brand) return notFound();
 
   let filteredProducts = products;
@@ -109,7 +109,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
   );
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
+    <main className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex flex-col md:flex-row gap-8 items-start">
         {brand.image && (
           <img

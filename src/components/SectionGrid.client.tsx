@@ -26,7 +26,7 @@ export default function SectionGrid({
     <>
       {/* Dynamic Ads Section */}
       {ads.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 mb-10">
+        <section className="max-w-7xl mx-auto px-4 mb-10">
           <div className="flex gap-6 flex-wrap justify-center">
             {ads.map((ad, idx) =>
               ad.images.map((img, i) => (
@@ -54,20 +54,20 @@ export default function SectionGrid({
 
       {/* Slider Section */}
       <section className="py-6 bg-white">
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-chocolate mb-8 text-center">{title}</h2>
           <Slider
             dots={false}
             infinite={true}
-            speed={500}
+            speed={2000}
             slidesToShow={4}
             slidesToScroll={1}
             autoplay={true}
-            autoplaySpeed={1500}
+            autoplaySpeed={10}
             pauseOnHover={true}
             arrows={true}
             responsive={[
-              { breakpoint: 1024, settings: { slidesToShow: 2 } },
+              { breakpoint: 1024, settings: { slidesToShow: 1 } },
               { breakpoint: 640, settings: { slidesToShow: 1 } }
             ]}
           >

@@ -42,10 +42,10 @@ export default function BrandsPage() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="max-w-6xl mx-auto px-6 py-12">Loading...</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">Loading...</div>;
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
+    <main className="max-w-7xl mx-auto px-6 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-8">Brands</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {brands.map((brand) => (

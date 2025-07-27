@@ -18,7 +18,7 @@ export default function ProductClient({
 
   return (
     <div>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl shadow-2xl p-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl shadow-2xl p-8">
         {/* Left: Product Images */}
         <div>
           <div className="bg-white rounded-2xl shadow-lg p-4 mb-4">
@@ -126,7 +126,7 @@ export default function ProductClient({
         </div>
       </div>
       {/* Recommendations */}
-      <div className="max-w-6xl mx-auto mt-16">
+      <div className="max-w-7xl mx-auto mt-16">
         <h2 className="text-2xl font-bold mb-6 text-chocolate">Recommended Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {recommendations.map((rec) => (
