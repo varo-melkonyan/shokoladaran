@@ -5,6 +5,7 @@ import PieceCartControl from "@/components/PieceCartControl";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useMemo } from "react";
 
 type Ad = {
   images: string[];
@@ -22,11 +23,25 @@ export default function SectionGrid({
 }) {
   const { cart, removeFromCart, addToCart } = useCart();
 
+  // Pick a random ad for mobile (memoized so it doesn't change on every render)
+  const randomAd = useMemo(() => {
+    if (!ads.length) return null;
+    const flatAds = ads.flatMap(ad =>
+      ad.images.map((img, i) => ({
+        img,
+        link: ad.link,
+        key: `${ad.link || "img"}-${i}`,
+      }))
+    );
+    if (!flatAds.length) return null;
+    return flatAds[Math.floor(Math.random() * flatAds.length)];
+  }, [ads]);
+
   return (
     <>
-      {/* Dynamic Ads Section */}
+      {/* Desktop/Tablet: All Ads */}
       {ads.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 mb-10">
+        <section className="max-w-7xl mx-auto px-4 mb-10 hidden md:block">
           <div className="flex gap-6 flex-wrap justify-center">
             {ads.map((ad, idx) =>
               ad.images.map((img, i) => (
@@ -47,6 +62,31 @@ export default function SectionGrid({
                   />
                 )
               ))
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Mobile: One Random Ad */}
+      {randomAd && (
+        <section className="block md:hidden px-4 mb-6">
+          <div className="flex justify-center">
+            {randomAd.link ? (
+              <a href={randomAd.link} target="_blank" rel="noopener noreferrer">
+                <img
+                  src={randomAd.img}
+                  alt="Advertisement"
+                  className="rounded-xl shadow-lg h-36 w-auto object-cover"
+                  style={{ minWidth: 200, width: "auto", maxWidth: "100%" }}
+                />
+              </a>
+            ) : (
+              <img
+                src={randomAd.img}
+                alt="Advertisement"
+                className="rounded-xl shadow-lg h-36 w-auto object-cover"
+                style={{ minWidth: 200, width: "auto", maxWidth: "100%" }}
+              />
             )}
           </div>
         </section>
