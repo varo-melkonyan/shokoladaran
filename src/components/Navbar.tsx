@@ -203,7 +203,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Search Bar */}
-        <div className="px-4 py-2 bg-white border-b border-gray-100 sticky top-[56px] z-40">
+        <div className="fixed top-[68px] left-0 w-full px-4 py-2 bg-white border-b border-gray-100 z-40">
           <form onSubmit={handleSearch} className="flex items-center">
             <div className="relative w-full flex items-center">
               <input

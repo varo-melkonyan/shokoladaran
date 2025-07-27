@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <CartProvider>
           <Navbar />
           {/* <CartWidget /> */}
-          <main className="flex-1">
+          <main className="flex-1 pt-[98px] md:pt-[88px]">
             {children}
           </main>
         </CartProvider>
