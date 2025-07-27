@@ -21,7 +21,7 @@ export default function ProductList({
   }
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
         {products.map(product => {
           const cartItem = cart.find((item) => item._id === product._id);
 

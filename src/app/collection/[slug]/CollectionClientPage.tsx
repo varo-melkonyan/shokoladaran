@@ -81,7 +81,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
       {products.length === 0 ? (
         <div className="text-gray-500">No products found in this collection.</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {products.map((product) => {
             const cartItem = cart.find((item) => item._id === product._id);
 

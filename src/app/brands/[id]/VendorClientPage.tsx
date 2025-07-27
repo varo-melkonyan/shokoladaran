@@ -160,7 +160,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
           </select>
         </div>
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredProducts.map((product) => {
               const cartItem = cart.find((item) => item._id === product._id);
               const quantity = cartItem?.quantity ?? 0;

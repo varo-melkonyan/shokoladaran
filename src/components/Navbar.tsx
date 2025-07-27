@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 
 type Brand = { _id: string; name: string };
@@ -15,7 +15,16 @@ export default function Navbar() {
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [search, setSearch] = useState("");
   const [showCart, setShowCart] = useState(false);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
   const router = useRouter();
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<any[]>([]);
+  const searchParams = useSearchParams();
+  const query = searchParams?.get("query") || "";
+
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -33,10 +42,65 @@ export default function Navbar() {
       }))));
   }, []);
 
+
+  // Auto-search as you type
+  useEffect(() => {
+    if (!search.trim()) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      setLoading(false);
+      return;
+    }
+    setShowSearchDropdown(true);
+    setLoading(true);
+
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+    const results = products.filter((product) =>
+      product.name.toLowerCase().includes(search.trim().toLowerCase())
+    );
+    setSearchResults(results);
+    setLoading(false);
+  }, 2000);
+
+    return () => {
+      if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    };
+  }, [search, products]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSearchDropdown(false);
+      }
+    }
+    if (showSearchDropdown) {
+      document.addEventListener("mousedown", handleClick);
+    }
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showSearchDropdown]);
+
+ useEffect(() => {
+    async function fetchProducts() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/admin/products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        setProducts([]);
+      }
+      setLoading(false);
+    }
+    fetchProducts();
+  }, []);
+  
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (search.trim()) {
       router.push(`/search?query=${encodeURIComponent(search)}`);
+      setShowSearchDropdown(false);
     }
   }
   const pathname = usePathname();
@@ -62,6 +126,21 @@ export default function Navbar() {
   const collectionsCol2 = sortedCollections.slice(midCol);
 
   const { cart, addToCart, removeFromCart } = useCart();
+
+ const filtered = products
+    .filter((product) =>
+      product.name.toLowerCase().includes(query.toLowerCase())
+    )
+    .map((product) => ({
+      ...product,
+      _id: product._id || product.id,
+      status:
+        product.status === "in_stock" ||
+        product.status === "out_of_stock" ||
+        product.status === "pre_order"
+          ? product.status
+          : "in_stock",
+    }));
 
   // Calculate total
   const total = cart.reduce((sum, item) => {
@@ -133,7 +212,7 @@ export default function Navbar() {
 
                   {showDropdown && (
                     <div className="absolute left-0 top-full w-screen bg-white shadow-xl z-50 animate-slideDown">
-                      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-3 gap-10">
+                      <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-4 gap-10">
                         {/* Product Type */}
                         <div>
                           <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">Product Type</h3>
@@ -255,7 +334,7 @@ export default function Navbar() {
                         <h3 className="text-lg font-bold text-chocolate mb-6 text-center">
                           <Link href="/brands" className="hover:underline">All Brands</Link>
                         </h3>
-                        <div className="grid grid-cols-3 gap-6 items-center">
+                        <div className="grid grid-cols-4 gap-6 items-center">
                           <div className="space-y-2">
                             {brandsCol1.map((brand) => (
                               <Link
@@ -331,35 +410,94 @@ export default function Navbar() {
                  setShowBrandsDropdown(false);
                }}
           >
-            <div className="relative">
-              <form onSubmit={handleSearch} className="w-full max-w-md flex items-center justify-center">
-                <div className="relative w-full flex items-center">
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search products..."
-                    className="w-full pl-12 pr-24 py-3 rounded-3xl bg-white/80 focus:bg-white border-none shadow-lg text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
-                  />
-                  <svg
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-chocolate w-5 h-5 pointer-events-none"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                  <button
-                    type="submit"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-chocolate hover:bg-[#5a2d0c] text-white rounded-full px-4 py-1.5 text-sm shadow transition-all duration-200"
-                  >
-                    Search
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="relative w-56" ref={searchRef}>
+                <form onSubmit={handleSearch} className="flex items-center justify-center">
+                  <div className="relative w-full flex items-center">
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search products..."
+                      className="w-full pl-12 py-3 rounded-3xl bg-white/80 focus:bg-white border-none shadow-lg text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
+                      onFocus={async () => {
+                        if (!search.trim()) {
+                          setShowSearchDropdown(false);
+                          setSearchResults([]);
+                          return;
+                        }
+                      }}
+                    />
+                    <svg
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-chocolate w-5 h-5 pointer-events-none"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                  </div>
+                </form>
+                {/* Search Dropdown */}
+                {showSearchDropdown && (
+                  <div className="absolute left-0 top-full mt-2 w-[600px] bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown">
+                    <div className="flex">
+                      <div className="flex-1 p-6">
+                        <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
+                        {loading ? (
+                          <div className="flex items-center justify-center py-12">
+                            <svg className="animate-spin h-8 w-8 text-chocolate" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                            <span className="ml-4 text-chocolate font-semibold text-lg">Loading...</span>
+                          </div>
+                        ) : searchResults.length === 0 ? (
+                          <div className="flex items-center justify-center py-12 text-gray-500 text-lg font-semibold">
+                            Oops! We didn’t find anything matching that.
+                          </div>
+                        ) : (
+                          <>
+                            <div className="grid grid-cols-2 gap-6">
+                              {searchResults.slice(0, 4).map((item) => (
+                                <div key={item._id} className="flex flex-col items-center">
+                                  <Link
+                                    href={`/product/${item.slug || item._id}`}
+                                    className="block"
+                                    onClick={() => setShowSearchDropdown(false)}
+                                  >
+                                    {item.image && (
+                                      <img
+                                        src={item.image}
+                                        alt={item.name}
+                                        className="w-40 h-40 object-cover rounded mb-2"
+                                      />
+                                    )}
+                                    <div className="text-base font-medium text-gray-900 text-center">{item.name}</div>
+                                    <div className="text-gray-700 text-center mt-1">
+                                      {item.price ? `$ ${item.price.toFixed(2)}` : ""}
+                                    </div>
+                                  </Link>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="flex justify-center mt-8">
+                              <Link
+                                href={`/search?query=${encodeURIComponent(search)}`}
+                                className="bg-black text-white px-8 py-3 rounded text-lg font-semibold hover:bg-chocolate transition"
+                                onClick={() => setShowSearchDropdown(false)}
+                              >
+                                See all results
+                              </Link>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             {/* Cart Icon */}
             <button
               onClick={() => setShowCart(true)}
