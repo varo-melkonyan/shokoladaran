@@ -720,7 +720,7 @@ export default function Navbar() {
                           <h3 className="text-lg font-bold text-chocolate mb-6 text-center">
                             <Link href="/brands" className="hover:underline">All Brands</Link>
                           </h3>
-                          <div className="grid grid-cols-4 gap-6 items-center">
+                          <div className="grid grid-cols-3 gap-6 items-center">
                             <div className="space-y-2">
                               {brandsCol1.map((brand) => (
                                 <Link
