@@ -423,7 +423,7 @@ export default function Navbar() {
                 </form>
                 {/* Search Dropdown */}
                 {showSearchDropdown && (
-                  <div className="fixed left-0 top-[70px] mt-0 w-[600px] bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown">
+                  <div className="fixed right-0 top-[70px] mt-0 w-[600px] bg-white rounded-xl shadow-xl z-50 animate-slideDown">
                     <div className="flex">
                       <div className="flex-1 p-6">
                         <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
