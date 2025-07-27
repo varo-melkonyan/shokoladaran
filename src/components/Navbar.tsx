@@ -211,10 +211,11 @@ export default function Navbar() {
                 placeholder="Search products..."
                 className="w-full pl-10 pr-3 py-2 rounded-2xl bg-white border border-gray-200 shadow text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
                 onFocus={() => {
-                  if (!search.trim()) {
+                  if (search.trim()) {
+                    setShowSearchDropdown(true);
+                  } else {
                     setShowSearchDropdown(false);
                     setSearchResults([]);
-                    return;
                   }
                 }}
               />
@@ -235,7 +236,6 @@ export default function Navbar() {
   <div className="absolute left-0 top-[100%] w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown pointer-events-auto">
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
-
       {loading ? (
         <div className="flex items-center justify-center py-8">
           {/* You can put your spinner here */}
@@ -251,15 +251,15 @@ export default function Navbar() {
               <button
                 key={item._id}
                 className="flex flex-col items-center p-2 rounded hover:bg-chocolate/10 transition w-full"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setShowSearchDropdown(false);
-                  setTimeout(() => {
-                    router.push(`/product/${item.slug || item._id}`);
-                  }, 100);
-                }}
                 type="button"
+                onClick={async () => {
+                  setShowSearchDropdown(false);
+                  await router.push(`/product/${item.slug || item._id}`);
+                }}
+                onTouchStart={async () => {
+                  setShowSearchDropdown(false);
+                  await router.push(`/product/${item.slug || item._id}`);
+                }}
               >
                 {item.image && (
                   <img
@@ -277,19 +277,18 @@ export default function Navbar() {
               </button>
             ))}
           </div>
-
           <div className="flex justify-center mt-6">
             <button
               className="bg-chocolate text-white px-6 py-2 rounded text-base font-semibold hover:bg-[#a06a1b] transition"
-              onClick={async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowSearchDropdown(false);
-                setTimeout(() => {
-                  router.push(`/search?query=${encodeURIComponent(search)}`);
-                }, 100);
-              }}
               type="button"
+              onClick={async () => {
+                setShowSearchDropdown(false);
+                await router.push(`/search?query=${encodeURIComponent(search)}`);
+              }}
+              onTouchStart={async () => {
+                setShowSearchDropdown(false);
+                await router.push(`/search?query=${encodeURIComponent(search)}`);
+              }}
             >
               See all results
             </button>
@@ -819,11 +818,12 @@ export default function Navbar() {
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search products..."
                         className="w-full pl-12 py-3 rounded-3xl bg-white/80 focus:bg-white border-none shadow-lg text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
-                        onFocus={async () => {
-                          if (!search.trim()) {
+                        onFocus={() => {
+                          if (search.trim()) {
+                            setShowSearchDropdown(true);
+                          } else {
                             setShowSearchDropdown(false);
                             setSearchResults([]);
-                            return;
                           }
                         }}
                       />
