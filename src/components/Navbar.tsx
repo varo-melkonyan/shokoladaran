@@ -123,7 +123,7 @@ export default function Navbar() {
   const collectionsCol1 = sortedCollections.slice(0, midCol);
   const collectionsCol2 = sortedCollections.slice(midCol);
 
-  const { cart, addToCart, removeFromCart } = useCart();
+  const { cart, addToCart, removeFromCart, clearCart } = useCart();
 
   // Calculate total
   const total = cart.reduce((sum, item) => {
@@ -489,13 +489,25 @@ export default function Navbar() {
           </div>
           <div className="flex items-center justify-between px-6 py-4 border-b">
             <h2 className="text-xl font-bold text-chocolate">Your Cart</h2>
-            <button
-              onClick={() => setShowCart(false)}
-              className="text-2xl text-gray-500 hover:text-chocolate"
-              aria-label="Close cart"
-            >
-              &times;
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={clearCart}
+                className="text-sm text-red-500 hover:text-red-700 border border-red-200 rounded px-2 py-1"
+                aria-label="Clear cart"
+                title="Clear cart"
+                type="button"
+              >
+                Clear Cart
+              </button>
+              <button
+                onClick={() => setShowCart(false)}
+                className="text-2xl text-gray-500 hover:text-chocolate"
+                aria-label="Close cart"
+                type="button"
+              >
+                &times;
+              </button>
+            </div>
           </div>
          <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 220px)" }}>
             {cart.length === 0 ? (
@@ -934,13 +946,25 @@ export default function Navbar() {
           </div>
           <div className="flex items-center justify-between px-6 py-4 border-b">
             <h2 className="text-xl font-bold text-chocolate">Your Cart</h2>
-            <button
-              onClick={() => setShowCart(false)}
-              className="text-2xl text-gray-500 hover:text-chocolate"
-              aria-label="Close cart"
-            >
-              &times;
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={clearCart}
+                className="text-sm text-red-500 hover:text-red-700 border border-red-200 rounded px-2 py-1"
+                aria-label="Clear cart"
+                title="Clear cart"
+                type="button"
+              >
+                Clear Cart
+              </button>
+              <button
+                onClick={() => setShowCart(false)}
+                className="text-2xl text-gray-500 hover:text-chocolate"
+                aria-label="Close cart"
+                type="button"
+              >
+                &times;
+              </button>
+            </div>
           </div>
          <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 220px)" }}>
             {cart.length === 0 ? (

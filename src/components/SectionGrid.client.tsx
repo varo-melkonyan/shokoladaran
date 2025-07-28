@@ -5,7 +5,7 @@ import PieceCartControl from "@/components/PieceCartControl";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 
 type Ad = {
   images: string[];
@@ -23,9 +23,11 @@ export default function SectionGrid({
 }) {
   const { cart, removeFromCart, addToCart } = useCart();
 
-  // Pick a random ad for mobile (memoized so it doesn't change on every render)
-  const randomAd = useMemo(() => {
-    if (!ads.length) return null;
+  // Pick a random ad for mobile (client-only)
+  const [randomAd, setRandomAd] = useState<null | { img: string; link?: string; key: string }>(null);
+
+  useEffect(() => {
+    if (!ads.length) return;
     const flatAds = ads.flatMap(ad =>
       ad.images.map((img, i) => ({
         img,
@@ -33,8 +35,8 @@ export default function SectionGrid({
         key: `${ad.link || "img"}-${i}`,
       }))
     );
-    if (!flatAds.length) return null;
-    return flatAds[Math.floor(Math.random() * flatAds.length)];
+    if (!flatAds.length) return;
+    setRandomAd(flatAds[Math.floor(Math.random() * flatAds.length)]);
   }, [ads]);
 
   return (
