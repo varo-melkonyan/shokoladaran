@@ -517,14 +517,28 @@ export default function Navbar() {
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
                   {/* Product Image */}
                   {item.image && (
+                  <Link
+                    href={`/product/${item.slug || item._id}`}
+                    onClick={() => setShowCart(false)}
+                    className="block"
+                  >
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded"
                     />
-                  )}
+                  </Link>
+                )}
                   <div className="flex-1">
-                    <div className="font-semibold">{item.name}</div>
+                    <div className="font-semibold">
+                      <Link
+                        href={`/product/${item.slug || item._id}`}
+                        className="text-chocolate hover:underline"
+                        onClick={() => setShowCart(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}
                       <button
@@ -635,7 +649,8 @@ export default function Navbar() {
                                   <li key={col.id}>
                                     <Link
                                       href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                      className="text-sm text-gray-700 hover:text-chocolate transition"
+                                      className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                      onClick={() => setShowDropdown(false)}
                                     >
                                       {col.name}
                                     </Link>
@@ -647,7 +662,8 @@ export default function Navbar() {
                                   <li key={col.id}>
                                     <Link
                                       href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                      className="text-sm text-gray-700 hover:text-chocolate transition"
+                                      className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                      onClick={() => setShowDropdown(false)}                                    
                                     >
                                       {col.name}
                                     </Link>
@@ -667,7 +683,8 @@ export default function Navbar() {
                                     <li key={type.id}>
                                       <Link
                                         href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                        className="text-sm text-gray-800 hover:text-chocolate transition font-medium"
+                                        className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                        onClick={() => setShowDropdown(false)}
                                       >
                                         {type.name}
                                       </Link>
@@ -683,7 +700,8 @@ export default function Navbar() {
                                 <li key={type.id}>
                                   <Link
                                     href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                    className="text-sm text-gray-800 hover:text-chocolate transition font-medium"
+                                    className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                    onClick={() => setShowDropdown(false)}
                                   >
                                     {type.name}
                                   </Link>
@@ -745,7 +763,7 @@ export default function Navbar() {
                       <div className="absolute left-0 top-full w-screen bg-white shadow-xl z-50 animate-slideDown">
                         <div className="max-w-7xl mx-auto px-4 py-8">
                           <h3 className="text-lg font-bold text-chocolate mb-6 text-center">
-                            <Link href="/brands" className="hover:underline">All Brands</Link>
+                            <Link href="/brands" className="hover:underline" onClick={() => setShowBrandsDropdown(false)}>All Brands</Link>
                           </h3>
                           <div className="grid grid-cols-3 gap-6 items-center">
                             <div className="space-y-2">
@@ -754,6 +772,7 @@ export default function Navbar() {
                                   key={brand._id}
                                   href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
                                   className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
+                                  onClick={() => setShowBrandsDropdown(false)}
                                 >
                                   {brand.name}
                                 </Link>
@@ -974,14 +993,28 @@ export default function Navbar() {
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
                   {/* Product Image */}
                   {item.image && (
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  )}
+  <Link
+    href={`/product/${item.slug || item._id}`}
+    onClick={() => setShowCart(false)}
+    className="block"
+  >
+    <img
+      src={item.image}
+      alt={item.name}
+      className="w-16 h-16 object-cover rounded"
+    />
+  </Link>
+)}
                   <div className="flex-1">
-                    <div className="font-semibold">{item.name}</div>
+                    <div className="font-semibold">
+                      <Link
+                        href={`/product/${item.slug || item._id}`}
+                        className="text-chocolate hover:underline"
+                        onClick={() => setShowCart(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}
                       <button
