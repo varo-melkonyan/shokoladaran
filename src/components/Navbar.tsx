@@ -1000,7 +1000,7 @@ export default function Navbar() {
     className="block"
   >
     <img
-      src={item.images?.[0] || item.images || "/placeholder.png"}
+      src={item.images?.[0] || "/placeholder.png"}
       alt={item.name}
       className="w-16 h-16 object-cover rounded"
       onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
