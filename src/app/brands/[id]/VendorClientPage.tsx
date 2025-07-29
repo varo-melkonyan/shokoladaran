@@ -10,7 +10,7 @@ import PieceCartControl from "@/components/PieceCartControl";
 type Brand = {
   _id: string;
   name: string;
-  image?: string;
+  images?: string[];
   description?: string;
   website?: string;
 };
@@ -40,7 +40,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
       const brands = brandsRaw.map((b: any) => ({
         _id: b._id || b.id,
         name: b.name,
-        image: b.image,
+        images: b.images,
         description: b.description,
         website: b.website,
       }));
@@ -53,7 +53,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
         discount: p.discount,
         collectionType: p.collectionType,
         brand: p.brand,
-        image: p.image,
+        images: p.images,
         link: p.link,
         status: p.status ?? "in_stock",
         readyAfter: p.readyAfter,
@@ -111,9 +111,9 @@ export default function VendorClientPage({ slug }: { slug: string }) {
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex flex-col md:flex-row gap-8 items-start">
-        {brand.image && (
+        {brand.images && (
           <img
-            src={brand.image}
+            src={brand.images[0]}
             alt={brand.name}
             className="w-40 h-40 object-cover rounded shadow"
           />
@@ -171,10 +171,10 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                   className="bg-white rounded-2xl shadow-lg p-4 relative transition-transform hover:scale-105 hover:shadow-2xl flex flex-col"
                 >
                   <div className="relative">
-                    {product.image && (
+                    {product.images && (
                       <a href={`/product/${product._id}`}>
                         <img
-                          src={product.image}
+                          src={product.images[0]}
                           alt={product.name}
                           className="w-full h-40 object-cover rounded-xl mb-4"
                         />

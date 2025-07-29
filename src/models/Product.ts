@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema({
   brand: { type: String, required: true },
   status: { type: String, enum: ["in_stock", "out_of_stock", "pre_order"], required: true },
   readyAfter: String,
-  image: String,
+  images: [String],
   ingredients: [String],
   shelfLife: String,
   nutritionFacts: mongoose.Schema.Types.Mixed,

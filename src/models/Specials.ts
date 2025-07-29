@@ -8,7 +8,7 @@ const SpecialsSchema = new mongoose.Schema({
   brand: { type: String, required: true },
   status: { type: String, required: true },
   readyAfter: String,
-  image: String,
+  images: [String],
   link: String,
   order: { type: Number, default: 0 },
   stockCount: { type: Number, default: 0 },

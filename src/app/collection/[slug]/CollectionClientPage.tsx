@@ -32,7 +32,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         discount: p.discount,
         collectionType: p.collectionType,
         brand: p.brand,
-        image: p.image,
+        images: p.images,
         link: p.link,
         status: p.status,
         readyAfter: p.readyAfter,
@@ -89,7 +89,11 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
               <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
                 <div className="relative">
                   <a href={`/product/${product._id}`}>
-                    <img src={product.image} alt={product.name} className="w-full h-40 object-cover mb-2 cursor-pointer" />
+                    <img
+                      src={product.images?.[0] || "/placeholder.png"}
+                      alt={product.name}
+                      className="w-full h-40 object-cover mb-2 cursor-pointer"
+                    />
                   </a>
                   {/* Info Button in top-right */}
                   {/* <div className="absolute top-2 right-2 group">

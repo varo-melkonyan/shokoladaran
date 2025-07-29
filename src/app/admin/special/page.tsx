@@ -26,7 +26,7 @@ export default function AdminSpecials() {
         discount: p.discount,
         collectionType: p.collectionType,
         brand: p.brand,
-        image: p.image,
+        images: p.image,
         link: p.link,
         status: p.status,
         readyAfter: p.readyAfter,
@@ -106,7 +106,7 @@ export default function AdminSpecials() {
       <ul>
         {specials.map((special, idx) => (
           <li key={special.name + idx} className="flex items-center gap-2 border-b py-2">
-            {special.image && <img src={special.image} alt={special.name} className="w-12 h-12 object-cover rounded" />}
+            {special.images && <img src={special.images[0]} alt={special.name} className="w-12 h-12 object-cover rounded" />}
             <span>{special.name}</span>
             <div className="flex gap-2 ml-auto">
               <button

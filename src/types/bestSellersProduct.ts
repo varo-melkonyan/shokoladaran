@@ -8,7 +8,7 @@ export type BestSellerProduct ={
   brand: string;
   status?: string;
   readyAfter?: string; // e.g. "2 days"
-  image: string;
+  images: string[];
   ingredients?: string[];
   shelfLife?: string;
   nutritionFacts?: { [key: string]: string };

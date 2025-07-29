@@ -74,8 +74,8 @@ export default function CartPage() {
             }
             return (
               <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
-                {item.image && (
-                  <img src={item.image} alt={item.name} className="w-24 h-24 object-cover rounded" />
+                {item.images && (
+                  <img src={item.images[0]} alt={item.name} className="w-24 h-24 object-cover rounded" />
                 )}
                 <div className="flex-1">
                   <div className="font-semibold text-lg">{item.name}</div>

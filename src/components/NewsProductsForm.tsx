@@ -39,7 +39,7 @@ export default function NewsProductsForm({
     e.preventDefault();
     const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onAdd({ ...product, image: product.image || "", link: product.link || "" });
+      onAdd({ ...product, images: product.images || [], link: product.link || "" });
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");

@@ -21,7 +21,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
             <div className="relative">
               <a href={`/product/${product._id}`}>
                 <img
-                  src={product.image}
+                  src={product.images?.[0] || "/placeholder.png"}
                   alt={product.name}
                   className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
                 />

@@ -31,10 +31,10 @@ export default function ProductList({
               className="bg-gray-50 rounded-xl shadow-md overflow-hidden"
             >
               <div className="relative">
-                {product.image && (
+                {product.images && (
                   <a href={`/product/${product._id}`}>
                     <img
-                      src={product.image}
+                      src={product.images[0]}
                       alt={product.name}
                       className="w-full h-48 object-cover cursor-pointer"
                     />

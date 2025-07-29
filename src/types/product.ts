@@ -17,7 +17,7 @@ export type Product = {
   stockCount,
   quantityType,
   readyAfter?: string; // e.g. "2 days"
-  image?: string;
+  images?: string[];
   ingredients?: string[];
   shelfLife?: string;
   nutritionFacts?: {

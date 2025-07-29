@@ -95,7 +95,7 @@ export async function getProductsByIds(ids: string[]) {
     brand: product.brand,
     status: product.status,
     readyAfter: product.readyAfter,
-    image: product.image,
+    images: product.images,
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,
     nutritionFacts: product.nutritionFacts,

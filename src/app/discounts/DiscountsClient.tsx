@@ -67,7 +67,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
               <a href={`/product/${item._id}`}>
-                <img src={item.image} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
+                <img src={item.images[0]} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
               </a>
               <div className="p-4">
                 <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">

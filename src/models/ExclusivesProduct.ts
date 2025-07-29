@@ -9,7 +9,7 @@ const ExclusivesProductSchema = new Schema({
   brand: String,
   status: String,
   readyAfter: String, // e.g. "2 days"
-  image: String,
+  images: [String],
   ingredients: [String],
   shelfLife: String,
   nutritionFacts: Schema.Types.Mixed,

@@ -516,19 +516,20 @@ export default function Navbar() {
               cart.map((item) => (
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
                   {/* Product Image */}
-                  {item.image && (
-                  <Link
-                    href={`/product/${item.slug || item._id}`}
-                    onClick={() => setShowCart(false)}
-                    className="block"
-                  >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                  </Link>
-                )}
+                  {(item.images && item.images[0]) || item.images ? (
+  <Link
+    href={`/product/${item.slug || item._id}`}
+    onClick={() => setShowCart(false)}
+    className="block"
+  >
+    <img
+      src={item.images?.[0] || "/placeholder.png"}
+      alt={item.name}
+      className="w-16 h-16 object-cover rounded"
+      onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
+    />
+  </Link>
+) : null}
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
@@ -992,19 +993,20 @@ export default function Navbar() {
               cart.map((item) => (
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
                   {/* Product Image */}
-                  {item.image && (
+                  {(item.images && item.images[0]) || item.images ? (
   <Link
     href={`/product/${item.slug || item._id}`}
     onClick={() => setShowCart(false)}
     className="block"
   >
     <img
-      src={item.image}
+      src={item.images?.[0] || item.images || "/placeholder.png"}
       alt={item.name}
       className="w-16 h-16 object-cover rounded"
+      onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
     />
   </Link>
-)}
+) : null}
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link

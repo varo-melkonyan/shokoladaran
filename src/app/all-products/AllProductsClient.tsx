@@ -8,9 +8,9 @@ type Product = {
   weight: string;
   collectionType: string;
   brand: string;
-  image: string;
+  images: string[];
   status?: string;
-  readyAfter?: string; // e.g. "2 days"
+  readyAfter?: string;
   discount?: number;
   ingredients?: string[];
   shelfLife?: string;
@@ -85,7 +85,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
             <div className="relative">
               <a href={`/product/${product._id}`}>
                 <img
-                  src={product.image}
+                  src={product.images?.[0]}
                   alt={product.name}
                   className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
                 />

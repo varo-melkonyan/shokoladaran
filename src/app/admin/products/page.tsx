@@ -24,8 +24,8 @@ export default function AdminProducts() {
   const [collectionType, setCollectionType] = useState("");
   const [brand, setBrand] = useState("");
   const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "pre_order">("in_stock");
-  const [image, setImage] = useState(""); 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [ingredientsInput, setIngredientsInput] = useState(""); 
   const [shelfLife, setShelfLife] = useState("");
@@ -53,7 +53,7 @@ export default function AdminProducts() {
         discount: p.discount,
         collectionType: p.collectionType,
         brand: p.brand,
-        image: p.image,
+        images: (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : []),
         link: p.link,
         status: p.status,
         readyAfter: p.readyAfter,
@@ -104,6 +104,22 @@ export default function AdminProducts() {
     return data.url;
   }
 
+  async function uploadImages(files: File[], brand: string, collectionType: string): Promise<string[]> {
+    const urls: string[] = [];
+    for (const file of files) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("brand", brand);
+      formData.append("collectionType", collectionType);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        urls.push(data.url);
+      }
+    }
+    return urls;
+  }
+
   function handleEdit(product: Product) {
     setEditId(product._id);
     setName(product.name);
@@ -114,8 +130,8 @@ export default function AdminProducts() {
     setBrand(product.brand);
     setStatus((product.status as "in_stock" | "out_of_stock" | "pre_order") || "in_stock");
     setReadyAfter(product.readyAfter || "");
-    setImage(product.image || "");
-    setImageFile(null);
+    setImages(product.images ? [...product.images] : []);
+    setImageFiles([]);
     setIngredientsInput(product.ingredients?.join(", ") || "");
     setShelfLife(product.shelfLife || "");
     setReadyAfter(product.readyAfter || "");
@@ -147,8 +163,8 @@ export default function AdminProducts() {
     setBrand(brands[0]?.name || "");
     setStatus("in_stock");
     setReadyAfter("");
-    setImage("");
-    setImageFile(null);
+    setImages([]);
+    setImageFiles([]);
     setIngredients([]);
     setIngredientsInput("");
     setShelfLife("");
@@ -171,15 +187,10 @@ export default function AdminProducts() {
       return;
     }
 
-    let imageUrl = image;
-    if (imageFile) {
-      const uploaded = await uploadImage(imageFile, brand, collectionType);
-      if (!uploaded) {
-        setError("Image upload failed.");
-        return;
-      }
-      imageUrl = uploaded;
-      setImage(imageUrl);
+    let imageUrls = images;
+    if (imageFiles.length) {
+      imageUrls = await uploadImages(imageFiles, brand, collectionType);
+      setImages(imageUrls);
     }
 
     const link = `/${slugify(brand)}/${slugify(collectionType)}/${slugify(name)}`;
@@ -192,13 +203,14 @@ export default function AdminProducts() {
       brand,
       status,
       readyAfter: readyAfter || undefined,
-      image: imageUrl,
+      image: imageUrls[0],
       ingredients: ingredientsInput.split(",").map(i => i.trim()).filter(Boolean),
       shelfLife,
       nutritionFacts: { ...nutritionFacts },
       link,
       stockCount,
       quantityType,
+      images: imageUrls,
     };
 
     if (editId) {
@@ -252,27 +264,42 @@ export default function AdminProducts() {
           <option value="pre_order">Pre Order</option>
           <option value="out_of_stock">No Product</option>
         </select>
-        <input
-          type="file"
-          accept="image/png"
-          onChange={e => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            if (file.type !== "image/png") {
-              setError("Image must be PNG");
-              return;
-            }
-            setError("");
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onload = (ev) => setImage(ev.target?.result as string);
-            reader.readAsDataURL(file);
-          }}
-          className="border p-2 rounded"
-        />
-        {image && (
-          <img src={image} alt="Preview" className="w-32 h-32 object-cover rounded" />
-        )}
+        <div className="flex flex-col gap-2">
+          <input
+            type="file"
+            accept="image/png"
+            multiple
+            onChange={e => {
+              const files = Array.from(e.target.files ?? []);
+              setImageFiles(files);
+              Promise.all(files.map(file => {
+                return new Promise<string>((resolve) => {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => resolve(ev.target?.result as string);
+                  reader.readAsDataURL(file);
+                });
+              })).then(setImages);
+            }}
+            className="border p-2 rounded"
+          />
+          <div className="flex gap-2">
+            {images.map((img, idx) => (
+              <div key={idx} className="relative">
+                <img src={img} alt={`Preview ${idx + 1}`} className="w-32 h-32 object-cover rounded" />
+                <button
+                  type="button"
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                  onClick={() => {
+                    setImages(images.filter((_, i) => i !== idx));
+                    setImageFiles(imageFiles.filter((_, i) => i !== idx));
+                  }}
+                >
+                  &times;
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
         <input
           value={ingredientsInput}
           onChange={e => setIngredientsInput(e.target.value)}
@@ -332,9 +359,6 @@ export default function AdminProducts() {
         {products.map((p) => (
           <li key={p._id} className="flex flex-col border-b py-2">
             <div className="flex items-center gap-2">
-              {p.image && (
-                <img src={p.image} alt={p.name} className="w-10 h-10 object-cover rounded" />
-              )}
               <span className="font-bold">{p.name}</span>
               <span>{p.weight} g</span>
               <span>{p.price} AMD</span>
@@ -366,6 +390,13 @@ export default function AdminProducts() {
                 Remove
               </button>
             </div>
+            {p.images && p.images.length > 0 && (
+              <div className="flex gap-2">
+                {p.images.map((img, idx) => (
+                  <img key={idx} src={img} alt={p.name} className="w-10 h-10 object-cover rounded" />
+                ))}
+              </div>
+            )}
             {p.ingredients && p.ingredients.length > 0 && (
               <div>
                 <span className="font-semibold">Ingredients:</span> {p.ingredients.join(", ")}

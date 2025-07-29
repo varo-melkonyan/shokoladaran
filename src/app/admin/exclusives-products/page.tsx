@@ -34,7 +34,7 @@ export default function AdminExclusivesProducts() {
     discount: p.discount,
     collectionType: p.collectionType,
     brand: p.brand,
-    image: p.image,
+    images: p.images,
     link: p.link,
     status: p.status,
     readyAfter: p.readyAfter,
@@ -113,7 +113,7 @@ export default function AdminExclusivesProducts() {
       <ul>
         {exclusivesProducts.map((ep, idx) => (
           <li key={ep.name + idx} className="flex items-center gap-2 border-b py-2">
-            {ep.image && <img src={ep.image} alt={ep.name} className="w-12 h-12 object-cover rounded" />}
+            {ep.images && <img src={ep.images[0]} alt={ep.name} className="w-12 h-12 object-cover rounded" />}
             <span>{ep.name}</span>
             <div className="flex gap-2 ml-auto">
               <button

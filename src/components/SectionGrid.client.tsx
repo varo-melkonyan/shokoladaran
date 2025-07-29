@@ -121,9 +121,10 @@ export default function SectionGrid({
                     <div className="relative">
                       <a href={`/product/${item._id || item.id}`}>
                         <img
-                          src={item.image}
+                          src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
                           alt={item.name || item.title}
                           className="w-full h-48 object-cover cursor-pointer"
+                          onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                         />
                       </a>
                     </div>
@@ -191,9 +192,10 @@ export default function SectionGrid({
                     <div className="relative">
                       <a href={`/product/${item._id || item.id}`}>
                         <img
-                          src={item.image}
+                          src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
                           alt={item.name || item.title}
                           className="w-full h-40 object-cover cursor-pointer"
+                          onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                         />
                       </a>
                     </div>

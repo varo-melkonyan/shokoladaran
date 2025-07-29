@@ -21,8 +21,8 @@ export default function GiftsForm({
   const [weight, setWeight] = useState("");
   const [status, setStatus] = useState<"in_stock" | "out_of_stock" | "pre_order">("in_stock");
   const [readyAfter, setReadyAfter] = useState("");
-  const [image, setImage] = useState<string>("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [error, setError] = useState("");
   const [stockCount, setStockCount] = useState(0);
   const [quantityType, setQuantityType] = useState<"pieces" | "kg">("pieces");
@@ -36,8 +36,8 @@ export default function GiftsForm({
       setWeight(initialData.weight || "");
       setStatus(initialData.status || "in_stock");
       setReadyAfter(initialData.readyAfter || "");
-      setImage(initialData.image || "");
-      setImageFile(null);
+      setImages(initialData.images || []);
+      setImageFiles([]);
       setStockCount(initialData.stockCount ?? 0);
       setQuantityType((initialData.quantityType as "pieces" | "kg") ?? "pieces");
     } else {
@@ -48,8 +48,8 @@ export default function GiftsForm({
       setWeight("");
       setStatus("in_stock");
       setReadyAfter("");
-      setImage("");
-      setImageFile(null);
+      setImages([]);
+      setImageFiles([]);
       setStockCount(0);
       setQuantityType("pieces");
     }
@@ -74,15 +74,15 @@ export default function GiftsForm({
       return;
     }
 
-    let imageUrl = image;
-    if (imageFile) {
-      const uploaded = await uploadImage(imageFile);
-      if (!uploaded) {
+    let imageUrls = images;
+    if (imageFiles.length > 0) {
+      const uploaded = await Promise.all(imageFiles.map(uploadImage));
+      if (uploaded.includes(null)) {
         setError("Image upload failed.");
         return;
       }
-      imageUrl = uploaded;
-      setImage(imageUrl);
+      imageUrls = uploaded.filter((url): url is string => !!url);
+      setImages(imageUrls);
     }
 
     const newGift = {
@@ -94,7 +94,7 @@ export default function GiftsForm({
       collectionType: "Gift",
       status,
       readyAfter: status === "pre_order" ? readyAfter : "",
-      image: imageUrl,
+      images: imageUrls,
       stockCount,
       quantityType,
     };
@@ -106,8 +106,8 @@ export default function GiftsForm({
     setWeight("");
     setStatus("in_stock");
     setReadyAfter("");
-    setImage("");
-    setImageFile(null);
+    setImages([]);
+    setImageFiles([]);
     setStockCount(0);
     setQuantityType("pieces");
     setError("");
@@ -179,15 +179,19 @@ export default function GiftsForm({
             return;
           }
           setError("");
-          setImageFile(file);
+          setImageFiles(prev => [...prev, file]);
           const reader = new FileReader();
-          reader.onload = (ev) => setImage(ev.target?.result as string);
+          reader.onload = (ev) => setImages(prev => [...prev, ev.target?.result as string]);
           reader.readAsDataURL(file);
         }}
         className="border p-2 rounded"
       />
-      {image && (
-        <img src={image} alt="Preview" className="w-32 h-32 object-cover rounded" />
+      {images.length > 0 && (
+        <div className="flex gap-2">
+          {images.map((image, index) => (
+            <img key={index} src={image} alt={`Preview ${index}`} className="w-32 h-32 object-cover rounded" />
+          ))}
+        </div>
       )}
       <input
         value={stockCount}
