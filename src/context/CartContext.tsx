@@ -18,7 +18,7 @@ type CartContextType = {
   cart: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity"> & { quantity?: number; grams?: number }) => void;
   removeFromCart: (id: string) => void;
-  clearCart: () => void; // <-- Add this line
+  clearCart: () => void;
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
 };
 
@@ -30,7 +30,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Load cart from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("cart");
-    if (stored) setCart(JSON.parse(stored));
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) setCart(parsed);
+      } catch {
+        setCart([]);
+      }
+    }
   }, []);
 
   // Save cart to localStorage on change
