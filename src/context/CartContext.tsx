@@ -45,13 +45,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (item: Omit<CartItem, "quantity"> & { quantity?: number; grams?: number }) => {
+  const addToCart = (
+    item: (Omit<CartItem, "quantity"> & { quantity?: number; grams?: number; image?: string })
+  ) => {
+    const normalizedItem = {
+      ...item,
+      images: Array.isArray(item.images)
+        ? item.images
+        : item.image
+          ? [item.image]
+          : [],
+    };
+
     setCart((prev) => {
       const existing = prev.find((i) => i._id === item._id);
 
       // If grams is provided, handle grams-based products
       if (typeof item.grams === "number") {
-        // Remove from cart if grams is 0
         if (item.grams === 0) {
           return prev.filter((i) => i._id !== item._id);
         }
@@ -62,14 +72,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
               : i
           );
         }
-        return [...prev, { ...item, grams: item.grams, quantity: 1 }];
+        return [...prev, { ...normalizedItem, grams: item.grams, quantity: 1 }];
       }
 
       // Otherwise, handle quantity-based products (pieces)
       const addQty = item.quantity ?? 1;
       if (existing) {
         const newQty = existing.quantity + addQty;
-        // Remove from cart if quantity is 0 or less
         if (newQty <= 0) {
           return prev.filter((i) => i._id !== item._id);
         }
@@ -79,9 +88,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : i
         );
       }
-      // Only add if quantity is positive
       if (addQty > 0) {
-        return [...prev, { ...item, quantity: addQty, grams: undefined }];
+        return [...prev, { ...normalizedItem, quantity: addQty, grams: undefined }];
       }
       return prev;
     });

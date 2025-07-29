@@ -11,7 +11,7 @@ export type Product = {
   brand?: string;
   status?: string;
   readyAfter?: string; // e.g. "2 days"
-  image?: string;
+  images?: string[];
   ingredients?: string[];
   shelfLife?: string;
   nutritionFacts?: any;
@@ -40,7 +40,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     brand: product.brand,
     status: product.status,
     readyAfter: product.readyAfter,
-    image: product.image,
+    images: product.images,
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,
     nutritionFacts: product.nutritionFacts,

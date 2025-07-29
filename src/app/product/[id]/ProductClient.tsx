@@ -3,6 +3,7 @@ import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { useState } from "react";
 
 export default function ProductClient({
   product,
@@ -12,6 +13,9 @@ export default function ProductClient({
   recommendations: any[];
 }) {
   const { addToCart, removeFromCart, cart } = useCart();
+  const [imgIdx, setImgIdx] = useState(0);
+
+  const images = product.images && product.images.length > 0 ? product.images : ["/placeholder.png"];
 
   // Find this product in the cart
   const cartItem = cart.find((item) => item._id === product._id);
@@ -21,12 +25,48 @@ export default function ProductClient({
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl shadow-2xl p-8 ">
         {/* Left: Product Images */}
         <div>
-          <div className="bg-white rounded-2xl shadow-lg p-4 mb-4">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-80 object-contain rounded-xl"
-            />
+          <div className="bg-white rounded-2xl shadow-lg p-4 mb-4 flex flex-col items-center">
+            <div className="relative w-full flex flex-col items-center">
+              <img
+                src={images[imgIdx]}
+                alt={product.name}
+                className="w-full h-80 object-contain rounded-xl"
+              />
+              {images.length > 1 && (
+                <div className="absolute top-1/2 left-0 right-0 flex justify-between items-center w-full px-2 pointer-events-none">
+                  <button
+                    type="button"
+                    className="pointer-events-auto bg-white/80 hover:bg-chocolate hover:text-white rounded-full p-2 shadow"
+                    onClick={() => setImgIdx((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
+                    aria-label="Previous image"
+                  >
+                    &#8592;
+                  </button>
+                  <button
+                    type="button"
+                    className="pointer-events-auto bg-white/80 hover:bg-chocolate hover:text-white rounded-full p-2 shadow"
+                    onClick={() => setImgIdx((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
+                    aria-label="Next image"
+                  >
+                    &#8594;
+                  </button>
+                </div>
+              )}
+            </div>
+            {/* Thumbnails */}
+            {images.length > 1 && (
+              <div className="flex gap-2 mt-4">
+                {images.map((img, idx) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={`Thumbnail ${idx + 1}`}
+                    className={`w-16 h-16 object-cover rounded cursor-pointer border ${imgIdx === idx ? "border-chocolate" : "border-gray-200"}`}
+                    onClick={() => setImgIdx(idx)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {/* Right: Product Info */}
@@ -133,7 +173,7 @@ export default function ProductClient({
             <div key={rec._id} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
               <Link href={`/product/${rec._id}`}>
                 <img
-                  src={rec.image}
+                  src={rec.images?.[0]}
                   alt={rec.name}
                   className="w-full h-40 object-contain mb-2 rounded cursor-pointer"
                 />
