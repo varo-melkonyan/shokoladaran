@@ -15,7 +15,7 @@ type Gift = {
   collectionType?: string;
   link?: string;
   status?: string;
-  weight?: number;
+  weight?: number; // Add this if some gifts are grams-based
 };
 
 export default function GiftsClient() {
@@ -27,7 +27,7 @@ export default function GiftsClient() {
       .then((res) => res.json())
       .then((data) => setGifts(data));
   }, []);
-
+console.log("Gifts loaded:", gifts);
   const brands = useMemo(
     () => Array.from(new Set(gifts.map((g) => g.brand).filter(Boolean))),
     [gifts]
@@ -78,13 +78,8 @@ export default function GiftsClient() {
 
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
-              <Link href={item.link || `/product/gifts/${item._id}`}>
-                <img
-                  src={item.images && item.images[0] ? item.images[0] : "/placeholder.png"}
-                  alt={item.name}
-                  className="w-full h-56 object-cover cursor-pointer"
-                  onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
-                />
+              <Link href={item.link || `/gifts/${item._id}`}>
+                <img src={item.images[0]} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
               </Link>
               <div className="p-4">
                 <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">

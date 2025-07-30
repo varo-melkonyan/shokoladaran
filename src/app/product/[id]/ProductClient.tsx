@@ -1,29 +1,24 @@
 "use client";
-import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { useState } from "react";
 
 export default function ProductClient({
   product,
   recommendations,
-  type, // "gifts", "specials", or undefined for regular
 }: {
   product: any;
   recommendations: any[];
-  type?: string;
 }) {
   const { addToCart, removeFromCart, cart } = useCart();
   const [imgIdx, setImgIdx] = useState(0);
 
-  // Use images or fallback
   const images = product.images && product.images.length > 0 ? product.images : ["/placeholder.png"];
-  const cartItem = cart.find((item) => item._id === product._id);
 
-  // Optionally, you can show a badge or special info for gifts/specials
-  const isGift = type === "gifts" || product.collectionType === "Gift";
-  const isSpecial = type === "specials" || product.collectionType === "Special";
+  // Find this product in the cart
+  const cartItem = cart.find((item) => item._id === product._id);
 
   return (
     <div>
@@ -77,11 +72,7 @@ export default function ProductClient({
         {/* Right: Product Info */}
         <div className="flex flex-col justify-between">
           <div>
-            <h1 className="text-4xl font-extrabold text-chocolate mb-2">
-              {product.name}
-              {isGift && <span className="ml-2 px-2 py-1 bg-pink-100 text-pink-700 rounded text-sm">Gift</span>}
-              {isSpecial && <span className="ml-2 px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-sm">Special</span>}
-            </h1>
+            <h1 className="text-4xl font-extrabold text-chocolate mb-2">{product.name}</h1>
             <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="flex items-end gap-3 mb-4">
               {product.discount ? (
