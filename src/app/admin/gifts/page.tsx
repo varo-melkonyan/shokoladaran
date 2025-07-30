@@ -106,7 +106,11 @@ export default function AdminGifts() {
       <ul>
         {gifts.map((gift, idx) => (
           <li key={gift.name + idx} className="flex items-center gap-2 border-b py-2">
-            {gift.images && <img src={gift.images[0]} alt={gift.name} className="w-12 h-12 object-cover rounded" />}
+            {gift.images && gift.images[0] ? (
+              <img src={gift.images[0]} alt={gift.name} className="w-12 h-12 object-cover rounded" />
+            ) : (
+              <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400">No Image</div>
+            )}
             <span>{gift.name}</span>
             <div className="flex gap-2 ml-auto">
               <button
