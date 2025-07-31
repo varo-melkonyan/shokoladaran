@@ -12,6 +12,7 @@ export type CartItem = {
   discount?: number;
   quantity: number;
   grams?: number;
+  type?: "product" | "gift" | "special";
 };
 
 type CartContextType = {

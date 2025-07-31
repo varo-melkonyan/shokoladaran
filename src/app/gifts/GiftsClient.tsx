@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
-import KgCartControl from "@/components/KgCartControl";
 
 type Gift = {
   _id: string;
@@ -15,7 +14,7 @@ type Gift = {
   collectionType?: string;
   link?: string;
   status?: string;
-  weight?: number; // Add this if some gifts are grams-based
+  weight?: number;
 };
 
 export default function GiftsClient() {
@@ -27,7 +26,6 @@ export default function GiftsClient() {
       .then((res) => res.json())
       .then((data) => setGifts(data));
   }, []);
-console.log("Gifts loaded:", gifts);
   const brands = useMemo(
     () => Array.from(new Set(gifts.map((g) => g.brand).filter(Boolean))),
     [gifts]

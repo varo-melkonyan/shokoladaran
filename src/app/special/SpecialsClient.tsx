@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
-import KgCartControl from "@/components/KgCartControl";
 
 type Special = {
   _id: string;
@@ -79,7 +78,7 @@ export default function SpecialsClient() {
 
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
-              <Link href={item.link || `/product/${item._id}`}>
+              <Link href={item.link || `/special/${item._id}`}>
                 <img src={item.images[0]} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
               </Link>
               <div className="p-4">

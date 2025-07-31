@@ -23,6 +23,8 @@ export default function Navbar() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
   const [openSection, setOpenSection] = useState<string | null>(null);
+  const [gifts, setGifts] = useState<any[]>([]);
+  const [specials, setSpecials] = useState<any[]>([]);
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -80,19 +82,31 @@ export default function Navbar() {
   }, [showSearchDropdown]);
 
  useEffect(() => {
-    async function fetchProducts() {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/admin/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        setProducts([]);
-      }
-      setLoading(false);
+  async function fetchAll() {
+    setLoading(true);
+    try {
+      const [productsRes, giftsRes, specialsRes] = await Promise.all([
+        fetch("/api/admin/products"),
+        fetch("/api/admin/gifts"),
+        fetch("/api/admin/special"),
+      ]);
+      const [productsData, giftsData, specialsData] = await Promise.all([
+        productsRes.json(),
+        giftsRes.json(),
+        specialsRes.json(),
+      ]);
+      setProducts(productsData);
+      setGifts(giftsData);
+      setSpecials(specialsData);
+    } catch (err) {
+      setProducts([]);
+      setGifts([]);
+      setSpecials([]);
     }
-    fetchProducts();
-  }, []);
+    setLoading(false);
+  }
+  fetchAll();
+}, []);
   
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -150,7 +164,6 @@ export default function Navbar() {
     }
   };
 
-  // Prevent body scroll when cart drawer is open
   useEffect(() => {
     if (showCart) {
       document.body.style.overflow = "hidden";
@@ -161,6 +174,25 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [showCart]);
+
+  function getCartItemLink(item: any) {
+  const foundGift = gifts.find(
+    (g) => g.name && item.name && g.name.toLowerCase() === item.name.toLowerCase()
+  );
+  if (foundGift) return `/gifts/${foundGift._id}`;
+
+  const foundSpecial = specials.find(
+    (s) => s.name && item.name && s.name.toLowerCase() === item.name.toLowerCase()
+  );
+  if (foundSpecial) return `/special/${foundSpecial._id}`;
+
+  const foundProduct = products.find(
+    (p) => p.name && item.name && p.name.toLowerCase() === item.name.toLowerCase()
+  );
+  if (foundProduct) return `/product/${foundProduct.slug || foundProduct._id}`;
+
+  return `/product/${item.slug || item._id}`;
+}
 
   return (
     <>
@@ -518,16 +550,12 @@ export default function Navbar() {
                   {/* Product Image */}
                   {(item.images && item.images[0]) || item.images ? (
                   <Link
-                    href={`/product/${item.slug || item._id}`}
+                    href={getCartItemLink(item)}
                     onClick={() => setShowCart(false)}
                     className="block"
                   >
                     <img
-                      src={
-                        (item.images && item.images[0]) ? item.images[0]
-                        : item.images ? item.images[0]
-                        : "/placeholder.png"
-                      }
+                      src={item.images && item.images[0] ? item.images[0] : "/placeholder.png"}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded"
                       onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
@@ -537,12 +565,12 @@ export default function Navbar() {
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
-                        href={`/product/${item.slug || item._id}`}
-                        className="text-chocolate hover:underline"
-                        onClick={() => setShowCart(false)}
-                      >
-                        {item.name}
-                      </Link>
+  href={getCartItemLink(item)}
+  className="text-chocolate hover:underline"
+  onClick={() => setShowCart(false)}
+>
+  {item.name}
+</Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}
@@ -726,14 +754,23 @@ export default function Navbar() {
                             <Link
                               href="/all-products"
                               className="absolute inset-0 flex items-center justify-center z-20"
+                              onClick={() => setShowDropdown(false)}
                             >
                               <span className="text-white text-xl font-bold tracking-wider">ALL PRODUCTS</span>
                             </Link>
                             <div className="absolute bottom-0 w-full flex justify-center gap-6 py-2 z-20">
-                              <Link href="/discounts" className="text-white text-sm font-medium hover:underline">
+                              <Link 
+                              href="/discounts" 
+                              className="text-white text-sm font-medium hover:underline"
+                              onClick={() => setShowDropdown(false)}
+                              >
                                 Discounts
                               </Link>
-                              <Link href="/special" className="text-white text-sm font-medium hover:underline">
+                              <Link 
+                              href="/special" 
+                              className="text-white text-sm font-medium hover:underline"
+                              onClick={() => setShowDropdown(false)}
+                              >
                                 Special
                               </Link>
                             </div>
@@ -999,16 +1036,12 @@ export default function Navbar() {
                   {/* Product Image */}
                   {(item.images && item.images[0]) || item.images ? (
                   <Link
-                    href={`/product/${item.slug || item._id}`}
+                    href={getCartItemLink(item)}
                     onClick={() => setShowCart(false)}
                     className="block"
                   >
                     <img
-                      src={
-                        (item.images && item.images[0]) ? item.images[0]
-                        : item.images ? item.images[0]
-                        : "/placeholder.png"
-                      }
+                      src={item.images && item.images[0] ? item.images[0] : "/placeholder.png"}
                       alt={item.name}
                       className="w-16 h-16 object-cover rounded"
                       onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
@@ -1018,12 +1051,12 @@ export default function Navbar() {
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
-                        href={`/product/${item.slug || item._id}`}
-                        className="text-chocolate hover:underline"
-                        onClick={() => setShowCart(false)}
-                      >
-                        {item.name}
-                      </Link>
+  href={getCartItemLink(item)}
+  className="text-chocolate hover:underline"
+  onClick={() => setShowCart(false)}
+>
+  {item.name}
+</Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}

@@ -1,10 +1,11 @@
+import { notFound } from "next/navigation";
+import { getGiftsById } from "@/lib/gifts";
 import GiftClient from "./GiftClient";
 
-export default async function GiftPage({ params }: { params: { id: string } }) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/admin/gifts/${params.id}`);
-  if (!res.ok) return <div>Gift not found.</div>;
-  const gift = await res.json();
+export default async function GiftPage({params}: {params: Promise<{ id: string }>}) {
+  const { id } = await params;
+  const gift = await getGiftsById(id);
+  if (!gift) return notFound();
 
-  return <GiftClient gift={gift} />;
+ return <GiftClient gift={gift} />;
 }
