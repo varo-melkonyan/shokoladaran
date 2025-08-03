@@ -5,6 +5,7 @@ import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 type CollectionType = {
   _id: string;
@@ -64,7 +65,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   }, [slug]);
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-4 py-12">Loading...</div>;
+    return <div className="max-w-7xl mx-auto px-4 py-12">{t("loading")}</div>;
   }
 
   if (!matched) return notFound();
@@ -75,11 +76,11 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         {matched.name}
       </h1>
       <p className="text-gray-700 mb-8">
-        Explore our selection of {matched.name} chocolates handcrafted by local artisans.
+        {t("explore_selection")} {matched.name} {t("handcrafted_chocolates")}.
       </p>
 
       {products.length === 0 ? (
-        <div className="text-gray-500">No products found in this collection.</div>
+        <div className="text-gray-500">{t("no_products_found")}</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {products.map((product) => {
@@ -141,11 +142,11 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                 <div className="mt-2">
                   {product.discount ? (
                     <>
-                      <span className="line-through text-gray-400 mr-2">{product.price} AMD</span>
-                      <span className="text-chocolate font-bold">{product.discount} AMD</span>
+                      <span className="line-through text-gray-400 mr-2">{product.price} {t("amd")}</span>
+                      <span className="text-chocolate font-bold">{product.discount} {t("amd")}</span>
                     </>
                   ) : (
-                    <span className="text-chocolate font-bold">{product.price} AMD</span>
+                    <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
                   )}
                 </div>
                 <p className="text-sm text-gray-500">{product.weight} g</p>

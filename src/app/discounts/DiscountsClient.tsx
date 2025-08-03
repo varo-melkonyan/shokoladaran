@@ -3,6 +3,7 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
   const { addToCart, removeFromCart, cart } = useCart();
@@ -27,7 +28,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
-      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">Discounts</h1>
+      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">{t("discounts")}</h1>
       <div className="flex flex-wrap gap-4 mb-8">
         <select
           className="border p-2 rounded"
@@ -54,10 +55,10 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
           value={sortBy}
           onChange={e => setSortBy(e.target.value)}
         >
-          <option value="price-asc">Price Low-High</option>
-          <option value="price-desc">Price High-Low</option>
-          <option value="name-asc">Name A-Z</option>
-          <option value="name-desc">Name Z-A</option>
+          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
+          <option value="name-asc">{t("sort_options.name_asc")}</option>
+          <option value="name-desc">{t("sort_options.name_desc")}</option>
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -74,8 +75,8 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
                   {item.name}
                 </h2>
                 <div className="mt-2">
-                  <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
-                  <span className="text-red-600 font-bold">{item.discount} AMD</span>
+                  <span className="line-through text-gray-400 mr-2">{item.price} {t("amd")}</span>
+                  <span className="text-red-600 font-bold">{item.discount} {t("amd")}</span>
                 </div>
                 {/* Cart controls */}
                 <div className="mt-4">

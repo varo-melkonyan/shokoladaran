@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProductList from "@/components/ProductList";
 import { useCart } from "@/context/CartContext";
+import { t } from "i18next";
 
 
 export default function SearchComponent() {
@@ -50,7 +51,7 @@ export default function SearchComponent() {
         Search results for: <span className="text-chocolate">{query}</span>
       </h1>
       {loading ? (
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-500">{t("loading")}</p>
       ) : filtered.length === 0 ? (
         <p className="text-gray-500">No products found.</p>
       ) : (

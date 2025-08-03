@@ -3,6 +3,7 @@ import { useCart } from "@/context/CartContext";
 import { Product } from "@/types/product";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 export default function BrandProductGrid({ products }: { products: Product[] }) {
   const { addToCart, removeFromCart, cart } = useCart();
@@ -71,11 +72,11 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
             <p className="text-sm text-gray-500">
               {product.discount ? (
                 <>
-                  <span className="line-through mr-2">{product.price} AMD</span>
-                  <span className="text-red-600">{product.discount} AMD</span>
+                  <span className="line-through mr-2">{product.price} {t("amd")}</span>
+                  <span className="text-red-600">{product.discount} {t("amd")}</span>
                 </>
               ) : (
-                <>{product.price} AMD</>
+                <>{product.price} {t("amd")}</>
               )}
               {" • "}
               {product.weight}

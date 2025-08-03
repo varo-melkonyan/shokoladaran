@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { t } from "i18next";
 
 type Brand = {
   _id: string;
@@ -42,11 +43,11 @@ export default function BrandsPage() {
     ]).finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">Loading...</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">{t("loading")}</div>;
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold text-chocolate mb-8">Brands</h1>
+      <h1 className="text-3xl font-bold text-chocolate mb-8">{t("brands")}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {brands.map((brand) => (
           <div key={brand._id} className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
@@ -70,7 +71,7 @@ export default function BrandsPage() {
                 rel="noopener noreferrer"
                 className="text-blue-600 underline mb-2"
               >
-                Visit Website
+                {t("visit_website")}
               </a>
             )}
           </div>

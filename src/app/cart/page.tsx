@@ -2,6 +2,7 @@
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "i18next";
 
 export default function CartPage() {
   const { cart, addToCart, removeFromCart } = useCart();
@@ -59,9 +60,9 @@ export default function CartPage() {
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold text-chocolate mb-8">Your Cart</h1>
+      <h1 className="text-3xl font-bold text-chocolate mb-8">{t("your_cart")}</h1>
       {cart.length === 0 ? (
-        <div className="text-gray-500">Your cart is empty.</div>
+        <div className="text-gray-500">{t("empty_cart")}</div>
       ) : (
         <div className="space-y-6">
           {cart.map((item, idx) => {
@@ -82,7 +83,7 @@ export default function CartPage() {
                   {/* Show readyAfter for pre-order items */}
                   {item.status === "pre_order" && (
                     <div className="text-orange-600 text-sm mt-1">
-                      Pre-order: will be ready {item.readyAfter ? `in ${item.readyAfter}` : "soon"}
+                      {t("pre_order")}: {t("will_be_ready")} {item.readyAfter ? `${t("in")} ${item.readyAfter}` : `${t("soon")}`}
                     </div>
                   )}
                   <div className="text-xs text-gray-500 mt-1">
@@ -118,7 +119,7 @@ export default function CartPage() {
                       onClick={() => removeFromCart(item._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded text-xs ml-2"
                     >
-                      Remove
+                      {t("remove")}
                     </button>
                   </div>
                 </div>
@@ -126,28 +127,28 @@ export default function CartPage() {
                   <div className="text-right">
                     <div className="text-gray-700 mb-1 line-through">
                       {typeof item.grams === "number"
-                        ? Math.round(((item.price ?? 0) / 100) * item.grams) + " AMD"
-                        : (item.price ?? 0) * item.quantity + " AMD"}
+                        ? Math.round(((item.price ?? 0) / 100) * item.grams) + " " + t("amd")
+                        : (item.price ?? 0) * item.quantity + " " + t("amd")}
                     </div>
                     <div className="text-chocolate font-bold">
-                      {itemPrice} AMD
+                      {itemPrice} {t("amd")}
                     </div>
                   </div>
                 ) : (
                   <div className="text-right font-bold text-xl mt-6">
-                    {itemPrice} AMD
+                    {itemPrice} {t("amd")}
                   </div>
                 )}
               </div>
             );
           })}
           <div className="text-right font-bold text-xl mt-6">
-            Total: {total} AMD
+            {t("total")}: {total} {t("amd")}
           </div>
           <section className="bg-gray-50 rounded-lg p-6 mt-8">
-            <h2 className="text-xl font-bold mb-4">Contact & Delivery</h2>
+            <h2 className="text-xl font-bold mb-4">{t("contact_delivery")}</h2>
             <div className="mb-4">
-              <label className="font-semibold mr-4">Delivery Method:</label>
+              <label className="font-semibold mr-4">{t("delivery_method")}:</label>
               <label className="mr-4">
                 <input
                   type="radio"
@@ -157,7 +158,7 @@ export default function CartPage() {
                   onChange={() => setDeliveryType("delivery")}
                   className="mr-1"
                 />
-                Delivery
+                {t("delivery")}
               </label>
               <label>
                 <input
@@ -168,51 +169,51 @@ export default function CartPage() {
                   onChange={() => setDeliveryType("pickup")}
                   className="mr-1"
                 />
-                Pick up from branch
+                {t("pick_up_from_branch")}
               </label>
             </div>
             {deliveryType === "delivery" && (
               <>
                 <div className="mb-4">
-                  <label className="block font-semibold mb-1">Address</label>
+                  <label className="block font-semibold mb-1">{t("address")}</label>
                   <input
                     type="text"
                     name="address"
                     value={form.address}
                     onChange={handleInput}
                     className="w-full border rounded px-3 py-2"
-                    placeholder="Delivery address"
+                    placeholder={t("address")}
                   />
                 </div>
               </>
             )}
             <div className="mb-4">
-              <label className="block font-semibold mb-1">Full Name</label>
+              <label className="block font-semibold mb-1">{t("full_name")}</label>
               <input
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleInput}
                 className="w-full border rounded px-3 py-2"
-                placeholder="Your name"
+                placeholder={t("full_name")}
               />
             </div>
             <div className="mb-4">
-              <label className="block font-semibold mb-1">Phone</label>
+              <label className="block font-semibold mb-1">{t("phone_number")}</label>
               <input
                 type="text"
                 name="phone"
                 value={form.phone}
                 onChange={handleInput}
                 className="w-full border rounded px-3 py-2"
-                placeholder="Your phone"
+                placeholder={t("phone_number")}
               />
             </div>
             <button
               onClick={handlePayOnline}
               className="block ml-auto bg-green-600 text-white px-6 py-2 rounded text-base mt-4"
             >
-              Pay Online
+              {t("pay_online")}
             </button>
           </section>
         </div>

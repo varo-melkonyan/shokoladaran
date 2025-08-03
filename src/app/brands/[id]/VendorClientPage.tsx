@@ -6,6 +6,7 @@ import { useCart } from "@/context/CartContext";
 import clsx from "clsx";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 type Brand = {
   _id: string;
@@ -29,7 +30,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
   const [loading, setLoading] = useState(true);
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("all");
-  const [priceSort, setPriceSort] = useState<"asc" | "desc" | "">("");
+  const [sortBy, setSortBy] = useState("price-asc");
 
   useEffect(() => {
     Promise.all([
@@ -88,7 +89,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
     setCart(cart => cart.filter(item => item._id !== productId));
   }
 
-  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">Loading...</div>;
+  if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">{t("loading")}</div>;
   if (!brand) return notFound();
 
   let filteredProducts = products;
@@ -98,11 +99,10 @@ export default function VendorClientPage({ slug }: { slug: string }) {
     );
   }
 
-  if (priceSort === "asc") {
-    filteredProducts = [...filteredProducts].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
-  } else if (priceSort === "desc") {
-    filteredProducts = [...filteredProducts].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
-  }
+  if (sortBy === "price-asc") filteredProducts = [...filteredProducts].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
+  if (sortBy === "price-desc") filteredProducts = [...filteredProducts].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
+  if (sortBy === "name-asc") filteredProducts = [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name));
+  if (sortBy === "name-desc") filteredProducts = [...filteredProducts].sort((a, b) => b.name.localeCompare(a.name));
 
   const brandCollections = Array.from(
     new Set(products.map((p) => p.collectionType))
@@ -130,33 +130,34 @@ export default function VendorClientPage({ slug }: { slug: string }) {
               rel="noopener noreferrer"
               className="inline-block bg-chocolate text-white px-4 py-2 rounded mb-2"
             >
-              Visit Brand Site
+              {t("visit_website")}
             </a>
           )}
         </div>
       </div>
 
       <section className="mt-12">
-        <h2 className="text-2xl font-semibold text-chocolate mb-6">Products</h2>
+        <h2 className="text-2xl font-semibold text-chocolate mb-6">{t("products")}</h2>
         <div className="flex flex-wrap gap-4 mb-6">
           <select
             value={selectedCollection}
             onChange={e => setSelectedCollection(e.target.value)}
             className="border p-2 rounded"
           >
-            <option value="all">All Collections</option>
+            <option value="all">{t("all_collections")}</option>
             {brandCollections.map((col) => (
               <option key={col} value={col}>{col}</option>
             ))}
           </select>
           <select
-            value={priceSort}
-            onChange={e => setPriceSort(e.target.value as "asc" | "desc" | "")}
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
             className="border p-2 rounded"
           >
-            <option value="">Sort by Price</option>
-            <option value="asc">Lowest First</option>
-            <option value="desc">Highest First</option>
+            <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+            <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
+            <option value="name-asc">{t("sort_options.name_asc")}</option>
+            <option value="name-desc">{t("sort_options.name_desc")}</option>
           </select>
         </div>
         {filteredProducts.length > 0 ? (
@@ -253,11 +254,11 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                       <p className="text-sm text-gray-500 mb-1">
                         {product.discount ? (
                           <>
-                            <span className="line-through mr-2">{product.price} AMD</span>
-                            <span className="text-red-600">{product.discount} AMD</span>
+                            <span className="line-through mr-2">{product.price} {t("amd")}</span>
+                            <span className="text-red-600">{product.discount} {t("amd")}</span>
                           </>
                         ) : (
-                          <>{product.price} AMD</>
+                          <>{product.price} {t("amd")}</>
                         )}
                         {" • "}
                         {product.weight} g

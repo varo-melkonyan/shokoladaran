@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 type Special = {
   _id: string;
@@ -66,10 +67,10 @@ export default function SpecialsClient() {
           value={sortBy}
           onChange={e => setSortBy(e.target.value)}
         >
-          <option value="price-asc">Price Low-High</option>
-          <option value="price-desc">Price High-Low</option>
-          <option value="name-asc">Name A-Z</option>
-          <option value="name-desc">Name Z-A</option>
+          <option value="price-asc">{t("priceLowHigh")}</option>
+          <option value="price-desc">{t("priceHighLow")}</option>
+          <option value="name-asc">{t("nameAZ")}</option>
+          <option value="name-desc">{t("nameZA")}</option>
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -88,11 +89,11 @@ export default function SpecialsClient() {
                 <div className="mt-2 mb-3">
                   {item.discount ? (
                     <>
-                      <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
-                      <span className="text-chocolate font-bold">{item.discount} AMD</span>
+                      <span className="line-through text-gray-400 mr-2">{item.price} {t("amd")}</span>
+                      <span className="text-chocolate font-bold">{item.discount} {t("amd")}</span>
                     </>
                   ) : (
-                    <span className="text-chocolate font-bold">{item.price} AMD</span>
+                    <span className="text-chocolate font-bold">{item.price} {t("amd")}</span>
                   )}
                 </div>
                 {/* Cart controls */}

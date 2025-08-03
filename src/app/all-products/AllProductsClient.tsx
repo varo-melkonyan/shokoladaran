@@ -1,5 +1,6 @@
 "use client";
 import { useState, useMemo } from "react";
+import { t } from "i18next";
 
 type Product = {
   _id: string;
@@ -27,7 +28,6 @@ export default function AllProductsClient({ products }: { products: Product[] })
   const [brandFilter, setBrandFilter] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("");
   const [sortBy, setSortBy] = useState("name-asc");
-
   const brands = useMemo(() => getUnique(products.map(p => p.brand)), [products]);
   const collections = useMemo(() => getUnique(products.map(p => p.collectionType)), [products]);
 
@@ -44,7 +44,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-6 text-chocolate">All Products</h1>
+      <h1 className="text-3xl font-bold mb-6 text-chocolate">{t("product_types.all_products")}</h1>
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <select
@@ -52,7 +52,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
           value={brandFilter}
           onChange={e => setBrandFilter(e.target.value)}
         >
-          <option value="">All Brands</option>
+          <option value="">{t("all_brands")}</option>
           {brands.map(b => (
             <option key={b} value={b}>{b}</option>
           ))}
@@ -62,7 +62,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
           value={collectionFilter}
           onChange={e => setCollectionFilter(e.target.value)}
         >
-          <option value="">All Collections</option>
+          <option value="">{t("all_collections")}</option>
           {collections.map(c => (
             <option key={c} value={c}>{c}</option>
           ))}
@@ -72,10 +72,10 @@ export default function AllProductsClient({ products }: { products: Product[] })
           value={sortBy}
           onChange={e => setSortBy(e.target.value)}
         >
-          <option value="name-asc">Name A-Z</option>
-          <option value="name-desc">Name Z-A</option>
-          <option value="price-asc">Price Low-High</option>
-          <option value="price-desc">Price High-Low</option>
+          <option value="name-asc">{t("sort_options.name_asc")}</option>
+          <option value="name-desc">{t("sort_options.name_desc")}</option>
+          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
         </select>
       </div>
       {/* Product Grid */}
@@ -140,11 +140,11 @@ export default function AllProductsClient({ products }: { products: Product[] })
             <div className="mt-2">
               {product.discount ? (
                 <>
-                  <span className="line-through text-gray-400 mr-2">{product.price} AMD</span>
-                  <span className="text-chocolate font-bold">{product.discount} AMD</span>
+                  <span className="line-through text-gray-400 mr-2">{product.price} {t("amd")}</span>
+                  <span className="text-chocolate font-bold">{product.discount} {t("amd")}</span>
                 </>
               ) : (
-                <span className="text-chocolate font-bold">{product.price} AMD</span>
+                <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
               )}
             </div>
             <div className="text-xs text-gray-400">{product.weight} g</div>
@@ -174,7 +174,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
         ))}
       </div>
       {filtered.length === 0 && (
-        <div className="text-center text-gray-400 mt-8">No products found.</div>
+        <div className="text-center text-gray-400 mt-8">{t("no_products_found")}</div>
       )}
     </div>
   );

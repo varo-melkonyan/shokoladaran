@@ -286,14 +286,14 @@ export default function Navbar() {
           {showSearchDropdown && (
   <div className="absolute left-0 top-[100%] w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown pointer-events-auto">
     <div className="p-4">
-      <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
+      <h3 className="text-lg font-semibold mb-4">{t("popular_search_terms")}</h3>
       {loading ? (
         <div className="flex items-center justify-center py-8">
           {/* You can put your spinner here */}
         </div>
       ) : searchResults.length === 0 ? (
         <div className="flex items-center justify-center py-8 text-gray-500 text-lg font-semibold">
-          Oops! We didn’t find anything matching that.
+          {t("no_results_found")}
         </div>
       ) : (
         <>
@@ -505,14 +505,14 @@ export default function Navbar() {
                   className="block py-2 px-2 rounded text-chocolate font-semibold hover:bg-chocolate/10 transition text-base text-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Discounts
+                  {t("discounts")}
                 </Link>
                 <Link
                   href="/special"
                   className="block py-2 px-2 rounded text-chocolate font-semibold hover:bg-chocolate/10 transition text-base text-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Special
+                  {t("special")}
                 </Link>
                 <Link
                   href="/gifts"
@@ -582,12 +582,12 @@ export default function Navbar() {
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
-  href={getCartItemLink(item)}
-  className="text-chocolate hover:underline"
-  onClick={() => setShowCart(false)}
->
-  {item.name}
-</Link>
+                        href={getCartItemLink(item)}
+                        className="text-chocolate hover:underline"
+                        onClick={() => setShowCart(false)}
+                      >
+                        {item.name}
+                      </Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}
@@ -785,7 +785,7 @@ export default function Navbar() {
                               className="absolute inset-0 flex items-center justify-center z-20"
                               onClick={() => setShowDropdown(false)}
                             >
-                              <span className="text-white text-xl font-bold tracking-wider">ALL PRODUCTS</span>
+                              <span className="text-white text-xl font-bold tracking-wider">{t("product_types.all_products")}</span>
                             </Link>
                             <div className="absolute bottom-0 w-full flex justify-center gap-6 py-2 z-20">
                               <Link 
@@ -793,14 +793,14 @@ export default function Navbar() {
                               className="text-white text-sm font-medium hover:underline"
                               onClick={() => setShowDropdown(false)}
                               >
-                                Discounts
+                                {t("discounts")}
                               </Link>
                               <Link 
                               href="/special" 
                               className="text-white text-sm font-medium hover:underline"
                               onClick={() => setShowDropdown(false)}
                               >
-                                Special
+                                {t("special")}
                               </Link>
                             </div>
                           </div>
@@ -834,7 +834,7 @@ export default function Navbar() {
                       <div className="absolute left-0 top-full w-screen bg-white shadow-xl z-50 animate-slideDown">
                         <div className="max-w-7xl mx-auto px-4 py-8">
                           <h3 className="text-lg font-bold text-chocolate mb-6 text-center">
-                            <Link href="/brands" className="hover:underline" onClick={() => setShowBrandsDropdown(false)}>All Brands</Link>
+                            <Link href="/brands" className="hover:underline" onClick={() => setShowBrandsDropdown(false)}>{t("all_brands")}</Link>
                           </h3>
                           <div className="grid grid-cols-3 gap-6 items-center">
                             <div className="space-y-2">
@@ -935,18 +935,18 @@ export default function Navbar() {
                     <div className="fixed right-0 top-[70px] mt-0 w-[600px] bg-white rounded-xl shadow-xl z-50 animate-slideDown">
                       <div className="flex">
                         <div className="flex-1 p-6">
-                          <h3 className="text-lg font-semibold mb-4">Popular search terms</h3>
+                          <h3 className="text-lg font-semibold mb-4">{t("popular_search_terms")}</h3>
                           {loading ? (
                             <div className="flex items-center justify-center py-12">
                               <svg className="animate-spin h-8 w-8 text-chocolate" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
                               </svg>
-                              <span className="ml-4 text-chocolate font-semibold text-lg">Loading...</span>
+                              <span className="ml-4 text-chocolate font-semibold text-lg">{t("loading")}</span>
                             </div>
                           ) : searchResults.length === 0 ? (
                             <div className="flex items-center justify-center py-12 text-gray-500 text-lg font-semibold">
-                              Oops! We didn’t find anything matching that.
+                              {t("no_results_found")}
                             </div>
                           ) : (
                             <>

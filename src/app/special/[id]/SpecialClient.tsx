@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
 import KgCartControl from "@/components/KgCartControl";
+import { t } from "i18next";
 
 export default function SpecialClient({ special }: { special: any }) {
   const { addToCart, removeFromCart, cart } = useCart();
@@ -65,15 +66,15 @@ export default function SpecialClient({ special }: { special: any }) {
             <div className="flex items-end gap-3 mb-4">
               {special.discount ? (
                 <>
-                  <span className="line-through text-gray-400 text-lg">{special.price} AMD</span>
-                  <span className="text-red-600 font-bold text-2xl">{special.discount} AMD</span>
+                  <span className="line-through text-gray-400 text-lg">{special.price} {t("amd")}</span>
+                  <span className="text-red-600 font-bold text-2xl">{special.discount} {t("amd")}</span>
                 </>
               ) : (
-                <span className="text-chocolate font-bold text-2xl">{special.price} AMD</span>
+                <span className="text-chocolate font-bold text-2xl">{special.price} {t("amd")}</span>
               )}
             </div>
             <div className="mb-4">
-              <span className="font-semibold text-chocolate">Brand:</span>{" "}
+              <span className="font-semibold text-chocolate">{t("brand")}:</span>{" "}
               <span className="text-gray-700">{special.brand}</span>
             </div>
             {/* Add more special details here if needed */}

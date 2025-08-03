@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
 import KgCartControl from "@/components/KgCartControl";
+import { t } from "i18next";
 
 export default function GiftClient({ gift }: { gift: any }) {
   const { addToCart, removeFromCart, cart } = useCart();
@@ -65,15 +66,15 @@ export default function GiftClient({ gift }: { gift: any }) {
             <div className="flex items-end gap-3 mb-4">
               {gift.discount ? (
                 <>
-                  <span className="line-through text-gray-400 text-lg">{gift.price} AMD</span>
-                  <span className="text-red-600 font-bold text-2xl">{gift.discount} AMD</span>
+                  <span className="line-through text-gray-400 text-lg">{gift.price} {t("amd")}</span>
+                  <span className="text-red-600 font-bold text-2xl">{gift.discount} {t("amd")}</span>
                 </>
               ) : (
-                <span className="text-chocolate font-bold text-2xl">{gift.price} AMD</span>
+                <span className="text-chocolate font-bold text-2xl">{gift.price} {t("amd")}</span>
               )}
             </div>
             <div className="mb-4">
-              <span className="font-semibold text-chocolate">Brand:</span>{" "}
+              <span className="font-semibold text-chocolate">{t("brand")}:</span>{" "}
               <span className="text-gray-700">{gift.brand}</span>
             </div>
             {/* Add more gift details here if needed */}

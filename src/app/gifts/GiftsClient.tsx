@@ -3,6 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
+import { t } from "i18next";
 
 type Gift = {
   _id: string;
@@ -47,14 +48,14 @@ export default function GiftsClient() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
-      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">Gifts</h1>
+      <h1 className="text-4xl font-bold text-chocolate mb-10 text-center">{t("gifts")}</h1>
       <div className="flex flex-wrap gap-4 mb-8">
         <select
           className="border p-2 rounded"
           value={brandFilter}
           onChange={e => setBrandFilter(e.target.value)}
         >
-          <option value="">All Brands</option>
+          <option value="">{t("all_brands")}</option>
           {brands.map(b => (
             <option key={b} value={b}>{b}</option>
           ))}
@@ -64,10 +65,10 @@ export default function GiftsClient() {
           value={sortBy}
           onChange={e => setSortBy(e.target.value)}
         >
-          <option value="price-asc">Price Low-High</option>
-          <option value="price-desc">Price High-Low</option>
-          <option value="name-asc">Name A-Z</option>
-          <option value="name-desc">Name Z-A</option>
+          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
+          <option value="name-asc">{t("sort_options.name_asc")}</option>
+          <option value="name-desc">{t("sort_options.name_desc")}</option>
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -86,11 +87,11 @@ export default function GiftsClient() {
                 <div className="mt-2 mb-3">
                   {item.discount ? (
                     <>
-                      <span className="line-through text-gray-400 mr-2">{item.price} AMD</span>
-                      <span className="text-chocolate font-bold">{item.discount} AMD</span>
+                      <span className="line-through text-gray-400 mr-2">{item.price} {t("amd")}</span>
+                      <span className="text-chocolate font-bold">{item.discount} {t("amd")}</span>
                     </>
                   ) : (
-                    <span className="text-chocolate font-bold">{item.price} AMD</span>
+                    <span className="text-chocolate font-bold">{item.price} {t("amd")}</span>
                   )}
                 </div>
                 {/* Cart controls */}

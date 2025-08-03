@@ -4,6 +4,7 @@ import Link from "next/link";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 import { useState } from "react";
+import { t } from "i18next";
 
 export default function ProductClient({
   product,
@@ -77,66 +78,66 @@ export default function ProductClient({
             <div className="flex items-end gap-3 mb-4">
               {product.discount ? (
                 <>
-                  <span className="line-through text-gray-400 text-lg">{product.price} AMD</span>
-                  <span className="text-red-600 font-bold text-2xl">{product.discount} AMD</span>
+                  <span className="line-through text-gray-400 text-lg">{product.price} {t("amd")}</span>
+                  <span className="text-red-600 font-bold text-2xl">{product.discount} {t("amd")}</span>
                 </>
               ) : (
-                <span className="text-chocolate font-bold text-2xl">{product.price} AMD</span>
+                <span className="text-chocolate font-bold text-2xl">{product.price} {t("amd")}</span>
               )}
             </div>
             <div className="flex gap-6 mb-4 items-start">
               <div className="flex flex-col gap-2">
                 <div>
-                  <span className="font-semibold text-chocolate">Brand:</span>{" "}
+                  <span className="font-semibold text-chocolate">{t("brand")}:</span>{" "}
                   <span className="text-gray-700">{product.brand}</span>
                 </div>
                 <div>
-                  <span className="font-semibold text-chocolate">Collection:</span>{" "}
+                  <span className="font-semibold text-chocolate">{t("collection")}:</span>{" "}
                   <span className="text-gray-700">{product.collectionType}</span>
                 </div>
               </div>
               {/* Product Details Card - visually separated */}
               <div className="bg-gray-50 rounded-xl shadow-md p-4 min-w-[220px] ml-8">
-                <h3 className="text-lg font-bold text-chocolate mb-2">Details</h3>
+                <h3 className="text-lg font-bold text-chocolate mb-2">{t("details")}</h3>
                 <ul className="space-y-1 text-gray-700 text-sm">
                   <li>
-                    <span className="font-semibold text-chocolate">Quantity Type:</span>{" "}
-                    <span>{product.quantityType === "kg" ? "Weight (kg)" : "Piece"}</span>
+                    <span className="font-semibold text-chocolate">{t("quantity_type")}:</span>{" "}
+                    <span>{product.quantityType === "kg" ? t("weight_kg") : t("piece")}</span>
                   </li>
                   {product.ingredients && product.ingredients.length > 0 && (
                     <li>
-                      <span className="font-semibold text-chocolate">Ingredients:</span>{" "}
+                      <span className="font-semibold text-chocolate">{t("ingredients")}:</span>{" "}
                       <span>{product.ingredients.join(", ")}</span>
                     </li>
                   )}
                   {product.shelfLife && (
                     <li>
-                      <span className="font-semibold text-chocolate">Shelf Life:</span>{" "}
+                      <span className="font-semibold text-chocolate">{t("shelf_life")}:</span>{" "}
                       <span>{product.shelfLife}</span>
                     </li>
                   )}
                   {product.nutritionFacts && (
                     <li>
-                      <span className="font-semibold text-chocolate">Nutrition Facts:</span>
+                      <span className="font-semibold text-chocolate">{t("nutrition_facts")}:</span>
                       <ul className="ml-4 space-y-1">
                         {product.nutritionFacts.energy && (
                           <li>
-                            <span className="font-semibold">Energy:</span> {product.nutritionFacts.energy}
+                            <span className="font-semibold">{t("energy")}:</span> {product.nutritionFacts.energy}
                           </li>
                         )}
                         {product.nutritionFacts.fat && (
                           <li>
-                            <span className="font-semibold">Fat:</span> {product.nutritionFacts.fat}
+                            <span className="font-semibold">{t("fat")}:</span> {product.nutritionFacts.fat}
                           </li>
                         )}
                         {product.nutritionFacts.carbohydrates && (
                           <li>
-                            <span className="font-semibold">Carbohydrates:</span> {product.nutritionFacts.carbohydrates}
+                            <span className="font-semibold">{t("carbohydrates")}:</span> {product.nutritionFacts.carbohydrates}
                           </li>
                         )}
                         {product.nutritionFacts.protein && (
                           <li>
-                            <span className="font-semibold">Protein:</span> {product.nutritionFacts.protein}
+                            <span className="font-semibold">{t("protein")}:</span> {product.nutritionFacts.protein}
                           </li>
                         )}
                       </ul>
@@ -167,7 +168,7 @@ export default function ProductClient({
       </div>
       {/* Recommendations */}
       <div className="max-w-7xl mx-auto mt-16 p-8">
-        <h2 className="text-2xl font-bold mb-6 text-chocolate">Recommended Products</h2>
+        <h2 className="text-2xl font-bold mb-6 text-chocolate">{t("recommended_products")}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {recommendations.map((rec) => (
             <div key={rec._id} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
@@ -180,7 +181,7 @@ export default function ProductClient({
               </Link>
               <div className="font-semibold text-chocolate">{rec.name}</div>
               <div className="text-red-600 font-bold">
-                {rec.discount ? `${rec.discount} AMD` : `${rec.price} AMD`}
+                {rec.discount ? `${rec.discount} ${t("amd")}` : `${rec.price} ${t("amd")}`}
               </div>
             </div>
           ))}
