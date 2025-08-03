@@ -1,5 +1,26 @@
 import SectionHero from "@/components/SectionHero";
 import SectionGrid from "@/components/SectionGrid.client";
+import HomePageClient from "@/components/HomePageClient";
+
+export default async function HomePage() {
+  const bestSellers = await fetchBestSellersProducts();
+  const newsProducts = await fetchNewsProducts();
+  const exclusivesProducts = await fetchExclusivesProducts();
+  const ads = await fetchAds();
+
+  const adsForNews = ads.filter((ad: any) => ad.place === "news");
+  const adsForExclusives = ads.filter((ad: any) => ad.place === "exclusives");
+
+  return (
+    <HomePageClient
+      bestSellers={bestSellers}
+      newsProducts={newsProducts}
+      exclusivesProducts={exclusivesProducts}
+      adsForNews={adsForNews}
+      adsForExclusives={adsForExclusives}
+    />
+  );
+}
 
 async function fetchExclusivesProducts() {
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -55,24 +76,4 @@ async function fetchAds() {
     if (!res.ok) throw new Error("Failed to fetch ads");
   }
   return res.json();
-}
-
-export default async function HomePage() {
-  const bestSellers = await fetchBestSellersProducts();
-  const newsProducts = await fetchNewsProducts();
-  const exclusivesProducts = await fetchExclusivesProducts();
-  const ads = await fetchAds();
-
-  // Filter ads by place
-  const adsForNews = ads.filter((ad: any) => ad.place === "news");
-  const adsForExclusives = ads.filter((ad: any) => ad.place === "exclusives");
-
-  return (
-    <>
-      <SectionHero />
-      <SectionGrid title="Best Sellers" items={bestSellers} />
-      <SectionGrid title="News" items={newsProducts} ads={adsForNews} />
-      <SectionGrid title="Exclusives" items={exclusivesProducts} ads={adsForExclusives} />
-    </>
-  );
 }

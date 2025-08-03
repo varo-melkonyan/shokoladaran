@@ -3,6 +3,8 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Brand = { _id: string; name: string };
 type CollectionType = { id: string; name: string; type: "collection" | "children" | "dietary" };
@@ -25,6 +27,8 @@ export default function Navbar() {
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [gifts, setGifts] = useState<any[]>([]);
   const [specials, setSpecials] = useState<any[]>([]);
+  const { t } = useTranslation();
+  const [showLangDropdown, setShowLangDropdown] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -118,8 +122,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { name: "Brands", href: "/brands" },
-    { name: "Gifts", href: "/gifts" },
+    { name: t("brands"), href: "/brands" },
+    { name: t("gifts"), href: "/gifts" },
   ];
 
   // Split brands into two columns for dropdown
@@ -174,6 +178,19 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [showCart]);
+  
+  useEffect(() => {
+    const savedLng = localStorage.getItem("lng");
+    if (savedLng && i18n.language !== savedLng) {
+      i18n.changeLanguage(savedLng);
+    }
+  }, []);
+
+  const handleChangeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem("lng", lng);
+    setShowLangDropdown(false);
+  };
 
   function getCartItemLink(item: any) {
   const foundGift = gifts.find(
@@ -242,7 +259,7 @@ export default function Navbar() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search products..."
+                placeholder={t("search_products")}
                 className="w-full pl-10 pr-3 py-2 rounded-2xl bg-white border border-gray-200 shadow text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
                 onFocus={() => {
                   if (search.trim()) {
@@ -347,7 +364,7 @@ export default function Navbar() {
           style={{ minWidth: 260 }}
         >
           <div className="flex items-center justify-between px-6 py-5 border-b">
-            <span className="text-2xl font-bold text-chocolate tracking-wide">Chocolates</span>
+            <span className="text-2xl font-bold text-chocolate tracking-wide">{t("chocolate")}</span>
             <button
               className="p-2 rounded-full hover:bg-chocolate/10 focus:outline-none focus:ring-2 focus:ring-chocolate"
               onClick={() => setIsMobileMenuOpen(false)}
@@ -366,7 +383,7 @@ export default function Navbar() {
                 onClick={() => setOpenSection(openSection === "product" ? null : "product")}
               >
                 <span className="font-bold text-lg text-chocolate flex items-center gap-2">
-                  <span role="img" aria-label="chocolate">🍫</span> Product Type
+                  <span role="img" aria-label="chocolate">🍫</span> {t("product_type")}
                 </span>
                 <span className="text-chocolate">{openSection === "product" ? "▲" : "▼"}</span>
               </button>
@@ -394,7 +411,7 @@ export default function Navbar() {
                   onClick={() => setOpenSection(openSection === "children" ? null : "children")}
                 >
                   <span className="font-bold text-lg text-chocolate flex items-center gap-2">
-                    <span role="img" aria-label="bear">🐻</span> For Children
+                    <span role="img" aria-label="bear">🐻</span> {t("for_children")}
                   </span>
                   <span className="text-chocolate">{openSection === "children" ? "▲" : "▼"}</span>
                 </button>
@@ -423,7 +440,7 @@ export default function Navbar() {
                   onClick={() => setOpenSection(openSection === "dietary" ? null : "dietary")}
                 >
                   <span className="font-bold text-lg text-chocolate flex items-center gap-2">
-                    <span role="img" aria-label="leaf">🌱</span> Dietary
+                    <span role="img" aria-label="leaf">🌱</span> {t("Dietary")}
                   </span>
                   <span className="text-chocolate">{openSection === "dietary" ? "▲" : "▼"}</span>
                 </button>
@@ -451,7 +468,7 @@ export default function Navbar() {
                 onClick={() => setOpenSection(openSection === "brands" ? null : "brands")}
               >
                 <span className="font-bold text-lg text-chocolate flex items-center gap-2">
-                  <span role="img" aria-label="tag">🏷️</span> Brands
+                  <span role="img" aria-label="tag">🏷️</span> {t("brands")}
                 </span>
                 <span className="text-chocolate">{openSection === "brands" ? "▲" : "▼"}</span>
               </button>
@@ -502,7 +519,7 @@ export default function Navbar() {
                   className="block py-2 px-2 rounded text-chocolate font-semibold hover:bg-chocolate/10 transition text-base text-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Gifts
+                  {t("gifts")}
                 </Link>
               </div>
             </div>
@@ -517,10 +534,10 @@ export default function Navbar() {
         >
           {/* Free Shipping Banner */}
           <div className="bg-yellow-100 text-yellow-800 text-center px-4 py-2 font-semibold text-sm border-b border-yellow-200">
-            Free shipping from 20,000 AMD
+            {t("free_shipping_info")}
           </div>
           <div className="flex items-center justify-between px-6 py-4 border-b">
-            <h2 className="text-xl font-bold text-chocolate">Your Cart</h2>
+            <h2 className="text-xl font-bold text-chocolate">{t("your_cart")}</h2>
             <div className="flex items-center gap-3">
               <button
                 onClick={clearCart}
@@ -529,7 +546,7 @@ export default function Navbar() {
                 title="Clear cart"
                 type="button"
               >
-                Clear Cart
+                {t("clear_cart")}
               </button>
               <button
                 onClick={() => setShowCart(false)}
@@ -543,7 +560,7 @@ export default function Navbar() {
           </div>
          <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 220px)" }}>
             {cart.length === 0 ? (
-              <div className="text-gray-500">Your cart is empty.</div>
+              <div className="text-gray-500">{t("empty_cart")}</div>
             ) : (
               cart.map((item) => (
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
@@ -618,7 +635,7 @@ export default function Navbar() {
           </div>
           <div className="px-6 pb-6">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm text-gray-600">Total</span>
+              <span className="text-sm text-gray-600">{t("total")}</span>
               <span className="text-base font-bold text-chocolate">{total} ֏</span>
             </div>
             <Link
@@ -626,7 +643,7 @@ export default function Navbar() {
               className="block w-full text-center bg-chocolate text-white py-2 rounded-lg font-semibold hover:bg-[#a06a1b] transition"
               onClick={() => setShowCart(false)}
             >
-              🛒 See Cart
+              🛒 {t("see_cart")}
             </Link>
           </div>
         </div>
@@ -648,11 +665,23 @@ export default function Navbar() {
                 }}
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-            {/* Left: Navigation Links */}
-            <nav className="flex items-center gap-8">
+            {/* Logo (now left) */}
+            <div className="max-w-7xl mx-auto px-6 text-center"
+                 onMouseEnter={() => {
+                   setShowDropdown(false);
+                   setShowBrandsDropdown(false);
+                 }}
+            >
+              <h1 className="text-3xl font-cursive font-bold text-chocolate">
+                <Link href="/">Shokoladaran</Link>
+              </h1>
+              <p className="text-sm text-chocolate tracking-wide">Chocolate Marketplace</p>
+            </div>
+
+            {/* Navigation Links (now center) */}
+            <nav className="flex items-center gap-8 justify-center flex-1">
               <div className="border-gray-100">
-                <div className="hidden md:flex max-w-7xl mx-auto py-2 justify-center space-x-8 text-chocolate font-semibold text-sm uppercase tracking-wider"
->
+                <div className="hidden md:flex max-w-7xl mx-auto py-2 justify-center space-x-8 text-chocolate font-semibold text-sm uppercase tracking-wider">
                   {/* Collection Dropdown */}
                   <div className=""
                        onMouseEnter={() => {
@@ -667,7 +696,7 @@ export default function Navbar() {
                       tabIndex={0}
                       type="button"
                     >
-                      Chocolates <span className="text-xs">▼</span>
+                      {t("chocolate")} <span className="text-xs">▼</span>
                     </button>
 
                     {showDropdown && (
@@ -675,7 +704,7 @@ export default function Navbar() {
                         <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-3 gap-10">
                           {/* Product Type */}
                           <div>
-                            <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">Product Type</h3>
+                            <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">{t("product_type")}</h3>
                             <div className="grid grid-cols-2 gap-x-6 gap-y-2">
                               <ul className="space-y-1">
                                 {collectionsCol1.map((col) => (
@@ -710,7 +739,7 @@ export default function Navbar() {
                           <div>
                             {childrenTypes.length > 0 && (
                               <>
-                                <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">For Children</h3>
+                                <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">{t("for_children")}</h3>
                                 <ul className="space-y-2 mb-6">
                                   {childrenTypes.map((type) => (
                                     <li key={type.id}>
@@ -727,7 +756,7 @@ export default function Navbar() {
                               </>
                             )}
 
-                            <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">Dietary</h3>
+                            <h3 className="text-lg font-extrabold text-chocolate uppercase mb-4">{t("Dietary")}</h3>
                             <ul className="space-y-2">
                               {dietaryTypes.map((type) => (
                                 <li key={type.id}>
@@ -798,7 +827,7 @@ export default function Navbar() {
                       tabIndex={0}
                       type="button"
                     >
-                      Brands <span className="text-xs">▼</span>
+                      {t("brands")} <span className="text-xs">▼</span>
                     </button>
 
                     {showBrandsDropdown && (
@@ -864,19 +893,6 @@ export default function Navbar() {
               </div>
             </nav>
 
-            {/* Center: Logo */}
-            <div className="max-w-7xl mx-auto px-6 text-center"
-                 onMouseEnter={() => {
-                   setShowDropdown(false);
-                   setShowBrandsDropdown(false);
-                 }}
-            >
-              <h1 className="text-3xl font-cursive font-bold text-chocolate">
-                <Link href="/">Shokoladaran</Link>
-              </h1>
-              <p className="text-sm text-chocolate tracking-wide">Chocolate Marketplace</p>
-            </div>
-
             {/* Right: Search and Icons */}
             <div className="flex items-center gap-6"
                  onMouseEnter={() => {
@@ -891,7 +907,7 @@ export default function Navbar() {
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search products..."
+                        placeholder={t("search_products")}
                         className="w-full pl-12 py-3 rounded-3xl bg-white/80 focus:bg-white border-none shadow-lg text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
                         onFocus={() => {
                           if (search.trim()) {
@@ -963,7 +979,7 @@ export default function Navbar() {
                                   className="bg-black text-white px-8 py-3 rounded text-lg font-semibold hover:bg-chocolate transition"
                                   onClick={() => setShowSearchDropdown(false)}
                                 >
-                                  See all results
+                                  {t("see_all_results")}
                                 </Link>
                               </div>
                             </>
@@ -991,6 +1007,37 @@ export default function Navbar() {
                   </span>
                 )}
               </button>
+              {/* Language Selector */}
+              <div className="relative ml-4">
+                <button
+                  className="flex items-center gap-2 px-3 py-1 rounded-full font-semibold border border-chocolate bg-white text-chocolate hover:bg-chocolate hover:text-white transition"
+                  onClick={() => setShowLangDropdown((prev) => !prev)}
+                  aria-label="Select language"
+                  type="button"
+                >
+                  <span className="uppercase">{i18n.language}</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showLangDropdown && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                    {["hy", "en", "ru"].map((lng) => (
+                      <button
+                        key={lng}
+                        onClick={() => handleChangeLanguage(lng)}
+                        className={`block w-full text-left px-4 py-2 rounded-xl font-semibold transition ${
+                          i18n.language === lng
+                            ? "bg-chocolate text-white"
+                            : "text-chocolate hover:bg-chocolate/10"
+                        }`}
+                      >
+                        {lng === "hy" ? "Հայերեն" : lng === "en" ? "English" : "Русский"}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
@@ -1003,10 +1050,10 @@ export default function Navbar() {
         >
           {/* Free Shipping Banner */}
           <div className="bg-yellow-100 text-yellow-800 text-center px-4 py-2 font-semibold text-sm border-b border-yellow-200">
-            Free shipping from 20,000 AMD
+            {t("free_shipping_info")}
           </div>
           <div className="flex items-center justify-between px-6 py-4 border-b">
-            <h2 className="text-xl font-bold text-chocolate">Your Cart</h2>
+            <h2 className="text-xl font-bold text-chocolate">{t("your_cart")}</h2>
             <div className="flex items-center gap-3">
               <button
                 onClick={clearCart}
@@ -1015,7 +1062,7 @@ export default function Navbar() {
                 title="Clear cart"
                 type="button"
               >
-                Clear Cart
+                {t("clear_cart")}
               </button>
               <button
                 onClick={() => setShowCart(false)}
@@ -1029,7 +1076,7 @@ export default function Navbar() {
           </div>
          <div className="p-6 space-y-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 220px)" }}>
             {cart.length === 0 ? (
-              <div className="text-gray-500">Your cart is empty.</div>
+              <div className="text-gray-500">{t("empty_cart")}</div>
             ) : (
               cart.map((item) => (
                 <div key={item._id} className="flex items-center gap-3 border-b pb-3">
@@ -1051,12 +1098,12 @@ export default function Navbar() {
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
-  href={getCartItemLink(item)}
-  className="text-chocolate hover:underline"
-  onClick={() => setShowCart(false)}
->
-  {item.name}
-</Link>
+                      href={getCartItemLink(item)}
+                      className="text-chocolate hover:underline"
+                      onClick={() => setShowCart(false)}
+                    >
+                      {item.name}
+                    </Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}
@@ -1104,7 +1151,7 @@ export default function Navbar() {
           </div>
           <div className="px-6 pb-6">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm text-gray-600">Total</span>
+              <span className="text-sm text-gray-600">{t("total")}</span>
               <span className="text-base font-bold text-chocolate">{total} ֏</span>
             </div>
             <Link
@@ -1112,7 +1159,7 @@ export default function Navbar() {
               className="block w-full text-center bg-chocolate text-white py-2 rounded-lg font-semibold hover:bg-[#a06a1b] transition"
               onClick={() => setShowCart(false)}
             >
-              🛒 See Cart
+              🛒 {t("see_cart")}
             </Link>
           </div>
         </div>

@@ -15,6 +15,8 @@
   "popular": "Popular",
   "trending": "Trending",
   "chocolate_types": "Chocolate Types",
+  "chocolate": "Chocolate",
+  "product_type":"Product Type",
   "product_types": {
     "all_products": "All Products",
     "caramel_chocolate": "Caramel Chocolate",
@@ -88,6 +90,7 @@
   "subtotal": "Subtotal",
   "tax": "Tax",
   "shipping_cost": "Shipping Cost",
+  "search_products": "Search products...",
   "grand_total": "Grand Total",
   "remove_item": "Remove Item",
   "update_cart": "Update Cart",
@@ -97,7 +100,9 @@
   "remove_from_wishlist": "Remove from Wishlist",
   "contact": "Contact",
   "see_cart": "See Cart",
+  "see_all_results": "See all results",
   "view_cart": "View Cart",
+  "your_cart": "Your Cart",
   "empty_cart": "Your cart is empty.",
   "clear_cart": "Clear Cart",
   "continue_shopping": "Continue Shopping",
@@ -127,6 +132,8 @@
   "shipping": "Shipping",
   "delivery": "Delivery",
   "pickup": "Pickup from Store",
+  "delivery_pickup": "Delivery Pickup",
+  "company": "Company",
   "address": "Address",
   "full_name": "Full Name",
   "phone_number": "Phone Number",
@@ -142,6 +149,7 @@
   "order_now": "Order Now",
   "pay_online": "Pay Online",
   "free_shipping": "Free Shipping",
+  "free_shipping_info": "Free shipping from 20,000 AMD",
   "standard_shipping": "Standard Shipping",
   "price": "Price",
   "discount": "Discount",
@@ -227,5 +235,6 @@
   "wishlist_share_success": "Wishlist shared successfully.",
   "wishlist_share_error": "Error sharing Wishlist. Please try again.",
   "home_banner_big": "Discover the World of Chocolate",
-  "home_banner_small": "Curated collections from Armenian brands – pure indulgence in every bite."
+  "home_banner_small": "Curated collections from Armenian brands – pure indulgence in every bite.",
+  "footer_text": "Your trusted destination for handcrafted and imported international chocolate brands, connecting lovers of sweets to the best artisans."
 }
