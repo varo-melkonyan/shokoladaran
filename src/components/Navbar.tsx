@@ -9,50 +9,77 @@ import i18n from "@/i18n";
 type Brand = { _id: string; name: string };
 type CollectionType = { id: string; name: string; type: "collection" | "children" | "dietary" };
 
-const translitTable: Record<string, string> = {
-  // English translit
-  sh: "շ", ch: "չ", ts: "ց", jh: "ջ",
-  a: "ա", b: "բ", g: "գ", d: "դ", e: "ե", z: "զ", y: "ը", t: "թ",
-  j: "ժ", i: "ի", l: "լ", x: "խ", c: "ծ", k: "կ", h: "հ", m: "մ",
-  n: "ն", o: "ո", p: "պ", s: "ս", v: "վ", r: "ր", f: "ֆ", q: "ք", u: "ու", o2: "օ",
+type Lang = "en" | "hy" | "ru";
 
-  // Russian letters
-  "а": "ա", "б": "բ", "в": "վ", "г": "գ", "д": "դ", "е": "ե", "ё": "յո", "ж": "ժ",
-  "з": "զ", "и": "ի", "й": "յ", "к": "կ", "л": "լ", "м": "մ", "н": "ն", "о": "ո",
-  "п": "պ", "р": "ր", "с": "ս", "т": "տ", "у": "ու", "ф": "ֆ", "х": "խ", "ц": "ց",
-  "ч": "չ", "ш": "շ", "щ": "շչ", "ъ": "", "ы": "ը", "ь": "", "э": "է", "ю": "յու", "я": "յա"
+type TranslitMap = {
+  [source in Lang]?: {
+    [target in Lang]?: Record<string, string>
+  }
 };
 
-function transliterate(input: string): string {
+const translitMap: TranslitMap = {
+  en: {
+    hy: {
+      a: "ա", b: "բ", g: "գ", d: "դ", e: "ե", z: "զ", y: "ը", t: "թ",
+      j: "ժ", i: "ի", l: "լ", x: "խ", c: "ց", k: "կ", h: "հ", m: "մ",
+      n: "ն", o: "ո", p: "պ", s: "ս", v: "վ", r: "ր", f: "ֆ",
+      sh: "շ", ch: "չ", ts: "ծ", jh: "ջ", q: "ք", u: "ւ", oo: "ու", o2: "օ"
+    },
+    ru: {
+      a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", yo: "ё", zh: "ж", z: "з",
+      i: "и", j: "й", k: "к", l: "л", m: "м", n: "н", o: "о", p: "п",
+      r: "р", s: "с", t: "т", u: "у", f: "ф", h: "х", ts: "ц", ch: "ч",
+      sh: "ш", shch: "щ", y: "ы", ye: "э", yu: "ю", ya: "я"
+    }
+  },
+  ru: {
+    hy: {
+      а: "ա", б: "բ", в: "վ", г: "գ", д: "դ", е: "ե", ё: "յո", ж: "ժ", з: "զ",
+      и: "ի", й: "յ", к: "կ", л: "լ", м: "մ", н: "ն", о: "ո", п: "պ",
+      р: "ր", с: "ս", т: "տ", у: "ու", ф: "ֆ", х: "խ", ц: "ց", ч: "չ",
+      ш: "շ", щ: "շչ", ы: "ը", э: "է", ю: "յու", я: "յա"
+    }
+  },
+  hy: {
+    en: {
+      ա: "a", բ: "b", գ: "g", դ: "d", ե: "e", զ: "z", ը: "y", թ: "t",
+      ժ: "j", ի: "i", լ: "l", խ: "x", ծ: "ts", կ: "k", հ: "h", մ: "m",
+      ն: "n", ո: "o", պ: "p", ս: "s", վ: "v", ր: "r", ֆ: "f", շ: "sh",
+      չ: "ch", ջ: "jh", ք: "q", ու: "oo", օ: "o2", յ: "j", տ: "t"
+    },
+    ru: {
+      ա: "а", բ: "б", գ: "г", դ: "д", ե: "е", զ: "з", ը: "ы", թ: "т",
+      ժ: "ж", ի: "и", լ: "л", խ: "х", ծ: "ц", կ: "к", հ: "х", մ: "м",
+      ն: "н", ո: "о", պ: "п", ս: "с", վ: "в", ր: "р", ֆ: "ф", շ: "ш",
+      չ: "ч", ջ: "дж", ք: "к", ու: "у", օ: "о", յ: "й", տ: "т"
+    }
+  }
+};
+
+
+function transliterate(input: string, from: Lang, to: Lang): string {
+  const map = translitMap[from]?.[to];
+  if (!map) return input;
+
   let result = "";
   let i = 0;
 
   while (i < input.length) {
-    let match: string | null = null;
-
-    if (i + 1 < input.length) {
-      const twoChar = (input[i] + input[i + 1]).toLowerCase();
-      if (translitTable[twoChar]) {
-        match = translitTable[twoChar];
-        i += 2;
-      }
+    const twoChar = input.slice(i, i + 2).toLowerCase();
+    if (map[twoChar]) {
+      result += map[twoChar];
+      i += 2;
+      continue;
     }
 
-    if (!match) {
-      const oneChar = input[i].toLowerCase();
-      if (translitTable[oneChar]) {
-        match = translitTable[oneChar];
-      } else {
-        match = input[i];
-      }
-      i += 1;
-    }
-
-    result += match;
+    const oneChar = input[i].toLowerCase();
+    result += map[oneChar] || input[i];
+    i++;
   }
 
   return result;
 }
+
 
 
 export default function Navbar() {
@@ -106,16 +133,29 @@ export default function Navbar() {
 
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
-      const searchLower = search.trim().toLowerCase();
-      const searchTranslit = transliterate(searchLower);
+    const searchLower = search.trim().toLowerCase();
 
-      const results = products.filter((product) =>
-        product.name.toLowerCase().includes(searchLower) ||
-        product.name.toLowerCase().includes(searchTranslit)
+    // Տառափոխում՝ որպես fallback-ներ
+    const translitFromHy = transliterate(searchLower, "hy", "en");
+    const translitFromRu = transliterate(searchLower, "ru", "en");
+    const translitToHy = transliterate(searchLower, "en", "hy");
+    const translitToRu = transliterate(searchLower, "en", "ru");
+
+    const results = products.filter((product) => {
+      const name = product.name.toLowerCase();
+      return (
+        name.includes(searchLower) ||
+        name.includes(translitFromHy) ||
+        name.includes(translitFromRu) ||
+        name.includes(translitToHy) ||
+        name.includes(translitToRu)
       );
-      setSearchResults(results);
-      setLoading(false);
-    }, 200);
+    });
+
+    setSearchResults(results);
+    setLoading(false);
+  }, 200);
+
 
     return () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
