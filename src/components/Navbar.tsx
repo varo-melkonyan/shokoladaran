@@ -135,7 +135,6 @@ export default function Navbar() {
     searchTimeout.current = setTimeout(() => {
     const searchLower = search.trim().toLowerCase();
 
-    // Տառափոխում՝ որպես fallback-ներ
     const translitFromHy = transliterate(searchLower, "hy", "en");
     const translitFromRu = transliterate(searchLower, "ru", "en");
     const translitToHy = transliterate(searchLower, "en", "hy");
