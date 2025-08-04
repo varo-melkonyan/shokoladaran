@@ -228,6 +228,37 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
+            {/* Language Dropdown */}
+            <div className="relative">
+        <button
+          className="flex items-center gap-2 px-3 py-1 rounded-full font-semibold border border-chocolate bg-white text-chocolate hover:bg-chocolate hover:text-white transition"
+          onClick={() => setShowLangDropdown((prev) => !prev)}
+          aria-label="Select language"
+          type="button"
+        >
+          <span className="uppercase">{i18n.language}</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {showLangDropdown && (
+          <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+            {["hy", "en", "ru"].map((lng) => (
+              <button
+                key={lng}
+                onClick={() => handleChangeLanguage(lng)}
+                className={`block w-full text-left px-4 py-2 rounded-xl font-semibold transition ${
+                  i18n.language === lng
+                    ? "bg-chocolate text-white"
+                    : "text-chocolate hover:bg-chocolate/10"
+                }`}
+              >
+                {lng === "hy" ? "Հայերեն" : lng === "en" ? "English" : "Русский"}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
             {/* Logo */}
             <Link href="/" className="text-xl font-cursive font-bold text-chocolate">Shokoladaran</Link>
             {/* Cart */}
