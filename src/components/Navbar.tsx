@@ -9,6 +9,52 @@ import i18n from "@/i18n";
 type Brand = { _id: string; name: string };
 type CollectionType = { id: string; name: string; type: "collection" | "children" | "dietary" };
 
+const translitTable: Record<string, string> = {
+  // English translit
+  sh: "շ", ch: "չ", ts: "ց", jh: "ջ",
+  a: "ա", b: "բ", g: "գ", d: "դ", e: "ե", z: "զ", y: "ը", t: "թ",
+  j: "ժ", i: "ի", l: "լ", x: "խ", c: "ծ", k: "կ", h: "հ", m: "մ",
+  n: "ն", o: "ո", p: "պ", s: "ս", v: "վ", r: "ր", f: "ֆ", q: "ք", u: "ու", o2: "օ",
+
+  // Russian letters
+  "а": "ա", "б": "բ", "в": "վ", "г": "գ", "д": "դ", "е": "ե", "ё": "յո", "ж": "ժ",
+  "з": "զ", "и": "ի", "й": "յ", "к": "կ", "л": "լ", "м": "մ", "н": "ն", "о": "ո",
+  "п": "պ", "р": "ր", "с": "ս", "т": "տ", "у": "ու", "ф": "ֆ", "х": "խ", "ц": "ց",
+  "ч": "չ", "ш": "շ", "щ": "շչ", "ъ": "", "ы": "ը", "ь": "", "э": "է", "ю": "յու", "я": "յա"
+};
+
+function transliterate(input: string): string {
+  let result = "";
+  let i = 0;
+
+  while (i < input.length) {
+    let match: string | null = null;
+
+    if (i + 1 < input.length) {
+      const twoChar = (input[i] + input[i + 1]).toLowerCase();
+      if (translitTable[twoChar]) {
+        match = translitTable[twoChar];
+        i += 2;
+      }
+    }
+
+    if (!match) {
+      const oneChar = input[i].toLowerCase();
+      if (translitTable[oneChar]) {
+        match = translitTable[oneChar];
+      } else {
+        match = input[i];
+      }
+      i += 1;
+    }
+
+    result += match;
+  }
+
+  return result;
+}
+
+
 export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
@@ -60,12 +106,16 @@ export default function Navbar() {
 
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
-    const results = products.filter((product) =>
-      product.name.toLowerCase().includes(search.trim().toLowerCase())
-    );
-    setSearchResults(results);
-    setLoading(false);
-  }, 2000);
+      const searchLower = search.trim().toLowerCase();
+      const searchTranslit = transliterate(searchLower);
+
+      const results = products.filter((product) =>
+        product.name.toLowerCase().includes(searchLower) ||
+        product.name.toLowerCase().includes(searchTranslit)
+      );
+      setSearchResults(results);
+      setLoading(false);
+    }, 200);
 
     return () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
