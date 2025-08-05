@@ -6,6 +6,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Ad = {
   images: string[];
@@ -25,6 +27,7 @@ export default function SectionGrid({
 
   // Pick a random ad for mobile (client-only)
   const [randomAd, setRandomAd] = useState<null | { img: string; link?: string; key: string }>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!ads.length) return;
@@ -122,7 +125,7 @@ export default function SectionGrid({
                       <a href={`/product/${item._id || item.id}`}>
                         <img
                           src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
-                          alt={item.name || item.title}
+                          alt={item.name_en || item.title}
                           className="w-full h-48 object-cover cursor-pointer"
                           onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                         />
@@ -130,9 +133,14 @@ export default function SectionGrid({
                     </div>
                     <div className="p-4">
                       <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-                        {item.name || item.title}
+                        {
+                          i18n.language === "hy"
+                            ? item.name_hy
+                            : i18n.language === "ru"
+                            ? item.name_ru
+                            : item.name_en
+                        }
                       </h2>
-                      <p className="text-xs text-gray-400 mt-1">{item.collectionType}</p>
                       <p className="text-chocolate font-bold mt-2">
                         {item.discount ? (
                           <>
@@ -193,7 +201,7 @@ export default function SectionGrid({
                       <a href={`/product/${item._id || item.id}`}>
                         <img
                           src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
-                          alt={item.name || item.title}
+                          alt={item.name_en || item.title}
                           className="w-full h-40 object-cover cursor-pointer"
                           onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                         />
@@ -201,9 +209,14 @@ export default function SectionGrid({
                     </div>
                     <div className="p-3">
                       <h2 className="font-semibold text-chocolate text-base text-center">
-                        {item.name || item.title}
+                        {
+                          i18n.language === "hy"
+                            ? item.name_hy
+                            : i18n.language === "ru"
+                            ? item.name_ru
+                            : item.name_en
+                        }
                       </h2>
-                      <p className="text-xs text-gray-400 mt-1 text-center">{item.collectionType}</p>
                       <p className="text-chocolate font-bold mt-2 text-center">
                         {item.discount ? (
                           <>

@@ -39,7 +39,7 @@ export default function NewsProductsForm({
     e.preventDefault();
     const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onAdd({ ...product, images: product.images || [], link: product.link || "" });
+      onAdd({ _id: selectedProductId } as NewsProduct);
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");
@@ -63,7 +63,7 @@ export default function NewsProductsForm({
       <select value={selectedProductId} onChange={e => setSelectedProductId(e.target.value)}>
         <option value="">Select Product</option>
         {filteredProducts.map(p => (
-          <option key={p._id} value={p._id}>{p.name}</option>
+          <option key={p._id} value={p._id}>{p.name_en}</option>
         ))}
       </select>
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">

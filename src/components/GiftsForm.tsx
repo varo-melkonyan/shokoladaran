@@ -29,7 +29,7 @@ export default function GiftsForm({
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name || "");
+      setName(initialData.name_en || "");
       setPrice(initialData.price?.toString() || "");
       setDiscount(initialData.discount?.toString() || "");
       setBrand(initialData.brand || "");
@@ -86,7 +86,9 @@ export default function GiftsForm({
     }
 
     const newGift = {
-      name,
+      name_en: name,
+      name_hy: name,
+      name_ru: name,
       price: Number(price),
       weight,
       discount: discount ? Number(discount) : undefined,

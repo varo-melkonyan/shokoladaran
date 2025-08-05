@@ -39,10 +39,15 @@ export default function ExclusivesProductsForm({
     e.preventDefault();
     const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onAdd({ ...product, images: product.images || [], link: product.link || "" });
-      setSelectedBrand("");
-      setSelectedCollectionType("");
-      setSelectedProductId("");
+      onAdd({
+      ...product,
+      images: product.images || [],
+      link: product.link || "",
+      name: product.name_en
+    });
+    setSelectedBrand("");
+    setSelectedCollectionType("");
+    setSelectedProductId("");
     }
   }
 
@@ -63,7 +68,7 @@ export default function ExclusivesProductsForm({
       <select value={selectedProductId} onChange={e => setSelectedProductId(e.target.value)}>
         <option value="">Select Product</option>
         {filteredProducts.map(p => (
-          <option key={p._id} value={p._id}>{p.name}</option>
+          <option key={p._id} value={p._id}>{p.name_en}</option>
         ))}
       </select>
       <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">
