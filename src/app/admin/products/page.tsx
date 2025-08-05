@@ -17,7 +17,9 @@ export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
   const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string; type: string }[]>([]);
-  const [name, setName] = useState("");
+  const [name_en, setNameEn] = useState("");
+  const [name_hy, setNameHy] = useState("");
+  const [name_ru, setNameRu] = useState("");
   const [price, setPrice] = useState("");
   const [weight, setWeight] = useState("");
   const [discount, setDiscount] = useState("");
@@ -47,7 +49,9 @@ export default function AdminProducts() {
       .then(res => res.json())
       .then(data => setProducts(data.map((p: any) => ({
         _id: p._id || p.id,
-        name: p.name,
+        name_en: p.name_en,
+        name_hy: p.name_hy,
+        name_ru: p.name_ru,
         price: p.price,
         weight: p.weight,
         discount: p.discount,
@@ -89,21 +93,6 @@ export default function AdminProducts() {
     // eslint-disable-next-line
   }, []);
 
-  async function uploadImage(file: File, brand: string, collectionType: string): Promise<string | null> {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("brand", brand);
-    formData.append("collectionType", collectionType);
-
-    const res = await fetch("/api/admin/upload", {
-      method: "POST",
-      body: formData,
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.url;
-  }
-
   async function uploadImages(files: File[], brand: string, collectionType: string): Promise<string[]> {
     const urls: string[] = [];
     for (const file of files) {
@@ -122,7 +111,9 @@ export default function AdminProducts() {
 
   function handleEdit(product: Product) {
     setEditId(product._id);
-    setName(product.name);
+    setNameEn(product.name_en || "");
+    setNameHy(product.name_hy || "");
+    setNameRu(product.name_ru || "");
     setPrice(product.price.toString());
     setWeight(product.weight);
     setDiscount(product.discount ? product.discount.toString() : "");
@@ -155,7 +146,9 @@ export default function AdminProducts() {
   }
 
   function resetForm() {
-    setName("");
+    setNameEn("");
+    setNameHy("");
+    setNameRu("");
     setPrice("");
     setWeight("");
     setDiscount("");
@@ -182,7 +175,7 @@ export default function AdminProducts() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !price || !weight || !collectionType || !brand) {
+    if (!name_en || !name_hy || !name_ru || !price || !weight || !collectionType || !brand) {
       setError("Please fill all required fields.");
       return;
     }
@@ -193,9 +186,11 @@ export default function AdminProducts() {
       setImages(imageUrls);
     }
 
-    const link = `/${slugify(brand)}/${slugify(collectionType)}/${slugify(name)}`;
+    const link = `/${slugify(brand)}/${slugify(collectionType)}/${slugify(name_en)}`;
     const product: any = {
-      name,
+      name_en,
+      name_hy,
+      name_ru,
       price: Number(price),
       weight,
       discount: discount ? Number(discount) : undefined,
@@ -241,7 +236,9 @@ export default function AdminProducts() {
     <div className="max-w-xl mx-auto mt-10">
       <h1 className="text-2xl font-bold mb-4">Products</h1>
       <form className="flex flex-col gap-2 mb-6" onSubmit={handleSubmit}>
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="Product Name" className="border p-2 rounded" />
+        <input value={name_en} onChange={e => setNameEn(e.target.value)} placeholder="Product Name (English)" className="border p-2 rounded" />
+        <input value={name_hy} onChange={e => setNameHy(e.target.value)} placeholder="Product Name (Armenian)" className="border p-2 rounded" />
+        <input value={name_ru} onChange={e => setNameRu(e.target.value)} placeholder="Product Name (Russian)" className="border p-2 rounded" />
         <input value={price} onChange={e => setPrice(e.target.value)} placeholder="Price (AMD)" type="number" className="border p-2 rounded" />
         <input value={weight} onChange={e => setWeight(e.target.value)} placeholder="Weight (e.g. 100g)" className="border p-2 rounded" />
         <input value={discount} onChange={e => setDiscount(e.target.value)} placeholder="Discounted Price (optional)" type="number" className="border p-2 rounded" />
@@ -359,7 +356,9 @@ export default function AdminProducts() {
         {products.map((p) => (
           <li key={p._id} className="flex flex-col border-b py-2">
             <div className="flex items-center gap-2">
-              <span className="font-bold">{p.name}</span>
+              <span className="font-bold">{p.name_en}</span>
+              <span className="font-bold">{p.name_hy}</span>
+              <span className="font-bold">{p.name_ru}</span>
               <span>{p.weight} g</span>
               <span>{p.price} AMD</span>
               <span>{p.collectionType}</span>
@@ -393,7 +392,7 @@ export default function AdminProducts() {
             {p.images && p.images.length > 0 && (
               <div className="flex gap-2">
                 {p.images.map((img, idx) => (
-                  <img key={idx} src={img} alt={p.name} className="w-10 h-10 object-cover rounded" />
+                  <img key={idx} src={img} alt={p.name_en || p.name_hy || p.name_ru} className="w-10 h-10 object-cover rounded" />
                 ))}
               </div>
             )}

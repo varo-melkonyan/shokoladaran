@@ -35,7 +35,7 @@ export default function ProductList({
                   <a href={`/product/${product._id}`}>
                     <img
                       src={product.images[0]}
-                      alt={product.name}
+                      alt={product.name_en || product.name_hy || product.name_ru}
                       className="w-full h-48 object-cover cursor-pointer"
                     />
                   </a>
@@ -84,7 +84,7 @@ export default function ProductList({
               </div>
               <div className="p-4">
                 <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-                  {product.name}
+                  {product.name_en || product.name_hy || product.name_ru}
                 </h2>
                 <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
                 <div className="mt-3">

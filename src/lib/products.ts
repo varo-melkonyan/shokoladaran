@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 export type Product = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   price: number;
   weight?: string;
   discount?: number;
@@ -32,7 +34,9 @@ export async function getProductById(id: string): Promise<Product | null> {
 
   return {
     _id: product._id.toString(),
-    name: product.name,
+    name_en: product.name_en,
+    name_hy: product.name_hy,
+    name_ru: product.name_ru,
     price: product.price,
     weight: product.weight,
     discount: product.discount,
@@ -58,7 +62,9 @@ export async function getAllProducts(): Promise<Product[]> {
 
   return products.map((product) => ({
     _id: product._id.toString(),
-    name: product.name,
+    name_en: product.name_en,
+    name_hy: product.name_hy,
+    name_ru: product.name_ru,
     price: product.price,
     weight: product.weight,
     discount: product.discount,
@@ -88,6 +94,9 @@ export async function getProductsByIds(ids: string[]) {
   return products.map((product) => ({
     _id: product._id.toString(),
     name: product.name,
+    name_en: product.name_en,
+    name_hy: product.name_hy,
+    name_ru: product.name_ru,
     price: product.price,
     weight: product.weight,
     discount: product.discount,

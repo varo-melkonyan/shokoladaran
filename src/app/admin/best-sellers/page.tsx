@@ -28,7 +28,9 @@ export default function AdminBestSellerProducts() {
       .then(res => res.json())
       .then(data => setProducts(data.map((p: any) => ({
         _id: p._id || p.id,
-        name: p.name,
+        name_en: p.name_en,
+        name_hy: p.name_hy,
+        name_ru: p.name_ru,
         price: p.price,
         weight: p.weight,
         discount: p.discount,

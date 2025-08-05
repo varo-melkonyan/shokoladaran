@@ -7,7 +7,9 @@ export type NutritionFacts = {
 
 export type Product = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   price: number;
   weight: string;
   discount?: number;
