@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import ExclusivesProductsForm from "@/components/ExclusivesProductsForm";
 import { ExclusivesProduct } from "@/types/exclusivesProduct";
 import { Product } from "@/types/product";
+import { useTranslation } from "react-i18next";
 
 export default function AdminExclusivesProducts() {
   const [exclusivesProducts, setExclusivesProducts] = useState<ExclusivesProduct[]>([]);
@@ -10,6 +11,7 @@ export default function AdminExclusivesProducts() {
   const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
   const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string }[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -45,7 +47,7 @@ export default function AdminExclusivesProducts() {
     nutritionFacts: p.nutritionFacts,
   }))));
     fetch("/api/admin/exclusives-products").then(res => res.json()).then(setExclusivesProducts);
-  }, []);
+  }, [products]);
 
   const handleAddOrEdit = async (newExclusivesProduct: ExclusivesProduct) => {
     if (editIndex !== null) {
@@ -114,9 +116,15 @@ export default function AdminExclusivesProducts() {
       />
       <ul>
         {exclusivesProducts.map((ep, idx) => (
-          <li key={ep.name + idx} className="flex items-center gap-2 border-b py-2">
-            {ep.images && <img src={ep.images[0]} alt={ep.name} className="w-12 h-12 object-cover rounded" />}
-            <span>{ep.name}</span>
+          <li key={ep._id} className="flex items-center gap-2 border-b py-2">
+            {ep.images && <img src={ep.images[0]} alt={ep.name_en} className="w-12 h-12 object-cover rounded" />}
+            <span>
+            {i18n.language === "hy"
+              ? ep.name_hy
+              : i18n.language === "ru"
+              ? ep.name_ru
+              : ep.name_en}
+          </span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => moveUp(idx)}

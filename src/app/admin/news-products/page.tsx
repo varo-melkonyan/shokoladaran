@@ -47,7 +47,7 @@ export default function AdminNewsProducts() {
     nutritionFacts: p.nutritionFacts,
   }))));
     fetch("/api/admin/news-products").then(res => res.json()).then(setNewsProducts);
-  }, []);
+  }, [products]);
 
   const handleAddOrEdit = async (newNewsProduct: NewsProduct) => {
     if (editIndex !== null) {
@@ -118,13 +118,7 @@ export default function AdminNewsProducts() {
         {newsProducts.map((ep, idx) => (
           <li key={ep._id} className="flex items-center gap-2 border-b py-2">
             {ep.images && <img src={ep.images[0]} alt={ep.name_en} className="w-12 h-12 object-cover rounded" />}
-            <span>
-            {i18n.language === "hy"
-              ? ep.name_hy
-              : i18n.language === "ru"
-              ? ep.name_ru
-              : ep.name_en}
-          </span>
+            <span>{ep.name_en}</span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => moveUp(idx)}

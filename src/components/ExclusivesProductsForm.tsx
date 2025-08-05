@@ -43,7 +43,7 @@ export default function ExclusivesProductsForm({
       ...product,
       images: product.images || [],
       link: product.link || "",
-      name: product.name_en
+      name_en: product.name_en
     });
     setSelectedBrand("");
     setSelectedCollectionType("");

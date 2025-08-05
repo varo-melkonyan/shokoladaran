@@ -47,7 +47,7 @@ export default function AdminBestSellerProducts() {
     fetch("/api/admin/best-sellers")
       .then(res => res.json())
       .then(setBestSellerProducts);
-  }, []);
+  }, [products]);
 
   const handleAddOrEdit = async (newBestSellerProduct: BestSellerProduct) => {
     // Always find by _id
