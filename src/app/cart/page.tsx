@@ -2,9 +2,11 @@
 import { useCart } from "@/context/CartContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const { cart, addToCart, removeFromCart } = useCart();
   const [showCheckout, setShowCheckout] = useState(false);
   const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">("delivery");
@@ -76,10 +78,16 @@ export default function CartPage() {
             return (
               <div key={item._id + "-" + idx} className="flex items-center gap-4 border-b pb-4">
                 {item.images && (
-                  <img src={item.images[0]} alt={item.name} className="w-24 h-24 object-cover rounded" />
+                  <img src={item.images[0]} alt={item.name_en} className="w-24 h-24 object-cover rounded" />
                 )}
                 <div className="flex-1">
-                  <div className="font-semibold text-lg">{item.name}</div>
+                  <div className="font-semibold text-lg">{
+                    i18n.language === "hy"
+                      ? item.name_hy
+                      : i18n.language === "ru"
+                      ? item.name_ru
+                      : item.name_en
+                  }</div>
                   {/* Show readyAfter for pre-order items */}
                   {item.status === "pre_order" && (
                     <div className="text-orange-600 text-sm mt-1">

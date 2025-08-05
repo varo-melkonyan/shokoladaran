@@ -74,10 +74,10 @@ export default function GiftsClient() {
           value={sortBy}
           onChange={e => setSortBy(e.target.value)}
         >
-          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
-          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
           <option value="name-asc">{t("sort_options.name_asc")}</option>
           <option value="name-desc">{t("sort_options.name_desc")}</option>
+          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
         </select>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">

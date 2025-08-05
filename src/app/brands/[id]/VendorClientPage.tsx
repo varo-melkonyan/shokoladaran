@@ -104,8 +104,12 @@ export default function VendorClientPage({ slug }: { slug: string }) {
 
   if (sortBy === "price-asc") filteredProducts = [...filteredProducts].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
   if (sortBy === "price-desc") filteredProducts = [...filteredProducts].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
-  if (sortBy === "name-asc") filteredProducts = [...filteredProducts].sort((a, b) => a.name_en.localeCompare(b.name_en));
-  if (sortBy === "name-desc") filteredProducts = [...filteredProducts].sort((a, b) => b.name_en.localeCompare(a.name_en));
+  if (sortBy === "name-asc") filteredProducts = [...filteredProducts].sort((a, b) =>
+    (a.name_en || "").localeCompare(b.name_en || "")
+  );
+  if (sortBy === "name-desc") filteredProducts = [...filteredProducts].sort((a, b) =>
+    (b.name_en || "").localeCompare(a.name_en || "")
+  );
 
   const brandCollections = Array.from(
     new Set(products.map((p) => p.collectionType))
@@ -157,10 +161,10 @@ export default function VendorClientPage({ slug }: { slug: string }) {
             onChange={e => setSortBy(e.target.value)}
             className="border p-2 rounded"
           >
-            <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
-            <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
             <option value="name-asc">{t("sort_options.name_asc")}</option>
             <option value="name-desc">{t("sort_options.name_desc")}</option>
+            <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+            <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
           </select>
         </div>
         {filteredProducts.length > 0 ? (

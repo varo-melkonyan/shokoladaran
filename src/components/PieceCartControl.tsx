@@ -7,7 +7,9 @@ export default function PieceCartControl({ product, cartItem, addToCart, removeF
     if (count > 1) {
       addToCart({
         _id: product._id,
-        name: product.name,
+        name_en: product.name_en,
+        name_hy: product.name_hy,
+        name_ru: product.name_ru,
         price: product.price,
         discount: product.discount,
         images: product.images,
@@ -21,7 +23,9 @@ export default function PieceCartControl({ product, cartItem, addToCart, removeF
       } else {
         addToCart({
           _id: product._id,
-          name: product.name,
+          name_en: product.name_en,
+          name_hy: product.name_hy,
+          name_ru: product.name_ru,
           price: product.price,
           discount: product.discount,
           images: product.images,
@@ -36,7 +40,9 @@ export default function PieceCartControl({ product, cartItem, addToCart, removeF
   const handlePlus = () => {
     addToCart({
       _id: product._id,
-      name: product.name,
+      name_en: product.name_en,
+      name_hy: product.name_hy,
+      name_ru: product.name_ru,
       price: product.price,
       discount: product.discount,
       images: product.images,

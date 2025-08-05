@@ -449,13 +449,18 @@ export default function Navbar() {
                 {item.image && (
                   <img
                     src={item.image}
-                    alt={item.name}
+                    alt={item.name_en || item.name_hy || item.name_ru}
                     className="w-24 h-24 object-cover rounded mb-2"
                   />
                 )}
                 <div className="text-base font-medium text-gray-900 text-center">
-                  {item.name}
-                </div>
+                  {
+                  i18n.language === "hy"
+                      ? item.name_hy
+                      : i18n.language === "ru"
+                      ? item.name_ru
+                      : item.name_en
+                  }</div>
                 <div className="text-gray-700 text-center mt-1">
                   {item.price ? `$ ${item.price.toFixed(2)}` : ""}
                 </div>
@@ -1244,18 +1249,18 @@ export default function Navbar() {
                   <div className="flex-1">
                     <div className="font-semibold">
                       <Link
-                      href={getCartItemLink(item)}
-                      className="text-chocolate hover:underline"
-                      onClick={() => setShowCart(false)}
-                    >
-                      {
-                        i18n.language === "hy"
-                          ? item.name_hy
-                          : i18n.language === "ru"
-                          ? item.name_ru
-                          : item.name_en
-                      }
-                    </Link>
+                        href={getCartItemLink(item)}
+                        className="text-chocolate hover:underline"
+                        onClick={() => setShowCart(false)}
+                      >
+                        {
+                          i18n.language === "hy"
+                            ? item.name_hy
+                            : i18n.language === "ru"
+                            ? item.name_ru
+                            : item.name_en
+                        }
+                      </Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       {/* Minus Button */}

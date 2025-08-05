@@ -4,7 +4,8 @@ import Link from "next/link";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 import { useState } from "react";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 export default function ProductClient({
   product,
@@ -15,6 +16,7 @@ export default function ProductClient({
 }) {
   const { addToCart, removeFromCart, cart } = useCart();
   const [imgIdx, setImgIdx] = useState(0);
+  const { t } = useTranslation();
 
   const images = product.images && product.images.length > 0 ? product.images : ["/placeholder.png"];
 
@@ -30,7 +32,7 @@ export default function ProductClient({
             <div className="relative w-full flex flex-col items-center">
               <img
                 src={images[imgIdx]}
-                alt={product.name}
+                alt={product.name_en}
                 className="w-full h-80 object-contain rounded-xl"
               />
               {images.length > 1 && (
@@ -73,7 +75,13 @@ export default function ProductClient({
         {/* Right: Product Info */}
         <div className="flex flex-col justify-between">
           <div>
-            <h1 className="text-4xl font-extrabold text-chocolate mb-2">{product.name}</h1>
+            <h1 className="text-4xl font-extrabold text-chocolate mb-2">{
+              i18n.language === "hy"
+                ? product.name_hy
+                : i18n.language === "ru"
+                ? product.name_ru
+                : product.name_en
+            }</h1>
             <p className="text-gray-600 mb-4">{product.description}</p>
             <div className="flex items-end gap-3 mb-4">
               {product.discount ? (

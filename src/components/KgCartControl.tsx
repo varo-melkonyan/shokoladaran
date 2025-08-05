@@ -10,7 +10,9 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
     if (grams > minGrams) {
       addToCart({
         _id: product._id,
-        name: product.name,
+        name_en: product.name_en,
+        name_hy: product.name_hy,
+        name_ru: product.name_ru,
         price: product.price,
         discount: product.discount,
         images: product.images,
@@ -25,7 +27,9 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
       } else {
         addToCart({
           _id: product._id,
-          name: product.name,
+          name_en: product.name_en,
+          name_hy: product.name_hy,
+          name_ru: product.name_ru,
           price: product.price,
           discount: product.discount,
           images: product.images,
@@ -43,7 +47,9 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
       const newGrams = grams === 0 ? minGrams : Math.min(grams + 10, maxGrams);
       addToCart({
         _id: product._id,
-        name: product.name,
+        name_en: product.name_en,
+        name_hy: product.name_hy,
+        name_ru: product.name_ru,
         price: product.price,
         discount: product.discount,
         images: product.images,
@@ -60,7 +66,9 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
     value = Math.max(0, Math.min(maxGrams, value));
     addToCart({
       _id: product._id,
-      name: product.name,
+      name_en: product.name_en,
+      name_hy: product.name_hy,
+      name_ru: product.name_ru,
       price: product.price,
       discount: product.discount,
       images: product.images,
