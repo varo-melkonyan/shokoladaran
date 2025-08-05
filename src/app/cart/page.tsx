@@ -96,8 +96,8 @@ export default function CartPage() {
                   )}
                   <div className="text-xs text-gray-500 mt-1">
                     {typeof item.grams === "number"
-                      ? `Grams: ${item.grams}g`
-                      : `Qty: ${item.quantity}`}
+                      ? `${t("grams")}: ${item.grams}`
+                      : `${t("quantity")}: ${item.quantity}`}
                   </div>
                   <div className="flex gap-2 mt-2 items-center">
                     {/* Minus Button */}
