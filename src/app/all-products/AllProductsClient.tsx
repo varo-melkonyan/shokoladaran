@@ -4,7 +4,9 @@ import { t } from "i18next";
 
 type Product = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   price: number;
   weight: string;
   collectionType: string;
@@ -39,8 +41,8 @@ export default function AllProductsClient({ products }: { products: Product[] })
 
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => b.price - a.price);
-  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
+  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name_en.localeCompare(a.name_en));
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
@@ -86,7 +88,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
               <a href={`/product/${product._id}`}>
                 <img
                   src={product.images?.[0]}
-                  alt={product.name}
+                  alt={product.name_en}
                   className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
                 />
               </a>
@@ -133,7 +135,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
                   </div> */}
             </div>
             <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-              {product.name}
+              {product.name_en}
             </h2>
             <div className="text-sm text-gray-600">{product.brand}</div>
             <div className="text-sm text-gray-500">{product.collectionType}</div>

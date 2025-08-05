@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import ProductList from "@/components/ProductList";
 import { useCart } from "@/context/CartContext";
 import { t } from "i18next";
+import { useTranslation } from "react-i18next";
 
 
 export default function SearchComponent() {
   const { addToCart } = useCart();
+  const { i18n } = useTranslation();
   const searchParams = useSearchParams();
   const query = searchParams?.get("query") || "";
   const [products, setProducts] = useState<any[]>([]);
@@ -32,7 +34,9 @@ export default function SearchComponent() {
   // Filter and normalize products
   const filtered = products
     .filter((product) =>
-      product.name.toLowerCase().includes(query.toLowerCase())
+      product.name_en.toLowerCase().includes(query.toLowerCase()) ||
+      product.name_hy.toLowerCase().includes(query.toLowerCase()) ||
+      product.name_ru.toLowerCase().includes(query.toLowerCase())
     )
     .map((product) => ({
       ...product,
@@ -45,6 +49,17 @@ export default function SearchComponent() {
           : "in_stock",
     }));
 
+  const handleAddToCart = (product: any) => {
+    const lang = i18n.language;
+    const name =
+      lang === "en"
+        ? product.name_en
+        : lang === "hy"
+        ? product.name_hy
+        : product.name_ru;
+    addToCart({ ...product, name });
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
       <h1 className="text-2xl font-bold mb-6">
@@ -55,7 +70,7 @@ export default function SearchComponent() {
       ) : filtered.length === 0 ? (
         <p className="text-gray-500">No products found.</p>
       ) : (
-        <ProductList products={filtered} onAddToCart={addToCart} />
+        <ProductList products={filtered} onAddToCart={handleAddToCart} />
       )}
     </div>
   );

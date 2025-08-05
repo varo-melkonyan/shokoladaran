@@ -20,7 +20,9 @@ export default function AdminGifts() {
       .then(res => res.json())
       .then(data => setProducts(data.map((p: any) => ({
         _id: p._id || p.id,
-        name: p.name,
+        name_en: p.name_en,
+        name_hy: p.name_hy,
+        name_ru: p.name_ru,
         price: p.price,
         weight: p.weight,
         discount: p.discount,
@@ -105,9 +107,9 @@ export default function AdminGifts() {
       />
       <ul>
         {gifts.map((gift, idx) => (
-          <li key={gift.name + idx} className="flex items-center gap-2 border-b py-2">
-            {gift.images && <img src={gift.images[0]} alt={gift.name} className="w-12 h-12 object-cover rounded" />}
-            <span>{gift.name}</span>
+          <li key={gift.name_en + idx} className="flex items-center gap-2 border-b py-2">
+            {gift.images && <img src={gift.images[0]} alt={gift.name_en} className="w-12 h-12 object-cover rounded" />}
+            <span>{gift.name_en}</span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => moveUp(idx)}

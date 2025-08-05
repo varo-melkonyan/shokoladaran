@@ -27,7 +27,9 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
     ]).then(([productsRaw, collectionsRaw]) => {
       const products = productsRaw.map((p: any) => ({
         _id: p._id || p.id,
-        name: p.name,
+        name_en: p.name_en,
+        name_hy: p.name_hy,
+        name_ru: p.name_ru,
         price: p.price,
         weight: p.weight,
         discount: p.discount,
@@ -92,7 +94,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                   <a href={`/product/${product._id}`}>
                     <img
                       src={product.images?.[0] || "/placeholder.png"}
-                      alt={product.name}
+                      alt={product.name_en}
                       className="w-full h-40 object-cover mb-2 cursor-pointer"
                     />
                   </a>
@@ -138,7 +140,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                     </div>
                   </div> */}
                 </div>
-                <h2 className="text-lg font-bold">{product.name}</h2>
+                <h2 className="text-lg font-bold">{product.name_en}</h2>
                 <div className="mt-2">
                   {product.discount ? (
                     <>

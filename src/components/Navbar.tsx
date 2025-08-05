@@ -133,33 +133,47 @@ export default function Navbar() {
 
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
-    const searchLower = search.trim().toLowerCase();
+      const searchLower = search.trim().toLowerCase();
 
-    const translitFromHy = transliterate(searchLower, "hy", "en");
-    const translitFromRu = transliterate(searchLower, "ru", "en");
-    const translitToHy = transliterate(searchLower, "en", "hy");
-    const translitToRu = transliterate(searchLower, "en", "ru");
+      // Transliterate in all directions
+      const translitFromHy = transliterate(searchLower, "hy", "en");
+      const translitFromRu = transliterate(searchLower, "ru", "en");
+      const translitToHy = transliterate(searchLower, "en", "hy");
+      const translitToRu = transliterate(searchLower, "en", "ru");
 
-    const results = products.filter((product) => {
-      const name = product.name.toLowerCase();
-      return (
-        name.includes(searchLower) ||
-        name.includes(translitFromHy) ||
-        name.includes(translitFromRu) ||
-        name.includes(translitToHy) ||
-        name.includes(translitToRu)
-      );
-    });
+      const results = products.filter((product) => {
+        // Use all name fields for search
+        return (
+          product.name_en?.toLowerCase().includes(searchLower) ||
+          product.name_hy?.toLowerCase().includes(searchLower) ||
+          product.name_ru?.toLowerCase().includes(searchLower) ||
+          product.name_en?.toLowerCase().includes(translitFromHy) ||
+          product.name_hy?.toLowerCase().includes(translitToHy) ||
+          product.name_ru?.toLowerCase().includes(translitToRu) ||
+          product.name_en?.toLowerCase().includes(translitFromRu)
+        );
+      });
 
-    setSearchResults(results);
-    setLoading(false);
-  }, 200);
+      // For display, set the name property based on current language
+      const lang = i18n.language;
+      const resultsWithDisplayName = results.map(product => ({
+        ...product,
+        name:
+          lang === "en"
+            ? product.name_en
+            : lang === "hy"
+            ? product.name_hy
+            : product.name_ru
+      }));
 
+      setSearchResults(resultsWithDisplayName);
+      setLoading(false);
+    }, 200);
 
     return () => {
       if (searchTimeout.current) clearTimeout(searchTimeout.current);
     };
-  }, [search, products]);
+  }, [search, products, i18n.language]);
 
   // Close dropdown on outside click
   useEffect(() => {

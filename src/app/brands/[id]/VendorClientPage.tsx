@@ -48,7 +48,9 @@ export default function VendorClientPage({ slug }: { slug: string }) {
 
       const products = productsRaw.map((p: any) => ({
         _id: p._id || p.id,
-        name: p.name,
+        name_en: p.name_en,
+        name_hy: p.name_hy,
+        name_ru: p.name_ru,
         price: p.price,
         weight: p.weight,
         discount: p.discount,
@@ -101,8 +103,8 @@ export default function VendorClientPage({ slug }: { slug: string }) {
 
   if (sortBy === "price-asc") filteredProducts = [...filteredProducts].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
   if (sortBy === "price-desc") filteredProducts = [...filteredProducts].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
-  if (sortBy === "name-asc") filteredProducts = [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name));
-  if (sortBy === "name-desc") filteredProducts = [...filteredProducts].sort((a, b) => b.name.localeCompare(a.name));
+  if (sortBy === "name-asc") filteredProducts = [...filteredProducts].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  if (sortBy === "name-desc") filteredProducts = [...filteredProducts].sort((a, b) => b.name_en.localeCompare(a.name_en));
 
   const brandCollections = Array.from(
     new Set(products.map((p) => p.collectionType))
@@ -176,7 +178,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                       <a href={`/product/${product._id}`}>
                         <img
                           src={product.images[0]}
-                          alt={product.name}
+                          alt={product.name_en}
                           className="w-full h-40 object-cover rounded-xl mb-4"
                         />
                       </a>
@@ -250,7 +252,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h2 className="font-semibold text-chocolate text-lg mb-1">{product.name}</h2>
+                      <h2 className="font-semibold text-chocolate text-lg mb-1">{product.name_en}</h2>
                       <p className="text-sm text-gray-500 mb-1">
                         {product.discount ? (
                           <>

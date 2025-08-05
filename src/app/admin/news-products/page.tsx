@@ -15,7 +15,7 @@ export default function AdminNewsProducts() {
     fetch("/api/admin/brands")
   .then(res => res.json())
   .then(data => setBrands(data.map((b: any) => ({
-    _id: b._id || b.id, // use _id if present, else id
+    _id: b._id || b.id,
     name: b.name,
   }))));
     fetch("/api/admin/collection-types")
@@ -27,8 +27,10 @@ export default function AdminNewsProducts() {
     fetch("/api/admin/products")
   .then(res => res.json())
   .then(data => setProducts(data.map((p: any) => ({
-    _id: p._id || p.id, // use _id if present, else id
-    name: p.name,
+    _id: p._id || p.id,
+    name_en: p.name_en,
+    name_hy: p.name_hy,
+    name_ru: p.name_ru,
     price: p.price,
     weight: p.weight,
     discount: p.discount,
