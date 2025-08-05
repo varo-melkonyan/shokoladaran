@@ -5,7 +5,8 @@ import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type CollectionType = {
   _id: string;
@@ -19,6 +20,8 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     Promise.all([
@@ -140,7 +143,13 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                     </div>
                   </div> */}
                 </div>
-                <h2 className="text-lg font-bold">{product.name_en}</h2>
+                <h2 className="text-lg font-bold">{
+                    i18n.language === "hy"
+                      ? product.name_hy
+                      : i18n.language === "ru"
+                      ? product.name_ru
+                      : product.name_en
+                  }</h2>
                 <div className="mt-2">
                   {product.discount ? (
                     <>
@@ -151,7 +160,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                     <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500">{product.weight} g</p>
+                
                 {/* Cart controls */}
                 <div className="mt-2">
                   {product.quantityType === "kg" ? (

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Product = {
   _id: string;
@@ -32,6 +33,7 @@ export default function AllProductsClient({ products }: { products: Product[] })
   const [sortBy, setSortBy] = useState("name-asc");
   const brands = useMemo(() => getUnique(products.map(p => p.brand)), [products]);
   const collections = useMemo(() => getUnique(products.map(p => p.collectionType)), [products]);
+  const { t } = useTranslation();
 
   let filtered = products.filter(
     p =>
@@ -41,8 +43,12 @@ export default function AllProductsClient({ products }: { products: Product[] })
 
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => b.price - a.price);
-  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name_en.localeCompare(b.name_en));
-  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name_en.localeCompare(a.name_en));
+  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) =>
+    (a.name_en || "").localeCompare(b.name_en || "")
+  );
+  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) =>
+    (b.name_en || "").localeCompare(a.name_en || "")
+  );
 
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
@@ -135,10 +141,14 @@ export default function AllProductsClient({ products }: { products: Product[] })
                   </div> */}
             </div>
             <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-              {product.name_en}
+              {
+                i18n.language === "hy"
+                  ? product.name_hy
+                  : i18n.language === "ru"
+                  ? product.name_ru
+                  : product.name_en
+              }
             </h2>
-            <div className="text-sm text-gray-600">{product.brand}</div>
-            <div className="text-sm text-gray-500">{product.collectionType}</div>
             <div className="mt-2">
               {product.discount ? (
                 <>
@@ -149,7 +159,6 @@ export default function AllProductsClient({ products }: { products: Product[] })
                 <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
               )}
             </div>
-            <div className="text-xs text-gray-400">{product.weight} g</div>
             {product.status && (
               <div className="text-xs mt-1">
                 <span

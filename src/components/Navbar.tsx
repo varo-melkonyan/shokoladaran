@@ -295,24 +295,24 @@ export default function Navbar() {
     setShowLangDropdown(false);
   };
 
+  function namesMatch(a: any, b: any) {
+    const namesA = [a.name_en, a.name_hy, a.name_ru, a.name].filter(Boolean).map(n => n.toLowerCase());
+    const namesB = [b.name_en, b.name_hy, b.name_ru, b.name].filter(Boolean).map(n => n.toLowerCase());
+    return namesA.some(nameA => namesB.includes(nameA));
+  }
+
   function getCartItemLink(item: any) {
-  const foundGift = gifts.find(
-    (g) => g.name && item.name && g.name.toLowerCase() === item.name.toLowerCase()
-  );
-  if (foundGift) return `/gifts/${foundGift._id}`;
+    const foundGift = gifts.find(g => namesMatch(g, item));
+    if (foundGift) return `/gifts/${foundGift._id}`;
 
-  const foundSpecial = specials.find(
-    (s) => s.name && item.name && s.name.toLowerCase() === item.name.toLowerCase()
-  );
-  if (foundSpecial) return `/special/${foundSpecial._id}`;
+    const foundSpecial = specials.find(s => namesMatch(s, item));
+    if (foundSpecial) return `/special/${foundSpecial._id}`;
 
-  const foundProduct = products.find(
-    (p) => p.name && item.name && p.name.toLowerCase() === item.name.toLowerCase()
-  );
-  if (foundProduct) return `/product/${foundProduct.slug || foundProduct._id}`;
+    const foundProduct = products.find(p => namesMatch(p, item));
+    if (foundProduct) return `/product/${foundProduct.slug || foundProduct._id}`;
 
-  return `/product/${item.slug || item._id}`;
-}
+    return `/product/${item.slug || item._id}`;
+  }
 
   return (
     <>
@@ -707,7 +707,7 @@ export default function Navbar() {
                   >
                     <img
                       src={item.images && item.images[0] ? item.images[0] : "/placeholder.png"}
-                      alt={item.name}
+                      alt={item.name_en || item.name_hy || item.name_ru}
                       className="w-16 h-16 object-cover rounded"
                       onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                     />
@@ -720,7 +720,13 @@ export default function Navbar() {
                         className="text-chocolate hover:underline"
                         onClick={() => setShowCart(false)}
                       >
-                        {item.name}
+                        {
+                          i18n.language === "hy"
+                            ? item.name_hy
+                            : i18n.language === "ru"
+                            ? item.name_ru
+                            : item.name_en
+                        }
                       </Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
@@ -1095,11 +1101,17 @@ export default function Navbar() {
                                       {item.image && (
                                         <img
                                           src={item.image}
-                                          alt={item.name}
+                                          alt={item.name_en || item.name_hy || item.name_ru}
                                           className="w-40 h-40 object-cover rounded mb-2"
                                         />
                                       )}
-                                      <div className="text-base font-medium text-gray-900 text-center">{item.name}</div>
+                                      <div className="text-base font-medium text-gray-900 text-center">{
+                                        i18n.language === "hy"
+                                          ? item.name_hy
+                                          : i18n.language === "ru"
+                                          ? item.name_ru
+                                          : item.name_en
+                                      }</div>
                                       <div className="text-gray-700 text-center mt-1">
                                         {item.price ? `$ ${item.price.toFixed(2)}` : ""}
                                       </div>
@@ -1223,7 +1235,7 @@ export default function Navbar() {
                   >
                     <img
                       src={item.images && item.images[0] ? item.images[0] : "/placeholder.png"}
-                      alt={item.name}
+                      alt={item.name_en || item.name_hy || item.name_ru}
                       className="w-16 h-16 object-cover rounded"
                       onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                     />
@@ -1236,7 +1248,13 @@ export default function Navbar() {
                       className="text-chocolate hover:underline"
                       onClick={() => setShowCart(false)}
                     >
-                      {item.name}
+                      {
+                        i18n.language === "hy"
+                          ? item.name_hy
+                          : i18n.language === "ru"
+                          ? item.name_ru
+                          : item.name_en
+                      }
                     </Link>
                     </div>
                     <div className="flex items-center gap-2 mt-1">

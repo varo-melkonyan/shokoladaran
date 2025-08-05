@@ -3,10 +3,13 @@ import { useCart } from "@/context/CartContext";
 import { Product } from "@/types/product";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 export default function BrandProductGrid({ products }: { products: Product[] }) {
   const { addToCart, removeFromCart, cart } = useCart();
+  const { t } = useTranslation();
+
 
   if (!products || products.length === 0) {
     return <div className="text-gray-500 mt-12">No products found for this brand.</div>;
@@ -23,7 +26,7 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
               <a href={`/product/${product._id}`}>
                 <img
                   src={product.images?.[0] || "/placeholder.png"}
-                  alt={product.name}
+                  alt={product.name_en}
                   className="w-full h-40 object-cover rounded mb-4 cursor-pointer"
                 />
               </a>
@@ -78,8 +81,6 @@ export default function BrandProductGrid({ products }: { products: Product[] }) 
               ) : (
                 <>{product.price} {t("amd")}</>
               )}
-              {" • "}
-              {product.weight}
             </p>
             <p className="text-xs text-gray-400 mt-1">{product.collectionType}</p>
             <div className="mt-3">

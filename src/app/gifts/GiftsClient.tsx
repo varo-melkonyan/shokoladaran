@@ -3,11 +3,14 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Gift = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   images: string[];
   price: number;
   discount?: number;
@@ -21,6 +24,8 @@ type Gift = {
 export default function GiftsClient() {
   const [gifts, setGifts] = useState<Gift[]>([]);
   const { addToCart, removeFromCart, cart } = useCart();
+  const { t } = useTranslation();
+
 
   useEffect(() => {
     fetch("/api/admin/gifts")
@@ -43,8 +48,12 @@ export default function GiftsClient() {
 
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
   if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
-  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
+  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) =>
+    (a.name_en || "").localeCompare(b.name_en || "")
+  );
+  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) =>
+    (b.name_en || "").localeCompare(a.name_en || "")
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
@@ -78,11 +87,17 @@ export default function GiftsClient() {
           return (
             <div key={item._id} className="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition">
               <Link href={item.link || `/gifts/${item._id}`}>
-                <img src={item.images[0]} alt={item.name} className="w-full h-56 object-cover cursor-pointer" />
+                <img src={item.images[0]} alt={item.name_en} className="w-full h-56 object-cover cursor-pointer" />
               </Link>
               <div className="p-4">
                 <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">
-                  {item.name}
+                  {
+                    i18n.language === "hy"
+                      ? item.name_hy
+                      : i18n.language === "ru"
+                      ? item.name_ru
+                      : item.name_en
+                  }
                 </h2>
                 <div className="mt-2 mb-3">
                   {item.discount ? (

@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
-import clsx from "clsx";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Brand = {
   _id: string;
@@ -31,6 +31,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [selectedCollection, setSelectedCollection] = useState<string>("all");
   const [sortBy, setSortBy] = useState("price-asc");
+  const { t } = useTranslation();
 
   useEffect(() => {
     Promise.all([
@@ -252,7 +253,15 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <h2 className="font-semibold text-chocolate text-lg mb-1">{product.name_en}</h2>
+                      <h2 className="font-semibold text-chocolate text-lg mb-1">
+                        {
+                          i18n.language === "hy"
+                            ? product.name_hy
+                            : i18n.language === "ru"
+                            ? product.name_ru
+                            : product.name_en
+                        }
+                      </h2>
                       <p className="text-sm text-gray-500 mb-1">
                         {product.discount ? (
                           <>
@@ -262,10 +271,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
                         ) : (
                           <>{product.price} {t("amd")}</>
                         )}
-                        {" • "}
-                        {product.weight} g
                       </p>
-                      <p className="text-xs text-gray-400">{product.collectionType}</p>
                     </div>
                     <div className="mt-4">
                       {product.quantityType === "kg" ? (

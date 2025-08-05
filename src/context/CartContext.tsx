@@ -3,7 +3,9 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 export type CartItem = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   slug?: string;
   images?: string[];
   price?: number;

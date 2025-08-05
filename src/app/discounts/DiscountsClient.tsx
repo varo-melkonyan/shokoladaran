@@ -3,10 +3,12 @@ import { useState, useMemo } from "react";
 import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
   const { addToCart, removeFromCart, cart } = useCart();
+  const { t } = useTranslation();
 
   const brands = useMemo(() => Array.from(new Set(discounted.map(p => p.brand)).values()).filter(Boolean), [discounted]);
   const collections = useMemo(() => Array.from(new Set(discounted.map(p => p.collectionType)).values()).filter(Boolean), [discounted]);
@@ -23,8 +25,12 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
 
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => (a.discount ?? a.price) - (b.discount ?? b.price));
   if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => (b.discount ?? b.price) - (a.discount ?? a.price));
-  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
-  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) => b.name.localeCompare(a.name));
+  if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) =>
+    (a.name_en || "").localeCompare(b.name_en || "")
+  );
+  if (sortBy === "name-desc") filtered = [...filtered].sort((a, b) =>
+    (b.name_en || "").localeCompare(a.name_en || "")
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
@@ -35,7 +41,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
           value={brandFilter}
           onChange={e => setBrandFilter(e.target.value)}
         >
-          <option value="">All Brands</option>
+          <option value="">{t("all_brands")}</option>
           {brands.map(b => (
             <option key={b} value={b}>{b}</option>
           ))}
@@ -45,7 +51,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
           value={collectionFilter}
           onChange={e => setCollectionFilter(e.target.value)}
         >
-          <option value="">All Collections</option>
+          <option value="">{t("all_collections")}</option>
           {collections.map(c => (
             <option key={c} value={c}>{c}</option>
           ))}
@@ -72,7 +78,13 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
               </a>
               <div className="p-4">
                 <h2 className="font-semibold text-chocolate text-base sm:text-lg md:text-xl lg:text-2xl">
-                  {item.name}
+                  {
+                    i18n.language === "hy"
+                      ? item.name_hy
+                      : i18n.language === "ru"
+                      ? item.name_ru
+                      : item.name_en
+                  }
                 </h2>
                 <div className="mt-2">
                   <span className="line-through text-gray-400 mr-2">{item.price} {t("amd")}</span>
