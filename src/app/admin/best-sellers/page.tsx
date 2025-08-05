@@ -128,9 +128,9 @@ export default function AdminBestSellerProducts() {
       />
       <ul>
         {bestSellerProducts.map((ep, idx) => (
-          <li key={ep.name + idx} className="flex items-center gap-2 border-b py-2">
-            {ep.images && <img src={ep.images[0]} alt={ep.name} className="w-12 h-12 object-cover rounded" />}
-            <span>{ep.name}</span>
+          <li key={(ep.name_en || ep.name_hy || ep.name_ru) + idx} className="flex items-center gap-2 border-b py-2">
+            {ep.images && <img src={ep.images[0]} alt={ep.name_en || ep.name_hy || ep.name_ru} className="w-12 h-12 object-cover rounded" />}
+            <span>{ep.name_en || ep.name_hy || ep.name_ru}</span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => moveUp(idx)}
