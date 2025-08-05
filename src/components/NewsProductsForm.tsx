@@ -39,7 +39,11 @@ export default function NewsProductsForm({
     e.preventDefault();
     const product = products.find(p => p._id === selectedProductId);
     if (product) {
-      onAdd({ _id: selectedProductId } as NewsProduct);
+      onAdd({
+        ...product,
+        images: product.images ?? [],
+        link: product.link ?? "",
+      });
       setSelectedBrand("");
       setSelectedCollectionType("");
       setSelectedProductId("");

@@ -1,7 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
 const NewsProductSchema = new Schema({
-  name: String,
+  name_en: String,
+  name_hy: String,
+  name_ru: String,
   price: Number,
   discount: Number,
   weight: String,

@@ -53,10 +53,12 @@ export default function AdminBestSellerProducts() {
     // Always find by _id
     const product = products.find(p => p._id === newBestSellerProduct._id);
     if (!product) return;
-
     // Ensure required fields are always strings
     const productWithDiscount: BestSellerProduct = {
       ...product,
+      name_en: product.name_en,
+      name_hy: product.name_hy,
+      name_ru: product.name_ru,
       discount: product.discount ?? undefined,
       images: Array.isArray(product.images) ? product.images : (product.images ? [product.images] : []),
       link: product.link || "",
@@ -128,9 +130,9 @@ export default function AdminBestSellerProducts() {
       />
       <ul>
         {bestSellerProducts.map((ep, idx) => (
-          <li key={(ep.name_en || ep.name_hy || ep.name_ru) + idx} className="flex items-center gap-2 border-b py-2">
+          <li key={ep._id} className="flex items-center gap-2 border-b py-2">
             {ep.images && <img src={ep.images[0]} alt={ep.name_en || ep.name_hy || ep.name_ru} className="w-12 h-12 object-cover rounded" />}
-            <span>{ep.name_en || ep.name_hy || ep.name_ru}</span>
+            <span>{products.find(p => p._id === ep._id)?.name_en || ep.name_hy || ep.name_ru}</span>
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={() => moveUp(idx)}

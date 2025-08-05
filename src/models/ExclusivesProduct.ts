@@ -1,14 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
 const ExclusivesProductSchema = new Schema({
-  name: String,
+  name_en: String,
+  name_hy: String,
+  name_ru: String,
   price: Number,
   discount: Number,
   weight: String,
   collectionType: String,
   brand: String,
   status: String,
-  readyAfter: String, // e.g. "2 days"
+  readyAfter: String,
   images: [String],
   ingredients: [String],
   shelfLife: String,

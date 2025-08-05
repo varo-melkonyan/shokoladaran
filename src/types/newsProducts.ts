@@ -1,6 +1,8 @@
 export type NewsProduct ={
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   price: number;
   discount?: number;
   weight: string;

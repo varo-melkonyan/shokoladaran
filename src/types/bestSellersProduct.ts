@@ -9,7 +9,7 @@ export type BestSellerProduct ={
   collectionType: string;
   brand: string;
   status?: string;
-  readyAfter?: string; // e.g. "2 days"
+  readyAfter?: string
   images: string[];
   ingredients?: string[];
   shelfLife?: string;
