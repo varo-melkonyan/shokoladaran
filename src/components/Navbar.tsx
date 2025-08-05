@@ -462,7 +462,7 @@ export default function Navbar() {
                       : item.name_en
                   }</div>
                 <div className="text-gray-700 text-center mt-1">
-                  {item.price ? `$ ${item.price.toFixed(2)}` : ""}
+                  {item.price ? `${t("amd")} ${item.price.toFixed(2)}` : ""}
                 </div>
               </button>
             ))}
@@ -1118,7 +1118,7 @@ export default function Navbar() {
                                           : item.name_en
                                       }</div>
                                       <div className="text-gray-700 text-center mt-1">
-                                        {item.price ? `$ ${item.price.toFixed(2)}` : ""}
+                                        {item.price ? `${t("amd")} ${item.price.toFixed(2)}` : ""}
                                       </div>
                                     </Link>
                                   </div>
