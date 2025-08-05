@@ -69,7 +69,7 @@ export default function CartWidget({ products = [] }: { products?: any[] }) {
                   return (
                     <li key={item._id + "-" + idx} className="py-2 flex justify-between items-center">
                       <div>
-                        <p className="text-sm font-medium text-gray-800">{item.name}</p>
+                        <p className="text-sm font-medium text-gray-800">{item.name_en}</p>
                         <p className="text-xs text-gray-500">
                           {typeof item.grams === "number"
                             ? `Grams: ${item.grams}g`
