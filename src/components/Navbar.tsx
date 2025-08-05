@@ -841,7 +841,7 @@ export default function Navbar() {
                       tabIndex={0}
                       type="button"
                     >
-                      {t("chocolate")} <span className="text-xs">▼</span>
+                      <span className="uppercase">{t("chocolate")}</span> <span className="text-xs">▼</span>
                     </button>
 
                     {showDropdown && (
@@ -972,7 +972,7 @@ export default function Navbar() {
                       tabIndex={0}
                       type="button"
                     >
-                      {t("brands")} <span className="text-xs">▼</span>
+                      <span className="uppercase">{t("brands")}</span> <span className="text-xs">▼</span>
                     </button>
 
                     {showBrandsDropdown && (
