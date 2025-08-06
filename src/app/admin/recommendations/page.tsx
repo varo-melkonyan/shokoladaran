@@ -32,7 +32,6 @@ export default function AdminRecommendationsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Group products by collection type
   const productsByCollection: { [collectionType: string]: any[] } = {};
   products.forEach((p: any) => {
     if (!productsByCollection[p.collectionType]) {
@@ -150,7 +149,7 @@ export default function AdminRecommendationsPage() {
           >
             <option value="">-- Choose Collection --</option>
             {collections.map((c: any) => (
-              <option key={c._id} value={c.name}>{c.name}</option>
+              <option key={c._id} value={c.name_en}>{c.name_en}</option>
             ))}
           </select>
         </div>
@@ -169,9 +168,9 @@ export default function AdminRecommendationsPage() {
                 return (
                   <li key={productId} className="flex items-center gap-2 bg-green-50 rounded px-2 py-1">
                     {p.image && (
-                      <img src={p.image} alt={p.name} className="w-6 h-6 object-cover rounded" />
+                      <img src={p.image} alt={p.name_en} className="w-6 h-6 object-cover rounded" />
                     )}
-                    <span>{p.name}</span>
+                    <span>{p.name_en}</span>
                     <button
                       className="text-xs text-red-600 ml-1"
                       onClick={() => handleRemoveRecommendation(selectedCollection, productId)}
