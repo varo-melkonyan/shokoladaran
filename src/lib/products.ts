@@ -12,9 +12,10 @@ export type Product = {
   collectionType?: string;
   brand?: string;
   status?: string;
-  readyAfter?: string; // e.g. "2 days"
+  readyAfter?: string;
   images?: string[];
   ingredients?: string[];
+  quantityType?: "kg" | "piece" | "grams";
   shelfLife?: string;
   nutritionFacts?: any;
   link?: string;
@@ -46,6 +47,7 @@ export async function getProductById(id: string): Promise<Product | null> {
     readyAfter: product.readyAfter,
     images: product.images,
     ingredients: product.ingredients,
+    quantityType: product.quantityType || "pieces",
     shelfLife: product.shelfLife,
     nutritionFacts: product.nutritionFacts,
     link: product.link,
@@ -76,6 +78,7 @@ export async function getAllProducts(): Promise<Product[]> {
     ingredients: product.ingredients,
     shelfLife: product.shelfLife,
     nutritionFacts: product.nutritionFacts,
+    quantityType: product.quantityType || "pieces",
     link: product.link,
     description: product.description,
   }));
@@ -93,7 +96,6 @@ export async function getProductsByIds(ids: string[]) {
     .toArray();
   return products.map((product) => ({
     _id: product._id.toString(),
-    name: product.name,
     name_en: product.name_en,
     name_hy: product.name_hy,
     name_ru: product.name_ru,
@@ -106,6 +108,7 @@ export async function getProductsByIds(ids: string[]) {
     readyAfter: product.readyAfter,
     images: product.images,
     ingredients: product.ingredients,
+    quantityType: product.quantityType || "pieces",
     shelfLife: product.shelfLife,
     nutritionFacts: product.nutritionFacts,
     link: product.link,

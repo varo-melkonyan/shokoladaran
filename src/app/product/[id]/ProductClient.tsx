@@ -19,10 +19,9 @@ export default function ProductClient({
   const { t } = useTranslation();
 
   const images = product.images && product.images.length > 0 ? product.images : ["/placeholder.png"];
-
   // Find this product in the cart
   const cartItem = cart.find((item) => item._id === product._id);
-
+  
   return (
     <div>
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 bg-white rounded-3xl shadow-2xl p-8 ">

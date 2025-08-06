@@ -3,16 +3,14 @@ import { FaShoppingCart } from "react-icons/fa";
 
 export default function KgCartControl({ product, cartItem, addToCart, removeFromCart }: any) {
   const minGrams = 10;
-  const maxGrams = product.weight ?? 10000;
-  const grams = cartItem?.grams ?? 0;
+  const maxGrams = Number(product.weight) || 10000;
+  const grams = Number(cartItem?.grams ?? 0);
 
   const handleMinus = () => {
     if (grams > minGrams) {
       addToCart({
         _id: product._id,
-        name_en: product.name_en,
-        name_hy: product.name_hy,
-        name_ru: product.name_ru,
+        name: product.name,
         price: product.price,
         discount: product.discount,
         images: product.images,
@@ -27,9 +25,7 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
       } else {
         addToCart({
           _id: product._id,
-          name_en: product.name_en,
-          name_hy: product.name_hy,
-          name_ru: product.name_ru,
+          name: product.name,
           price: product.price,
           discount: product.discount,
           images: product.images,
@@ -92,7 +88,7 @@ export default function KgCartControl({ product, cartItem, addToCart, removeFrom
           min={0}
           max={maxGrams}
           step={10}
-          value={grams === 0 ? "" : grams}
+          value={typeof grams === "number" && !isNaN(grams) && grams > 0 ? grams : ""}
           onChange={handleInput}
           className="w-16 border-0 bg-transparent text-center font-semibold focus:outline-none no-spinner"
           placeholder="0"

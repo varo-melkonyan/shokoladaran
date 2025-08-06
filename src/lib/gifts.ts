@@ -14,7 +14,9 @@ export async function getGiftsById(id: string) {
  
    return {
      _id: gifts._id.toString(),
-     name: gifts.name,
+     name_en: gifts.name_en,
+     name_hy: gifts.name_hy,
+     name_ru: gifts.name_ru,
      price: gifts.price,
      weight: gifts.weight,
      discount: gifts.discount,
