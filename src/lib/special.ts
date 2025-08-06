@@ -14,7 +14,9 @@ export async function getSpecialsById(id: string) {
  
    return {
      _id: specials._id.toString(),
-     name: specials.name,
+     name_en: specials.name_en,
+     name_hy: specials.name_hy,
+     name_ru: specials.name_ru,
      price: specials.price,
      weight: specials.weight,
      discount: specials.discount,

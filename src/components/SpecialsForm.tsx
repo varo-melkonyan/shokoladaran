@@ -14,7 +14,9 @@ export default function SpecialsForm({
   initialData,
   brands,
 }: Props) {
-  const [name, setName] = useState("");
+  const [name_en, setNameEn] = useState("");
+  const [name_hy, setNameHy] = useState("");
+  const [name_ru, setNameRu] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [brand, setBrand] = useState("");
@@ -29,7 +31,9 @@ export default function SpecialsForm({
 
   useEffect(() => {
     if (initialData) {
-      setName(initialData.name_en || "");
+      setNameEn(initialData.name_en || "");
+      setNameHy(initialData.name_hy || "");
+      setNameRu(initialData.name_ru || "");
       setPrice(initialData.price?.toString() || "");
       setDiscount(initialData.discount?.toString() || "");
       setBrand(initialData.brand || "");
@@ -41,7 +45,9 @@ export default function SpecialsForm({
       setStockCount(initialData.stockCount ?? 0);
       setQuantityType((initialData.quantityType as "pieces" | "kg") ?? "pieces");
     } else {
-      setName("");
+      setNameEn("");
+      setNameHy("");
+      setNameRu("");
       setPrice("");
       setDiscount("");
       setBrand("");
@@ -69,7 +75,7 @@ export default function SpecialsForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !price || !brand || !weight) {
+    if (!name_en || !name_hy || !name_ru || !price || !brand || !weight) {
       setError("Name, price, brand, and weight are required.");
       return;
     }
@@ -86,9 +92,9 @@ export default function SpecialsForm({
     }
 
     const newSpecial = {
-      name_en: name,
-      name_hy: name,
-      name_ru: name,
+      name_en,
+      name_hy,
+      name_ru,
       price: Number(price),
       weight,
       discount: discount ? Number(discount) : undefined,
@@ -101,7 +107,9 @@ export default function SpecialsForm({
       quantityType,
     };
     onAdd(newSpecial);
-    setName("");
+    setNameEn("");
+    setNameHy("");
+    setNameRu("");
     setPrice("");
     setDiscount("");
     setBrand("");
@@ -118,9 +126,21 @@ export default function SpecialsForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
       <input
-        value={name}
-        onChange={e => setName(e.target.value)}
+        value={name_en}
+        onChange={e => setNameEn(e.target.value)}
         placeholder="Special Name"
+        className="border p-2 rounded"
+      />
+      <input
+        value={name_hy}
+        onChange={e => setNameHy(e.target.value)}
+        placeholder="Special Name (Armenian)"
+        className="border p-2 rounded"
+      />
+      <input
+        value={name_ru}
+        onChange={e => setNameRu(e.target.value)}
+        placeholder="Special Name (Russian)"
         className="border p-2 rounded"
       />
       <input

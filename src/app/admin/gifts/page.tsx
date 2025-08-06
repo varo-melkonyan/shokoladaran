@@ -39,7 +39,7 @@ export default function AdminGifts() {
         quantityType: p.quantityType || "pieces",
       }))));
     fetch("/api/admin/gifts").then(res => res.json()).then(setGifts);
-  }, []);
+  }, [[]]);
 
   const handleAddOrEdit = async (newGift: Product) => {
     if (editIndex !== null) {

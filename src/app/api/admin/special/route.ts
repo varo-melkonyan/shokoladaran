@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
 
   // Validate required fields
-  if (!body.name || !body.price || !body.weight || !body.brand || !body.collectionType || !body.status) {
+  if (!body.name_en || !body.name_hy || !body.name_ru || !body.price || !body.weight || !body.brand || !body.collectionType || !body.status) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
   }
 
