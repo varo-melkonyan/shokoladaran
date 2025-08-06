@@ -43,6 +43,7 @@ export default function AdminNewsProducts() {
     images: p.images,
     link: p.link,
     status: p.status,
+    quantityType: p.quantityType || (p.weight ? "kg" : "piece"),
     readyAfter: p.readyAfter,
     ingredients: p.ingredients,
     shelfLife: p.shelfLife,

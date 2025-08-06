@@ -793,9 +793,21 @@ export default function Navbar() {
                       </button>
                       {/* Quantity/Grams */}
                       <span className="min-w-[40px] text-center">
-                        {typeof item.grams === "number"
-                          ? `${item.grams}g`
-                          : item.quantity}
+                        {typeof item.grams === "number" ? (
+                        <input
+                          type="number"
+                          min={0}
+                          step={10}
+                          value={item.grams}
+                          onChange={e => {
+                            const newGrams = Math.max(0, Number(e.target.value));
+                            addToCart({ ...item, grams: newGrams });
+                          }}
+                          className="w-16 border rounded text-center"
+                        />
+                      ) : (
+                        item.quantity
+                      )}
                       </span>
                       {/* Plus Button */}
                       <button
@@ -1337,9 +1349,21 @@ export default function Navbar() {
                       </button>
                       {/* Quantity/Grams */}
                       <span className="min-w-[40px] text-center">
-                        {typeof item.grams === "number"
-                          ? `${item.grams}g`
-                          : item.quantity}
+                        {typeof item.grams === "number" ? (
+                        <input
+                          type="number"
+                          min={0}
+                          step={10}
+                          value={item.grams}
+                          onChange={e => {
+                            const newGrams = Math.max(0, Number(e.target.value));
+                            addToCart({ ...item, grams: newGrams });
+                          }}
+                          className="w-16 border rounded text-center"
+                        />
+                      ) : (
+                        item.quantity
+                      )}
                       </span>
                       {/* Plus Button */}
                       <button

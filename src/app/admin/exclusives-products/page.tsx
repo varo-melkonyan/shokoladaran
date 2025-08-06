@@ -40,6 +40,7 @@ export default function AdminExclusivesProducts() {
     discount: p.discount,
     collectionType: p.collectionType,
     brand: p.brand,
+    quantityType: p.quantityType || (p.weight ? "kg" : "piece"),
     images: p.images,
     link: p.link,
     status: p.status,
