@@ -3,13 +3,17 @@ import { useState, useEffect } from "react";
 
 type CollectionType = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   type: string;
 };
 
 export default function AdminCollectionTypes() {
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
-  const [name, setName] = useState("");
+  const [name_en, setNameEn] = useState("");
+  const [name_hy, setNameHy] = useState("");
+  const [name_ru, setNameRu] = useState("");
   const [type, setType] = useState("collection");
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -20,7 +24,9 @@ export default function AdminCollectionTypes() {
         setCollectionTypes(
           data.map((c: any) => ({
             _id: c._id || c.id,
-            name: c.name,
+            name_en: c.name_en,
+            name_hy: c.name_hy,
+            name_ru: c.name_ru,
             type: c.type,
           }))
         )
@@ -33,11 +39,13 @@ export default function AdminCollectionTypes() {
     fetch(editId ? `/api/admin/collection-types/${editId}` : "/api/admin/collection-types", {
   method: editId ? "PUT" : "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name, type }),
+  body: JSON.stringify({ name_en, name_hy, name_ru, type }),
 })
       .then(res => res.json())
       .then(() => {
-        setName("");
+        setNameEn("");
+        setNameHy("");
+        setNameRu("");
         setType("collection");
         setEditId(null);
         fetch("/api/admin/collection-types")
@@ -46,7 +54,9 @@ export default function AdminCollectionTypes() {
             setCollectionTypes(
               data.map((c: any) => ({
                 _id: c._id || c.id,
-                name: c.name,
+                name_en: c.name_en,
+                name_hy: c.name_hy,
+                name_ru: c.name_ru,
                 type: c.type ?? "collection",
               }))
             )
@@ -56,7 +66,9 @@ export default function AdminCollectionTypes() {
 
   function handleEdit(collectionType: CollectionType) {
     setEditId(collectionType._id);
-    setName(collectionType.name);
+    setNameEn(collectionType.name_en);
+    setNameHy(collectionType.name_hy);
+    setNameRu(collectionType.name_ru);
     setType(collectionType.type ?? "collection");
   }
 
@@ -71,7 +83,9 @@ export default function AdminCollectionTypes() {
       setCollectionTypes(collectionTypes.filter(ct => ct._id !== _id));
       if (editId === _id) {
         setEditId(null);
-        setName("");
+        setNameEn("");
+        setNameHy("");
+        setNameRu("");
         setType("collection");
       }
     });
@@ -79,7 +93,9 @@ export default function AdminCollectionTypes() {
 
   function handleCancelEdit() {
     setEditId(null);
-    setName("");
+    setNameEn("");
+    setNameHy("");
+    setNameRu("");
     setType("collection");
   }
 
@@ -88,11 +104,22 @@ export default function AdminCollectionTypes() {
       <h1 className="text-2xl font-bold mb-4">Collection Types</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6 bg-white p-4 rounded shadow">
         <input
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Name"
+          value={name_en}
+          onChange={e => setNameEn(e.target.value)}
+          placeholder="Collection Name (EN)"
           className="border p-2 rounded"
-          required
+        />
+        <input
+          value={name_hy}
+          onChange={e => setNameHy(e.target.value)}
+          placeholder="Collection Name (HY)"
+          className="border p-2 rounded"
+        />
+        <input
+          value={name_ru}
+          onChange={e => setNameRu(e.target.value)}
+          placeholder="Collection Name (RU)"
+          className="border p-2 rounded"
         />
         <select
           value={type}
@@ -128,7 +155,9 @@ export default function AdminCollectionTypes() {
             className={`flex items-center justify-between px-4 py-3 ${editId === ct._id ? "bg-yellow-50" : ""}`}
           >
             <div>
-              <div className="font-semibold">{ct.name}</div>
+              <div className="font-semibold">{ct.name_en}</div>
+              <div className="text-sm text-gray-500">{ct.name_hy}</div>
+              <div className="text-sm text-gray-500">{ct.name_ru}</div>
               <div className="text-xs text-gray-500">{ct.type}</div>
             </div>
             <div className="flex gap-2">

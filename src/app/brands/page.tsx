@@ -37,7 +37,9 @@ export default function BrandsPage() {
         .then(res => res.json())
         .then(data => setCollections(data.map((c: any) => ({
           _id: c._id || c.id,
-          name: c.name,
+          name_en: c.name_en,
+          name_hy: c.name_hy,
+          name_ru: c.name_ru,
           brand: c.brand,
         }))))
     ]).finally(() => setLoading(false));

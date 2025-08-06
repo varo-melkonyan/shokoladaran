@@ -24,7 +24,9 @@ export default function AdminExclusivesProducts() {
   .then(res => res.json())
   .then(data => setCollectionTypes(data.map((c: any) => ({
     _id: c._id || c.id,
-    name: c.name,
+    name_en: c.name_en,
+    name_hy: c.name_hy,
+    name_ru: c.name_ru,
   }))));
     fetch("/api/admin/products")
   .then(res => res.json())

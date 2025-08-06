@@ -10,7 +10,9 @@ import i18n from "@/i18n";
 
 type CollectionType = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   type: "collection" | "children" | "dietary";
 };
 
@@ -48,21 +50,25 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         quantityType: p.quantityType || (p.weight ? "kg" : "piece"),
       }));
 
-      const collections = collectionsRaw.map((c: any) => ({
-        _id: c._id || c.id,
-        name: c.name,
-        type: c.type,
-      }));
+      const collections = collectionsRaw
+        .map((c: any) => ({
+          _id: c._id || c.id,
+          name_en: c.name_en,
+          name_hy: c.name_hy,
+          name_ru: c.name_ru,
+          type: c.type,
+        }))
+        .filter((c) => typeof c.name_en === "string" && c.name_en.length > 0);
 
       setCollectionTypes(collections);
 
       const matchedCollection = collections.find(
-        (c) => c.name.toLowerCase().replace(/\s+/g, "-") === slug
+        (c) => c.name_en.toLowerCase().replace(/\s+/g, "-") === slug
       );
       setMatched(matchedCollection || null);
       setProducts(
         matchedCollection
-          ? products.filter((p: Product) => p.collectionType === matchedCollection.name)
+          ? products.filter((p: Product) => p.collectionType === matchedCollection.name_en)
           : []
       );
       setLoading(false);
@@ -78,10 +84,19 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   return (
     <main className="max-w-7xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-4">
-        {matched.name}
+        {i18n.language === "hy"
+          ? matched.name_hy
+          : i18n.language === "ru"
+          ? matched.name_ru
+          : matched.name_en}
       </h1>
       <p className="text-gray-700 mb-8">
-        {t("explore_selection")} {matched.name} {t("handcrafted_chocolates")}.
+        {t("explore_selection")}{" "}
+        {i18n.language === "hy"
+          ? matched.name_hy
+          : i18n.language === "ru"
+          ? matched.name_ru
+          : matched.name_en} {t("handcrafted_chocolates")}.
       </p>
 
       {products.length === 0 ? (

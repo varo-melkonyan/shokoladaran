@@ -16,7 +16,13 @@ function randomBase64Id(length = 12) {
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
-  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string; type: string }[]>([]);
+  const [collectionTypes, setCollectionTypes] = useState<{
+    _id: string;
+    name_en: string;
+    name_hy: string;
+    name_ru: string;
+    type: string;
+  }[]>([]);
   const [name_en, setNameEn] = useState("");
   const [name_hy, setNameHy] = useState("");
   const [name_ru, setNameRu] = useState("");
@@ -83,12 +89,13 @@ export default function AdminProducts() {
       .then(data => {
         const mapped = data.map((c: any) => ({
           _id: c._id || c.id,
-          name: c.name,
+          name_en: c.name_en,
+          name_hy: c.name_hy,
+          name_ru: c.name_ru,
           type: c.type,
         }));
         setCollectionTypes(mapped);
-        // Set default collectionType if not editing
-        if (!editId && mapped.length && !collectionType) setCollectionType(mapped[0].name);
+        if (!editId && mapped.length && !collectionType) setCollectionType(mapped[0].name_en);
       });
     // eslint-disable-next-line
   }, []);
@@ -152,7 +159,7 @@ export default function AdminProducts() {
     setPrice("");
     setWeight("");
     setDiscount("");
-    setCollectionType(collectionTypes[0]?.name || "");
+    setCollectionType(collectionTypes[0]?.name_en || "");
     setBrand(brands[0]?.name || "");
     setStatus("in_stock");
     setReadyAfter("");
@@ -244,8 +251,8 @@ export default function AdminProducts() {
         <input value={discount} onChange={e => setDiscount(e.target.value)} placeholder="Discounted Price (optional)" type="number" className="border p-2 rounded" />
         <select value={collectionType} onChange={e => setCollectionType(e.target.value)} className="border p-2 rounded">
           {collectionTypes.map(type => (
-            <option key={type._id} value={type.name}>
-              {type.name} {type.type === "dietary" ? "(Dietary)" : ""}
+            <option key={type._id} value={type.name_en}>
+              {type.name_en} {type.type === "dietary" ? "(Dietary)" : ""}
             </option>
           ))}
         </select>

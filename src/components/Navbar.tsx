@@ -7,7 +7,13 @@ import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 
 type Brand = { _id: string; name: string };
-type CollectionType = { id: string; name: string; type: "collection" | "children" | "dietary" };
+type CollectionType = {
+  id: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
+  type: "collection" | "children" | "dietary";
+};
 
 type Lang = "en" | "hy" | "ru";
 
@@ -114,9 +120,11 @@ export default function Navbar() {
       .then(res => res.json())
       .then(data => setCollectionTypes(data.map((c: any) => ({
         id: c._id || c.id,
-        name: c.name,
+        name_en: c.name_en,
+        name_hy: c.name_hy,
+        name_ru: c.name_ru,
         type: c.type,
-      }))));
+    }))));
   }, []);
 
 
@@ -239,7 +247,18 @@ export default function Navbar() {
   const collections = collectionTypes.filter(ct => ct.type === "collection");
   const childrenTypes = collectionTypes.filter(ct => ct.type === "children");
   const dietaryTypes = collectionTypes.filter(ct => ct.type === "dietary");
-  const sortedCollections = [...collections].sort((a, b) => a.name.localeCompare(b.name));
+  const lang = i18n.language
+  const sortedCollections = [...collections].sort((a, b) => {
+  const aName =
+    lang === "hy" ? a.name_hy :
+    lang === "ru" ? a.name_ru :
+    a.name_en;
+  const bName =
+    lang === "hy" ? b.name_hy :
+    lang === "ru" ? b.name_ru :
+    b.name_en;
+  return aName.localeCompare(bName);
+});
   const midCol = Math.ceil(sortedCollections.length / 2);
   const collectionsCol1 = sortedCollections.slice(0, midCol);
   const collectionsCol2 = sortedCollections.slice(midCol);
@@ -531,11 +550,20 @@ export default function Navbar() {
                   {collections.map((col) => (
                     <li key={col.id}>
                       <Link
-                        href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
+                        href={`/collection/${(i18n.language === "hy"
+                          ? col.name_hy
+                          : i18n.language === "ru"
+                          ? col.name_ru
+                          : col.name_en
+                        ).toLowerCase().replace(/\s+/g, "-")}`}
                         className="block text-[15px] text-chocolate hover:underline"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {col.name}
+                        {i18n.language === "hy"
+                          ? col.name_hy
+                          : i18n.language === "ru"
+                          ? col.name_ru
+                          : col.name_en}
                       </Link>
                     </li>
                   ))}
@@ -555,20 +583,30 @@ export default function Navbar() {
                   <span className="text-chocolate">{openSection === "children" ? "▲" : "▼"}</span>
                 </button>
                 {openSection === "children" && (
-                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1 mt-3">
-                    {childrenTypes.map((type) => (
-                      <li key={type.id}>
-                        <Link
-                          href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
-                          className="block text-[15px] text-chocolate hover:underline"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          {type.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-1 mt-3">
+                  {childrenTypes.map((type) => (
+                    <li key={type.id}>
+                      <Link
+                        href={`/collection/${(
+                          i18n.language === "hy"
+                            ? type.name_hy
+                            : i18n.language === "ru"
+                            ? type.name_ru
+                            : type.name_en
+                        ).toLowerCase().replace(/\s+/g, "-")}`}
+                        className="block text-[15px] text-chocolate hover:underline"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        {i18n.language === "hy"
+                          ? type.name_hy
+                          : i18n.language === "ru"
+                          ? type.name_ru
+                          : type.name_en}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
               </div>
             )}
             {/* Dietary */}
@@ -588,11 +626,21 @@ export default function Navbar() {
                     {dietaryTypes.map((type) => (
                       <li key={type.id}>
                         <Link
-                          href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
+                          href={`/collection/${(
+                            i18n.language === "hy"
+                              ? type.name_hy
+                              : i18n.language === "ru"
+                              ? type.name_ru
+                              : type.name_en
+                          ).toLowerCase().replace(/\s+/g, "-")}`}
                           className="block text-[15px] text-chocolate hover:underline"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
-                          {type.name}
+                          {i18n.language === "hy"
+                            ? type.name_hy
+                            : i18n.language === "ru"
+                            ? type.name_ru
+                            : type.name_en}
                         </Link>
                       </li>
                     ))}
@@ -855,28 +903,36 @@ export default function Navbar() {
                                 {collectionsCol1.map((col) => (
                                   <li key={col.id}>
                                     <Link
-                                      href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                      className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                      href={`/collection/${col.name_en.toLowerCase().replace(/\s+/g, "-")}`}
+                                      className="inline-block text-sm text-gray-700 hover:text-chocolate transition"
                                       onClick={() => setShowDropdown(false)}
                                     >
-                                      {col.name}
+                                      {i18n.language === "hy"
+                                        ? col.name_hy
+                                        : i18n.language === "ru"
+                                        ? col.name_ru
+                                        : col.name_en}
                                     </Link>
                                   </li>
                                 ))}
                               </ul>
                               <ul className="space-y-1">
-                                {collectionsCol2.map((col) => (
-                                  <li key={col.id}>
-                                    <Link
-                                      href={`/collection/${col.name.toLowerCase().replace(/\s+/g, "-")}`}
-                                      className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
-                                      onClick={() => setShowDropdown(false)}                                    
-                                    >
-                                      {col.name}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
+                              {collectionsCol2.map((col) => (
+                                <li key={col.id}>
+                                  <Link
+                                    href={`/collection/${col.name_en.toLowerCase().replace(/\s+/g, "-")}`}
+                                    className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
+                                    onClick={() => setShowDropdown(false)}
+                                  >
+                                    {i18n.language === "hy"
+                                      ? col.name_hy
+                                      : i18n.language === "ru"
+                                      ? col.name_ru
+                                      : col.name_en}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
                             </div>
                           </div>
 
@@ -889,11 +945,15 @@ export default function Navbar() {
                                   {childrenTypes.map((type) => (
                                     <li key={type.id}>
                                       <Link
-                                        href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
+                                        href={`/collection/${type.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                                         className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
                                         onClick={() => setShowDropdown(false)}
                                       >
-                                        {type.name}
+                                        {i18n.language === "hy"
+                                          ? type.name_hy
+                                          : i18n.language === "ru"
+                                          ? type.name_ru
+                                          : type.name_en}
                                       </Link>
                                     </li>
                                   ))}
@@ -906,11 +966,15 @@ export default function Navbar() {
                               {dietaryTypes.map((type) => (
                                 <li key={type.id}>
                                   <Link
-                                    href={`/collection/${type.name.toLowerCase().replace(/\s+/g, "-")}`}
+                                    href={`/collection/${type.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                                     className="inline-block text-sm text-gray-700 hover:text-chocolate transition relative after:content-[''] after:block after:w-full after:h-[2px] after:bg-chocolate after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 after:origin-left"
                                     onClick={() => setShowDropdown(false)}
                                   >
-                                    {type.name}
+                                    {i18n.language === "hy"
+                                          ? type.name_hy
+                                          : i18n.language === "ru"
+                                          ? type.name_ru
+                                          : type.name_en}
                                   </Link>
                                 </li>
                               ))}

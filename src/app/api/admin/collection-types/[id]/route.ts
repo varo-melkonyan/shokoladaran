@@ -12,7 +12,12 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
 
   const updated = await CollectionType.findByIdAndUpdate(
     id,
-    { name: body.name, type: body.type },
+    {
+      name_en: body.name_en,
+      name_hy: body.name_hy,
+      name_ru: body.name_ru,
+      type: body.type,
+    },
     { new: true }
   );
 
