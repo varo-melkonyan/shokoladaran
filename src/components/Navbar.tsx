@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { useTranslation } from "react-i18next";
@@ -15,99 +15,20 @@ type CollectionType = {
   type: "collection" | "children" | "dietary";
 };
 
-type Lang = "en" | "hy" | "ru";
-
-type TranslitMap = {
-  [source in Lang]?: {
-    [target in Lang]?: Record<string, string>
-  }
-};
-
-const translitMap: TranslitMap = {
-  en: {
-    hy: {
-      a: "ա", b: "բ", g: "գ", d: "դ", e: "ե", z: "զ", y: "ը", t: "թ",
-      j: "ժ", i: "ի", l: "լ", x: "խ", c: "ց", k: "կ", h: "հ", m: "մ",
-      n: "ն", o: "ո", p: "պ", s: "ս", v: "վ", r: "ր", f: "ֆ",
-      sh: "շ", ch: "չ", ts: "ծ", jh: "ջ", q: "ք", u: "ւ", oo: "ու", o2: "օ"
-    },
-    ru: {
-      a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", yo: "ё", zh: "ж", z: "з",
-      i: "и", j: "й", k: "к", l: "л", m: "м", n: "н", o: "о", p: "п",
-      r: "р", s: "с", t: "т", u: "у", f: "ф", h: "х", ts: "ц", ch: "ч",
-      sh: "ш", shch: "щ", y: "ы", ye: "э", yu: "ю", ya: "я"
-    }
-  },
-  ru: {
-    hy: {
-      а: "ա", б: "բ", в: "վ", г: "գ", д: "դ", е: "ե", ё: "յո", ж: "ժ", з: "զ",
-      и: "ի", й: "յ", к: "կ", л: "լ", м: "մ", н: "ն", о: "ո", п: "պ",
-      р: "ր", с: "ս", т: "տ", у: "ու", ф: "ֆ", х: "խ", ц: "ց", ч: "չ",
-      ш: "շ", щ: "շչ", ы: "ը", э: "է", ю: "յու", я: "յա"
-    }
-  },
-  hy: {
-    en: {
-      ա: "a", բ: "b", գ: "g", դ: "d", ե: "e", զ: "z", ը: "y", թ: "t",
-      ժ: "j", ի: "i", լ: "l", խ: "x", ծ: "ts", կ: "k", հ: "h", մ: "m",
-      ն: "n", ո: "o", պ: "p", ս: "s", վ: "v", ր: "r", ֆ: "f", շ: "sh",
-      չ: "ch", ջ: "jh", ք: "q", ու: "oo", օ: "o2", յ: "j", տ: "t"
-    },
-    ru: {
-      ա: "а", բ: "б", գ: "г", դ: "д", ե: "е", զ: "з", ը: "ы", թ: "т",
-      ժ: "ж", ի: "и", լ: "л", խ: "х", ծ: "ц", կ: "к", հ: "х", մ: "м",
-      ն: "н", ո: "о", պ: "п", ս: "с", վ: "в", ր: "р", ֆ: "ф", շ: "ш",
-      չ: "ч", ջ: "дж", ք: "к", ու: "у", օ: "о", յ: "й", տ: "т"
-    }
-  }
-};
-
-
-function transliterate(input: string, from: Lang, to: Lang): string {
-  const map = translitMap[from]?.[to];
-  if (!map) return input;
-
-  let result = "";
-  let i = 0;
-
-  while (i < input.length) {
-    const twoChar = input.slice(i, i + 2).toLowerCase();
-    if (map[twoChar]) {
-      result += map[twoChar];
-      i += 2;
-      continue;
-    }
-
-    const oneChar = input[i].toLowerCase();
-    result += map[oneChar] || input[i];
-    i++;
-  }
-
-  return result;
-}
-
-
-
 export default function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showBrandsDropdown, setShowBrandsDropdown] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
-  const [search, setSearch] = useState("");
   const [showCart, setShowCart] = useState(false);
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
-  const router = useRouter();
-  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<any[]>([]);
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [gifts, setGifts] = useState<any[]>([]);
   const [specials, setSpecials] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const { t } = useTranslation();
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -127,109 +48,31 @@ export default function Navbar() {
     }))));
   }, []);
 
-
-  // Auto-search as you type
   useEffect(() => {
-    if (!search.trim()) {
-      setSearchResults([]);
-      setShowSearchDropdown(false);
-      setLoading(false);
-      return;
-    }
-    setShowSearchDropdown(true);
-    setLoading(true);
-
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => {
-      const searchLower = search.trim().toLowerCase();
-
-      // Transliterate in all directions
-      const translitFromHy = transliterate(searchLower, "hy", "en");
-      const translitFromRu = transliterate(searchLower, "ru", "en");
-      const translitToHy = transliterate(searchLower, "en", "hy");
-      const translitToRu = transliterate(searchLower, "en", "ru");
-
-      const results = products.filter((product) => {
-        // Use all name fields for search
-        return (
-          product.name_en?.toLowerCase().includes(searchLower) ||
-          product.name_hy?.toLowerCase().includes(searchLower) ||
-          product.name_ru?.toLowerCase().includes(searchLower) ||
-          product.name_en?.toLowerCase().includes(translitFromHy) ||
-          product.name_hy?.toLowerCase().includes(translitToHy) ||
-          product.name_ru?.toLowerCase().includes(translitToRu) ||
-          product.name_en?.toLowerCase().includes(translitFromRu)
-        );
-      });
-
-      // For display, set the name property based on current language
-      const lang = i18n.language;
-      const resultsWithDisplayName = results.map(product => ({
-        ...product,
-        name:
-          lang === "en"
-            ? product.name_en
-            : lang === "hy"
-            ? product.name_hy
-            : product.name_ru
-      }));
-
-      setSearchResults(resultsWithDisplayName);
-      setLoading(false);
-    }, 200);
-
-    return () => {
-      if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    };
-  }, [search, products, i18n.language]);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setShowSearchDropdown(false);
+    async function fetchAll() {
+      try {
+        const [productsRes, giftsRes, specialsRes] = await Promise.all([
+          fetch("/api/admin/products"),
+          fetch("/api/admin/gifts"),
+          fetch("/api/admin/special"),
+        ]);
+        const [productsData, giftsData, specialsData] = await Promise.all([
+          productsRes.json(),
+          giftsRes.json(),
+          specialsRes.json(),
+        ]);
+        setProducts(productsData);
+        setGifts(giftsData);
+        setSpecials(specialsData);
+      } catch (err) {
+        setProducts([]);
+        setGifts([]);
+        setSpecials([]);
       }
     }
-    if (showSearchDropdown) {
-      document.addEventListener("mousedown", handleClick);
-    }
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [showSearchDropdown]);
+    fetchAll();
+  }, []);
 
- useEffect(() => {
-  async function fetchAll() {
-    setLoading(true);
-    try {
-      const [productsRes, giftsRes, specialsRes] = await Promise.all([
-        fetch("/api/admin/products"),
-        fetch("/api/admin/gifts"),
-        fetch("/api/admin/special"),
-      ]);
-      const [productsData, giftsData, specialsData] = await Promise.all([
-        productsRes.json(),
-        giftsRes.json(),
-        specialsRes.json(),
-      ]);
-      setProducts(productsData);
-      setGifts(giftsData);
-      setSpecials(specialsData);
-    } catch (err) {
-      setProducts([]);
-      setGifts([]);
-      setSpecials([]);
-    }
-    setLoading(false);
-  }
-  fetchAll();
-}, []);
-  
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (search.trim()) {
-      router.push(`/search?query=${encodeURIComponent(search)}`);
-      setShowSearchDropdown(false);
-    }
-  }
   const pathname = usePathname();
 
   const navLinks = [
@@ -247,18 +90,18 @@ export default function Navbar() {
   const collections = collectionTypes.filter(ct => ct.type === "collection");
   const childrenTypes = collectionTypes.filter(ct => ct.type === "children");
   const dietaryTypes = collectionTypes.filter(ct => ct.type === "dietary");
-  const lang = i18n.language
+  const lang = i18n.language;
   const sortedCollections = [...collections].sort((a, b) => {
-  const aName =
-    lang === "hy" ? a.name_hy :
-    lang === "ru" ? a.name_ru :
-    a.name_en;
-  const bName =
-    lang === "hy" ? b.name_hy :
-    lang === "ru" ? b.name_ru :
-    b.name_en;
-  return aName.localeCompare(bName);
-});
+    const aName =
+      lang === "hy" ? a.name_hy :
+      lang === "ru" ? a.name_ru :
+      a.name_en;
+    const bName =
+      lang === "hy" ? b.name_hy :
+      lang === "ru" ? b.name_ru :
+      b.name_en;
+    return aName.localeCompare(bName);
+  });
   const midCol = Math.ceil(sortedCollections.length / 2);
   const collectionsCol1 = sortedCollections.slice(0, midCol);
   const collectionsCol2 = sortedCollections.slice(midCol);
@@ -300,7 +143,7 @@ export default function Navbar() {
       document.body.style.overflow = "";
     };
   }, [showCart]);
-  
+
   useEffect(() => {
     const savedLng = localStorage.getItem("lng");
     if (savedLng && i18n.language !== savedLng) {
@@ -352,35 +195,35 @@ export default function Navbar() {
             </button>
             {/* Language Dropdown */}
             <div className="relative">
-        <button
-          className="flex items-center gap-2 px-3 py-1 rounded-full font-semibold border border-chocolate bg-white text-chocolate hover:bg-chocolate hover:text-white transition"
-          onClick={() => setShowLangDropdown((prev) => !prev)}
-          aria-label="Select language"
-          type="button"
-        >
-          <span className="uppercase">{i18n.language}</span>
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        {showLangDropdown && (
-          <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
-            {["hy", "en", "ru"].map((lng) => (
               <button
-                key={lng}
-                onClick={() => handleChangeLanguage(lng)}
-                className={`block w-full text-left px-4 py-2 rounded-xl font-semibold transition ${
-                  i18n.language === lng
-                    ? "bg-chocolate text-white"
-                    : "text-chocolate hover:bg-chocolate/10"
-                }`}
+                className="flex items-center gap-2 px-3 py-1 rounded-full font-semibold border border-chocolate bg-white text-chocolate hover:bg-chocolate hover:text-white transition"
+                onClick={() => setShowLangDropdown((prev) => !prev)}
+                aria-label="Select language"
+                type="button"
               >
-                {lng === "hy" ? "Հայերեն" : lng === "en" ? "English" : "Русский"}
+                <span className="uppercase">{i18n.language}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-            ))}
-          </div>
-        )}
-      </div>
+              {showLangDropdown && (
+                <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+                  {["hy", "en", "ru"].map((lng) => (
+                    <button
+                      key={lng}
+                      onClick={() => handleChangeLanguage(lng)}
+                      className={`block w-full text-left px-4 py-2 rounded-xl font-semibold transition ${
+                        i18n.language === lng
+                          ? "bg-chocolate text-white"
+                          : "text-chocolate hover:bg-chocolate/10"
+                      }`}
+                    >
+                      {lng === "hy" ? "Հայերեն" : lng === "en" ? "English" : "Русский"}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Logo */}
             <Link href="/" className="text-xl font-cursive font-bold text-chocolate">Shokoladaran</Link>
             {/* Cart */}
@@ -402,112 +245,6 @@ export default function Navbar() {
               )}
             </button>
           </div>
-        </div>
-
-        {/* Mobile Search Bar */}
-        <div className="fixed top-[68px] left-0 w-full px-4 py-2 bg-white border-b border-gray-100 z-40">
-          <form onSubmit={handleSearch} className="flex items-center">
-            <div className="relative w-full flex items-center">
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("search_products")}
-                className="w-full pl-10 pr-3 py-2 rounded-2xl bg-white border border-gray-200 shadow text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
-                onFocus={() => {
-                  if (search.trim()) {
-                    setShowSearchDropdown(true);
-                  } else {
-                    setShowSearchDropdown(false);
-                    setSearchResults([]);
-                  }
-                }}
-              />
-              <svg
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-chocolate w-5 h-5 pointer-events-none"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </div>
-          </form>
-          {/* Mobile Search Dropdown */}
-          {showSearchDropdown && (
-  <div className="absolute left-0 top-[100%] w-full bg-white border border-gray-200 rounded-xl shadow-xl z-50 animate-slideDown pointer-events-auto">
-    <div className="p-4">
-      <h3 className="text-lg font-semibold mb-4">{t("popular_search_terms")}</h3>
-      {loading ? (
-        <div className="flex items-center justify-center py-8">
-          {/* You can put your spinner here */}
-        </div>
-      ) : searchResults.length === 0 ? (
-        <div className="flex items-center justify-center py-8 text-gray-500 text-lg font-semibold">
-          {t("no_results_found")}
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 gap-4">
-            {searchResults.slice(0, 4).map((item) => (
-              <button
-                key={item._id}
-                className="flex flex-col items-center p-2 rounded hover:bg-chocolate/10 transition w-full"
-                type="button"
-                onClick={async () => {
-                  setShowSearchDropdown(false);
-                  await router.push(`/product/${item.slug || item._id}`);
-                }}
-                onTouchStart={async () => {
-                  setShowSearchDropdown(false);
-                  await router.push(`/product/${item.slug || item._id}`);
-                }}
-              >
-                {item.image && (
-                  <img
-                    src={item.image}
-                    alt={item.name_en || item.name_hy || item.name_ru}
-                    className="w-24 h-24 object-cover rounded mb-2"
-                  />
-                )}
-                <div className="text-base font-medium text-gray-900 text-center">
-                  {
-                  i18n.language === "hy"
-                      ? item.name_hy
-                      : i18n.language === "ru"
-                      ? item.name_ru
-                      : item.name_en
-                  }</div>
-                <div className="text-gray-700 text-center mt-1">
-                  {item.price ? `${t("amd")} ${item.price.toFixed(2)}` : ""}
-                </div>
-              </button>
-            ))}
-          </div>
-          <div className="flex justify-center mt-6">
-            <button
-              className="bg-chocolate text-white px-6 py-2 rounded text-base font-semibold hover:bg-[#a06a1b] transition"
-              type="button"
-              onClick={async () => {
-                setShowSearchDropdown(false);
-                await router.push(`/search?query=${encodeURIComponent(search)}`);
-              }}
-              onTouchStart={async () => {
-                setShowSearchDropdown(false);
-                await router.push(`/search?query=${encodeURIComponent(search)}`);
-              }}
-            >
-              See all results
-            </button>
-          </div>
-        </>
-      )}
-    </div>
-  </div>
-)}
-
         </div>
 
         {/* Mobile Menu Drawer */}
@@ -871,7 +608,8 @@ export default function Navbar() {
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
             {/* Logo (now left) */}
-            <div className="max-w-7xl mx-auto px-6 text-center"
+               <div className="w-64 flex-shrink-0 text-center"
+
                  onMouseEnter={() => {
                    setShowDropdown(false);
                    setShowBrandsDropdown(false);
@@ -1114,108 +852,14 @@ export default function Navbar() {
               </div>
             </nav>
 
-            {/* Right: Search and Icons */}
-            <div className="flex items-center gap-6"
+            {/* Right: Cart and Language */}
+                <div className="w-64 flex items-center gap-6 flex-shrink-0 justify-end"
+
                  onMouseEnter={() => {
                    setShowDropdown(false);
                    setShowBrandsDropdown(false);
                  }}
             >
-                <div className="relative w-56" ref={searchRef}>
-                  <form onSubmit={handleSearch} className="flex items-center justify-center">
-                    <div className="relative w-full flex items-center">
-                      <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder={t("search_products")}
-                        className="w-full pl-12 py-3 rounded-3xl bg-white/80 focus:bg-white border-none shadow-lg text-base text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-chocolate transition-all duration-200"
-                        onFocus={() => {
-                          if (search.trim()) {
-                            setShowSearchDropdown(true);
-                          } else {
-                            setShowSearchDropdown(false);
-                            setSearchResults([]);
-                          }
-                        }}
-                      />
-                      <svg
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-chocolate w-5 h-5 pointer-events-none"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                        viewBox="0 0 24 24"
-                      >
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                      </svg>
-                    </div>
-                  </form>
-                  {/* Search Dropdown */}
-                  {showSearchDropdown && (
-                    <div className="fixed right-0 top-[70px] mt-0 w-[600px] bg-white rounded-xl shadow-xl z-50 animate-slideDown">
-                      <div className="flex">
-                        <div className="flex-1 p-6">
-                          <h3 className="text-lg font-semibold mb-4">{t("popular_search_terms")}</h3>
-                          {loading ? (
-                            <div className="flex items-center justify-center py-12">
-                              <svg className="animate-spin h-8 w-8 text-chocolate" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                              </svg>
-                              <span className="ml-4 text-chocolate font-semibold text-lg">{t("loading")}</span>
-                            </div>
-                          ) : searchResults.length === 0 ? (
-                            <div className="flex items-center justify-center py-12 text-gray-500 text-lg font-semibold">
-                              {t("no_results_found")}
-                            </div>
-                          ) : (
-                            <>
-                              <div className="grid grid-cols-2 gap-6">
-                                {searchResults.slice(0, 4).map((item) => (
-                                  <div key={item._id} className="flex flex-col items-center">
-                                    <Link
-                                      href={`/product/${item.slug || item._id}`}
-                                      className="block"
-                                      onClick={() => setShowSearchDropdown(false)}
-                                    >
-                                      {item.image && (
-                                        <img
-                                          src={item.image}
-                                          alt={item.name_en || item.name_hy || item.name_ru}
-                                          className="w-40 h-40 object-cover rounded mb-2"
-                                        />
-                                      )}
-                                      <div className="text-base font-medium text-gray-900 text-center">{
-                                        i18n.language === "hy"
-                                          ? item.name_hy
-                                          : i18n.language === "ru"
-                                          ? item.name_ru
-                                          : item.name_en
-                                      }</div>
-                                      <div className="text-gray-700 text-center mt-1">
-                                        {item.price ? `${t("amd")} ${item.price.toFixed(2)}` : ""}
-                                      </div>
-                                    </Link>
-                                  </div>
-                                ))}
-                              </div>
-                              <div className="flex justify-center mt-8">
-                                <Link
-                                  href={`/search?query=${encodeURIComponent(search)}`}
-                                  className="bg-black text-white px-8 py-3 rounded text-lg font-semibold hover:bg-chocolate transition"
-                                  onClick={() => setShowSearchDropdown(false)}
-                                >
-                                  {t("see_all_results")}
-                                </Link>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
               {/* Cart Icon */}
               <button
                 onClick={() => setShowCart(true)}
