@@ -15,7 +15,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen flex flex-col">
         <CartProvider>
           <Navbar />
-          <main className="flex-1 pt-[98px] md:pt-[88px]">
+          {/* pt-[98px]  */}
+          <main className="flex-1 md:pt-[88px]">
             {children}
           </main>
         </CartProvider>

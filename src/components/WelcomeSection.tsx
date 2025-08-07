@@ -20,6 +20,7 @@ export default function WelcomeSection() {
                     autoPlay
                     loop
                     muted
+                    playsInline
                 />
             </div>
       </div>
