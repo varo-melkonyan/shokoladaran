@@ -6,7 +6,7 @@ import { useCart } from "@/context/CartContext";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 
-type Brand = { _id: string; name: string };
+type Brand = { _id: string; name_en: string; name_hy: string; name_ru: string };
 type CollectionType = {
   id: string;
   name_en: string;
@@ -35,7 +35,9 @@ export default function Navbar() {
       .then(res => res.json())
       .then(data => setBrands(data.map((b: any) => ({
         _id: b._id || b.id,
-        name: b.name,
+        name_en: b.name_en,
+        name_hy: b.name_hy,
+        name_ru: b.name_ru,
       }))));
     fetch("/api/admin/collection-types")
       .then(res => res.json())
@@ -81,7 +83,7 @@ export default function Navbar() {
   ];
 
   // Split brands into two columns for dropdown
-  const sortedBrands = [...brands].sort((a, b) => a.name.localeCompare(b.name));
+  const sortedBrands = [...brands].sort((a, b) => a.name_en.localeCompare(b.name_en));
   const mid = Math.ceil(sortedBrands.length / 2);
   const brandsCol1 = sortedBrands.slice(0, mid);
   const brandsCol2 = sortedBrands.slice(mid);
@@ -401,11 +403,11 @@ export default function Navbar() {
                   {brands.map((brand) => (
                     <li key={brand._id}>
                       <Link
-                        href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
+                        href={`/brands/${brand.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                         className="block text-[15px] text-chocolate hover:underline"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {brand.name}
+                        {brand.name_en}
                       </Link>
                     </li>
                   ))}
@@ -800,11 +802,11 @@ export default function Navbar() {
                               {brandsCol1.map((brand) => (
                                 <Link
                                   key={brand._id}
-                                  href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
+                                  href={`/brands/${brand.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                                   className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                                   onClick={() => setShowBrandsDropdown(false)}
                                 >
-                                  {brand.name}
+                                  {brand.name_en}
                                 </Link>
                               ))}
                             </div>
@@ -819,10 +821,10 @@ export default function Navbar() {
                               {brandsCol2.map((brand) => (
                                 <Link
                                   key={brand._id}
-                                  href={`/brands/${brand.name.toLowerCase().replace(/\s+/g, "-")}`}
+                                  href={`/brands/${brand.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                                   className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                                 >
-                                  {brand.name}
+                                  {brand.name_en}
                                 </Link>
                               ))}
                             </div>

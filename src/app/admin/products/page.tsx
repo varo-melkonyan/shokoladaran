@@ -15,7 +15,7 @@ function randomBase64Id(length = 12) {
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
+  const [brands, setBrands] = useState<{ _id: string; name_en: string; name_hy: string; name_ru: string }[]>([]);
   const [collectionTypes, setCollectionTypes] = useState<{
     _id: string;
     name_en: string;
@@ -78,11 +78,13 @@ export default function AdminProducts() {
       .then(data => {
         const mapped = data.map((b: any) => ({
           _id: b._id || b.id,
-          name: b.name,
+          name_en: b.name_en,
+          name_hy: b.name_hy,
+          name_ru: b.name_ru,
         }));
         setBrands(mapped);
         // Set default brand if not editing
-        if (!editId && mapped.length && !brand) setBrand(mapped[0].name);
+        if (!editId && mapped.length && !brand) setBrand(mapped[0].name_en);
       });
     fetch("/api/admin/collection-types")
       .then(res => res.json())
@@ -160,7 +162,7 @@ export default function AdminProducts() {
     setWeight("");
     setDiscount("");
     setCollectionType(collectionTypes[0]?.name_en || "");
-    setBrand(brands[0]?.name || "");
+    setBrand(brands[0]?.name_en || "");
     setStatus("in_stock");
     setReadyAfter("");
     setImages([]);
@@ -257,7 +259,7 @@ export default function AdminProducts() {
           ))}
         </select>
         <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 rounded">
-          {brands.map(b => <option key={b._id} value={b.name}>{b.name}</option>)}
+          {brands.map(b => <option key={b._id} value={b.name_en}>{b.name_en}</option>)}
         </select>
         <select
           value={status}

@@ -5,7 +5,9 @@ import { t } from "i18next";
 
 type Brand = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   image?: string;
   description?: string;
   website?: string;
@@ -28,7 +30,9 @@ export default function BrandsPage() {
         .then(res => res.json())
         .then(data => setBrands(data.map((b: any) => ({
           _id: b._id || b.id,
-          name: b.name,
+          name_en: b.name_en,
+          name_hy: b.name_hy,
+          name_ru: b.name_ru,
           image: b.image,
           description: b.description,
           website: b.website,
@@ -53,15 +57,15 @@ export default function BrandsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         {brands.map((brand) => (
           <div key={brand._id} className="bg-white rounded-lg shadow p-6 flex flex-col items-center">
-            <Link href={`/brands/${brand.name.toLowerCase()}`} className="flex flex-col items-center w-full">
+            <Link href={`/brands/${brand.name_en.toLowerCase()}`} className="flex flex-col items-center w-full">
               {brand.image && (
                 <img
                   src={brand.image}
-                  alt={brand.name}
+                  alt={brand.name_en}
                   className="w-24 h-24 object-cover rounded-full mb-4"
                 />
               )}
-              <h2 className="text-xl font-bold text-chocolate mb-2 hover:underline">{brand.name}</h2>
+              <h2 className="text-xl font-bold text-chocolate mb-2 hover:underline">{brand.name_en}</h2>
             </Link>
             {brand.description && (
               <p className="text-gray-600 text-center mb-2">{brand.description}</p>

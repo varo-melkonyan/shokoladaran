@@ -4,7 +4,6 @@ import { Product } from "@/types/product";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
 
 export default function BrandProductGrid({ products }: { products: Product[] }) {
   const { addToCart, removeFromCart, cart } = useCart();

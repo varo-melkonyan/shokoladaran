@@ -10,7 +10,9 @@ import i18n from "@/i18n";
 
 type Brand = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   images?: string[];
   description?: string;
   website?: string;
@@ -75,7 +77,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
 
       // Match by slug (id in URL)
       const matchedBrand = brands.find(
-        (b: Brand) => b.name.toLowerCase().replace(/\s+/g, "-") === slug
+        (b: Brand) => b.name_en.toLowerCase().replace(/\s+/g, "-") === slug
       );
       setBrand(matchedBrand || null);
       setCollectionTypes(collections);
@@ -121,12 +123,12 @@ export default function VendorClientPage({ slug }: { slug: string }) {
         {brand.images && (
           <img
             src={brand.images[0]}
-            alt={brand.name}
+            alt={brand.name_en}
             className="w-40 h-40 object-cover rounded shadow"
           />
         )}
         <div>
-          <h1 className="text-3xl font-bold text-chocolate mb-2">{brand.name}</h1>
+          <h1 className="text-3xl font-bold text-chocolate mb-2">{brand.name_en}</h1>
           {brand.description && (
             <p className="mb-4 text-gray-700">{brand.description}</p>
           )}

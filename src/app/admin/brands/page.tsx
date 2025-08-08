@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 
 type Brand = {
   _id: string;
-  name: string;
+  name_en: string;
+  name_hy: string;
+  name_ru: string;
   image?: string;
   description?: string;
   website?: string;
@@ -25,7 +27,9 @@ export default function AdminBrands() {
         const safeBrands = data
           .map((b: any) => ({
             _id: b._id || b.id || "",
-            name: b.name || "",
+            name_en: b.name_en || "",
+            name_hy: b.name_hy || "",
+            name_ru: b.name_ru || "",
             image: b.image || "",
             description: b.description || "",
             website: b.website || "",
@@ -72,7 +76,9 @@ export default function AdminBrands() {
           ...brands,
           {
             _id: newBrand._id ?? newBrand.id,
-            name: newBrand.name,
+            name_en: newBrand.name_en,
+            name_hy: newBrand.name_hy,
+            name_ru: newBrand.name_ru,
             image: newBrand.image,
             description: newBrand.description,
             website: newBrand.website,
@@ -86,7 +92,7 @@ export default function AdminBrands() {
   }
 
   function handleDeleteByName(name: string) {
-    const brand = brands.find((b) => b.name === name);
+    const brand = brands.find((b) => b.name_en === name);
     const _id = brand?._id;
 
     // Validate ObjectId
@@ -110,7 +116,7 @@ export default function AdminBrands() {
 
   function startEdit(brand: Brand) {
     setEditId(brand._id);
-    setName(brand.name);
+    setName(brand.name_en);
     setImage(brand.image || "");
     setDescription(brand.description || "");
     setWebsite(brand.website || "");
@@ -182,10 +188,10 @@ export default function AdminBrands() {
           >
             <div className="flex items-center gap-3">
               {b.image && (
-                <img src={b.image} alt={b.name} className="w-10 h-10 object-contain rounded" />
+                <img src={b.image} alt={b.name_en} className="w-10 h-10 object-contain rounded" />
               )}
               <div>
-                <div className="font-bold">{b.name}</div>
+                <div className="font-bold">{b.name_en}</div>
                 {b.description && <div className="text-xs text-gray-500">{b.description}</div>}
                 {b.website && (
                   <a href={b.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline">
@@ -196,7 +202,7 @@ export default function AdminBrands() {
             </div>
             <div className="flex gap-2">
               <button onClick={() => startEdit(b)} className="text-blue-500">Edit</button>
-              <button onClick={() => handleDeleteByName(b.name)} className="text-red-500">Delete</button>
+              <button onClick={() => handleDeleteByName(b.name_en)} className="text-red-500">Delete</button>
             </div>
           </li>
         ))}

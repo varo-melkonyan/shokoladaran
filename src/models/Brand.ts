@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 
 const BrandSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  name_en: { type: String, required: true },
+  name_hy: { type: String, required: true },
+  name_ru: { type: String, required: true },
   image: String,
   description: String,
   website: String,

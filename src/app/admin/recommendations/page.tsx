@@ -135,7 +135,7 @@ export default function AdminRecommendationsPage() {
           >
             <option value="">All Brands</option>
             {brands.map((b: any) => (
-              <option key={b._id} value={b.name}>{b.name}</option>
+              <option key={b._id} value={b.name_en}>{b.name_en}</option>
             ))}
           </select>
         </div>

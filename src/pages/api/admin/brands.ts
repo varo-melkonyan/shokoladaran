@@ -9,28 +9,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const brands = await Brand.find();
     return res.status(200).json(brands);
   } else if (req.method === "POST") {
-    const { name, image, description, website } = req.body;
-    const brand = await Brand.create({ name, image, description, website });
+    const { name_en, name_hy, name_ru, image, description, website } = req.body;
+    const brand = await Brand.create({ name_en, name_hy, name_ru, image, description, website });
     return res.status(201).json(brand);
   } else if (req.method === "PUT") {
-    const { id, name, ...rest } = req.body;
-    const brand = await Brand.findByIdAndUpdate(id, { name, ...rest }, { new: true });
+    const { id, name_en, name_hy, name_ru, ...rest } = req.body;
+    const brand = await Brand.findByIdAndUpdate(
+      id,
+      { name_en, name_hy, name_ru, ...rest },
+      { new: true }
+    );
     return res.status(200).json(brand);
   } else if (req.method === "DELETE") {
-  const { id } = req.query;
+    const { id } = req.query;
 
-  if (!id || typeof id !== "string" || id.length !== 24) {
-    return res.status(400).json({ error: "Invalid or missing ID" });
-  }
+    if (!id || typeof id !== "string" || id.length !== 24) {
+      return res.status(400).json({ error: "Invalid or missing ID" });
+    }
 
-  try {
-    await Brand.findByIdAndDelete(id);
-    return res.status(200).json({ success: true });
-  } catch (error) {
-    return res.status(500).json({ error: "Delete failed" });
-  }
-}
- else {
+    try {
+      await Brand.findByIdAndDelete(id);
+      return res.status(200).json({ success: true });
+    } catch (error) {
+      return res.status(500).json({ error: "Delete failed" });
+    }
+  } else {
     return res.status(405).end();
   }
 }
