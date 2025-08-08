@@ -16,7 +16,9 @@ export default function AdminBestSellerProducts() {
       .then(res => res.json())
       .then(data => setBrands(data.map((b: any) => ({
         _id: b._id || b.id,
-        name: b.name,
+        name_en: b.name_en,
+        name_hy: b.name_hy,
+        name_ru: b.name_ru,
       }))));
     fetch("/api/admin/collection-types")
       .then(res => res.json())

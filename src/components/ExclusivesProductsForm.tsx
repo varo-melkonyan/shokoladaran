@@ -6,7 +6,7 @@ import { Product } from "@/types/product";
 interface Props  {
   onAdd: (newExclusivesProduct: ExclusivesProduct) => void;
   initialData: ExclusivesProduct | null;
-  brands: { _id: string; name: string }[];
+  brands: { _id: string; name_en: string; name_hy: string; name_ru: string }[];
   collectionTypes: { _id: string; name: string }[];
   products: Product[];
 };
@@ -56,7 +56,7 @@ export default function ExclusivesProductsForm({
       <select value={selectedBrand} onChange={e => setSelectedBrand(e.target.value)}>
         <option value="">Select Brand</option>
         {brands.map(b => (
-          <option key={b._id} value={b.name}>{b.name}</option>
+          <option key={b._id} value={b.name_en}>{b.name_en}</option>
         ))}
       </select>
       <select value={selectedCollectionType} onChange={e => setSelectedCollectionType(e.target.value)}>

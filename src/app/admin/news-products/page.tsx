@@ -8,8 +8,8 @@ import { useTranslation } from "react-i18next";
 export default function AdminNewsProducts() {
   const [newsProducts, setNewsProducts] = useState<NewsProduct[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
-  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name: string }[]>([]);
+  const [brands, setBrands] = useState<{ _id: string; name_en: string; name_hy: string; name_ru: string }[]>([]);
+  const [collectionTypes, setCollectionTypes] = useState<{ _id: string; name_en: string; name_hy: string; name_ru: string }[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const { i18n } = useTranslation();
 
@@ -18,7 +18,9 @@ export default function AdminNewsProducts() {
   .then(res => res.json())
   .then(data => setBrands(data.map((b: any) => ({
     _id: b._id || b.id,
-    name: b.name,
+    name_en: b.name_en,
+    name_hy: b.name_hy,
+    name_ru: b.name_ru,
   }))));
     fetch("/api/admin/collection-types")
   .then(res => res.json())

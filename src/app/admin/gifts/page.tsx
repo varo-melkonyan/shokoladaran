@@ -6,7 +6,7 @@ import { Product } from "@/types/product";
 export default function AdminGifts() {
   const [gifts, setGifts] = useState<Product[]>([]);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [brands, setBrands] = useState<{ _id: string; name: string }[]>([]);
+  const [brands, setBrands] = useState<{ _id: string; name_en: string; name_hy: string; name_ru: string }[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
@@ -14,7 +14,9 @@ export default function AdminGifts() {
       .then(res => res.json())
       .then(data => setBrands(data.map((b: any) => ({
         _id: b._id || b.id,
-        name: b.name,
+        name_en: b.name_en,
+        name_hy: b.name_hy,
+        name_ru: b.name_ru,
       }))));
     fetch("/api/admin/products")
       .then(res => res.json())

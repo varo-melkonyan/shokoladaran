@@ -43,7 +43,9 @@ export default function VendorClientPage({ slug }: { slug: string }) {
     ]).then(([brandsRaw, productsRaw, collectionsRaw]) => {
       const brands = brandsRaw.map((b: any) => ({
         _id: b._id || b.id,
-        name: b.name,
+        name_en: b.name_en,
+        name_hy: b.name_hy,
+        name_ru: b.name_ru,
         images: b.images,
         description: b.description,
         website: b.website,
@@ -83,7 +85,7 @@ export default function VendorClientPage({ slug }: { slug: string }) {
       setCollectionTypes(collections);
       setProducts(
         matchedBrand
-          ? products.filter((p: Product) => p.brand === matchedBrand.name)
+          ? products.filter((p: Product) => p.brand === matchedBrand.name_en)
           : []
       );
       setLoading(false);

@@ -5,7 +5,7 @@ import { Product } from "@/types/product";
 interface Props {
   onAdd: (newGift: Omit<Product, "_id">) => void;
   initialData: Product | null;
-  brands: { _id: string; name: string }[];
+  brands: { _id: string; name_en: string; name_hy: string; name_ru: string }[];
   products: Product[];
 }
 
@@ -166,7 +166,7 @@ export default function GiftsForm({
       <select value={brand} onChange={e => setBrand(e.target.value)} className="border p-2 rounded">
         <option value="">Select Brand</option>
         {brands.map(b => (
-          <option key={b._id} value={b.name}>{b.name}</option>
+          <option key={b._id} value={b.name_en}>{b.name_en}</option>
         ))}
       </select>
       <select

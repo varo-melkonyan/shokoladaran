@@ -13,7 +13,9 @@ type Brand = {
 
 export default function AdminBrands() {
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [name, setName] = useState("");
+  const [name_en, setNameEn] = useState("");
+  const [name_hy, setNameHy] = useState("");
+  const [name_ru, setNameRu] = useState("");
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
@@ -41,22 +43,22 @@ export default function AdminBrands() {
 
   async function addBrand(e: React.FormEvent) {
     e.preventDefault();
-    if (!name) return;
+    if (!name_en) return;
     if (editId) {
       const res = await fetch("/api/admin/brands", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editId
-          ? { id: editId, name, image, description, website }
-          : { name, image, description, website }
+          ? { id: editId, name_en, image, description, website }
+          : { name_en, image, description, website }
         ),
       });
       if (res.ok) {
         setBrands(
-          brands.map((b) => (b._id === editId ? { ...b, name } : b))
+          brands.map((b) => (b._id === editId ? { ...b, name_en } : b))
         );
         setEditId(null);
-        setName("");
+        setNameEn("");
       } else {
         setError("Failed to update brand");
       }
@@ -64,7 +66,7 @@ export default function AdminBrands() {
       const res = await fetch("/api/admin/brands", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name_en }),
       });
       if (res.ok) {
         const newBrand = await res.json();
@@ -84,7 +86,7 @@ export default function AdminBrands() {
             website: newBrand.website,
           },
         ]);
-        setName("");
+        setNameEn("");
       } else {
         setError("Failed to add brand");
       }
@@ -116,7 +118,7 @@ export default function AdminBrands() {
 
   function startEdit(brand: Brand) {
     setEditId(brand._id);
-    setName(brand.name_en);
+    setNameEn(brand.name_en);
     setImage(brand.image || "");
     setDescription(brand.description || "");
     setWebsite(brand.website || "");
@@ -124,7 +126,7 @@ export default function AdminBrands() {
 
   function cancelEdit() {
     setEditId(null);
-    setName("");
+    setNameEn("");
     setImage("");
     setDescription("");
     setWebsite("");
@@ -138,9 +140,21 @@ export default function AdminBrands() {
 
       <form onSubmit={addBrand} className="flex flex-col gap-2 mb-6">
         <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Brand Name"
+          value={name_en}
+          onChange={(e) => setNameEn(e.target.value)}
+          placeholder="Brand Name (EN)"
+          className="border p-2 rounded"
+        />
+        <input
+          value={name_hy}
+          onChange={(e) => setNameHy(e.target.value)}
+          placeholder="Brand Name (HY)"
+          className="border p-2 rounded"
+        />
+        <input
+          value={name_ru}
+          onChange={(e) => setNameRu(e.target.value)}
+          placeholder="Brand Name (RU)"
           className="border p-2 rounded"
         />
         <input
