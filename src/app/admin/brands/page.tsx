@@ -20,7 +20,7 @@ export default function AdminBrands() {
   const [description, setDescription] = useState("");
   const [website, setWebsite] = useState("");
   const [editId, setEditId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null); // for showing problems
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/admin/brands")
@@ -36,29 +36,41 @@ export default function AdminBrands() {
             description: b.description || "",
             website: b.website || "",
           }))
-          .filter((b) => b._id && b._id.length === 24); // filter out bad ones
+          .filter((b) => b._id && b._id.length === 24);
         setBrands(safeBrands);
       });
   }, []);
 
   async function addBrand(e: React.FormEvent) {
     e.preventDefault();
-    if (!name_en) return;
+    if (!name_en || !name_hy || !name_ru) {
+      setError("All language fields are required.");
+      return;
+    }
+    setError(null);
     if (editId) {
       const res = await fetch("/api/admin/brands", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editId
-          ? { id: editId, name_en, image, description, website }
-          : { name_en, image, description, website }
-        ),
+        body: JSON.stringify({
+          id: editId,
+          name_en,
+          name_hy,
+          name_ru,
+          image,
+          description,
+          website,
+        }),
       });
       if (res.ok) {
         setBrands(
-          brands.map((b) => (b._id === editId ? { ...b, name_en } : b))
+          brands.map((b) =>
+            b._id === editId
+              ? { ...b, name_en, name_hy, name_ru, image, description, website }
+              : b
+          )
         );
-        setEditId(null);
-        setNameEn("");
+        cancelEdit();
       } else {
         setError("Failed to update brand");
       }
@@ -66,7 +78,14 @@ export default function AdminBrands() {
       const res = await fetch("/api/admin/brands", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name_en }),
+        body: JSON.stringify({
+          name_en,
+          name_hy,
+          name_ru,
+          image,
+          description,
+          website,
+        }),
       });
       if (res.ok) {
         const newBrand = await res.json();
@@ -86,26 +105,18 @@ export default function AdminBrands() {
             website: newBrand.website,
           },
         ]);
-        setNameEn("");
+        cancelEdit();
       } else {
         setError("Failed to add brand");
       }
     }
   }
 
-  function handleDeleteByName(name: string) {
-    const brand = brands.find((b) => b.name_en === name);
-    const _id = brand?._id;
-
-    // Validate ObjectId
-    const isValidObjectId = (_id: string | undefined): boolean =>
-      typeof _id === "string" && /^[0-9a-fA-F]{24}$/.test(_id);
-
-    if (!isValidObjectId(_id)) {
+  function handleDeleteById(_id: string) {
+    if (!_id || _id.length !== 24) {
       console.error("Invalid ID for deletion.");
       return;
     }
-
     fetch(`/api/admin/brands?id=${_id}`, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to delete");
@@ -119,6 +130,8 @@ export default function AdminBrands() {
   function startEdit(brand: Brand) {
     setEditId(brand._id);
     setNameEn(brand.name_en);
+    setNameHy(brand.name_hy);
+    setNameRu(brand.name_ru);
     setImage(brand.image || "");
     setDescription(brand.description || "");
     setWebsite(brand.website || "");
@@ -127,9 +140,12 @@ export default function AdminBrands() {
   function cancelEdit() {
     setEditId(null);
     setNameEn("");
+    setNameHy("");
+    setNameRu("");
     setImage("");
     setDescription("");
     setWebsite("");
+    setError(null);
   }
 
   return (
@@ -206,6 +222,8 @@ export default function AdminBrands() {
               )}
               <div>
                 <div className="font-bold">{b.name_en}</div>
+                <div className="font-bold">{b.name_hy}</div>
+                <div className="font-bold">{b.name_ru}</div>
                 {b.description && <div className="text-xs text-gray-500">{b.description}</div>}
                 {b.website && (
                   <a href={b.website} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 underline">
@@ -216,7 +234,7 @@ export default function AdminBrands() {
             </div>
             <div className="flex gap-2">
               <button onClick={() => startEdit(b)} className="text-blue-500">Edit</button>
-              <button onClick={() => handleDeleteByName(b.name_en)} className="text-red-500">Delete</button>
+              <button onClick={() => handleDeleteById(b._id)} className="text-red-500">Delete</button>
             </div>
           </li>
         ))}
