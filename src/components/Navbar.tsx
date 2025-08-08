@@ -83,7 +83,17 @@ export default function Navbar() {
   ];
 
   // Split brands into two columns for dropdown
-  const sortedBrands = [...brands].sort((a, b) => a.name_en.localeCompare(b.name_en));
+  const sortedBrands = brands.sort((a, b) => {
+    const aName =
+      i18n.language === "hy" ? a.name_hy :
+      i18n.language === "ru" ? a.name_ru :
+      a.name_en;
+    const bName =
+      i18n.language === "hy" ? b.name_hy :
+      i18n.language === "ru" ? b.name_ru :
+      b.name_en;
+    return (aName || "").localeCompare(bName || "");
+  });
   const mid = Math.ceil(sortedBrands.length / 2);
   const brandsCol1 = sortedBrands.slice(0, mid);
   const brandsCol2 = sortedBrands.slice(mid);
