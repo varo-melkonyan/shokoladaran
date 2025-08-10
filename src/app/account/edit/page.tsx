@@ -72,7 +72,7 @@ export default function EditAccountPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[70vh]">
         <span className="text-chocolate text-xl">Loading...</span>
       </div>
     );

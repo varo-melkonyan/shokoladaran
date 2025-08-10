@@ -24,7 +24,7 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[70vh]">
         <span className="text-chocolate text-xl">Loading...</span>
       </div>
     );
@@ -32,14 +32,14 @@ export default function AccountPage() {
 
   if (!account) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[70vh]">
         <span className="text-red-500 text-xl">Account not found.</span>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-[70vh] bg-white flex">
       {/* Sidebar */}
       <aside className="w-72 bg-white border-r border-gray-200 py-10 px-8 flex flex-col gap-2">
         <button className="flex items-center gap-3 py-3 px-4 rounded hover:bg-chocolate/10 text-chocolate font-medium">

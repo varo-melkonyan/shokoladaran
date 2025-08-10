@@ -35,7 +35,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white">
+    <div className="min-h-[70vh] flex flex-col md:flex-row bg-white">
       {/* Login Section */}
       <div className="flex-1 flex flex-col justify-center px-8 py-16 md:py-0 md:px-24">
         <h1 className="text-3xl md:text-4xl font-bold mb-8 text-chocolate">Log in</h1>
