@@ -417,7 +417,11 @@ export default function Navbar() {
                         className="block text-[15px] text-chocolate hover:underline"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        {brand.name_en}
+                        {i18n.language === "hy"
+                            ? brand.name_hy
+                            : i18n.language === "ru"
+                            ? brand.name_ru
+                            : brand.name_en}
                       </Link>
                     </li>
                   ))}
@@ -816,7 +820,11 @@ export default function Navbar() {
                                   className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                                   onClick={() => setShowBrandsDropdown(false)}
                                 >
-                                  {brand.name_en}
+                                  {i18n.language === "hy"
+                                    ? brand.name_hy
+                                    : i18n.language === "ru"
+                                    ? brand.name_ru
+                                    : brand.name_en}
                                 </Link>
                               ))}
                             </div>
@@ -834,7 +842,11 @@ export default function Navbar() {
                                   href={`/brands/${brand.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                                   className="block px-3 py-2 rounded hover:bg-chocolate/10 hover:text-chocolate text-gray-700 transition-colors text-sm text-center"
                                 >
-                                  {brand.name_en}
+                                  {i18n.language === "hy"
+                                    ? brand.name_hy
+                                    : i18n.language === "ru"
+                                    ? brand.name_ru
+                                    : brand.name_en}
                                 </Link>
                               ))}
                             </div>

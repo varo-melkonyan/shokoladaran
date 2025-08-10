@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { t } from "i18next";
+import { useTranslation } from "react-i18next";
+import i18n from "@/i18n";
 
 type Brand = {
   _id: string;
@@ -23,6 +24,7 @@ export default function BrandsPage() {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     Promise.all([
@@ -65,7 +67,9 @@ export default function BrandsPage() {
                   className="w-24 h-24 object-cover rounded-full mb-4"
                 />
               )}
-              <h2 className="text-xl font-bold text-chocolate mb-2 hover:underline">{brand.name_en}</h2>
+              <h2 className="text-xl font-bold text-chocolate mb-2 hover:underline">{brand.name_en}
+                {i18n.language === "hy" ? ` (${brand.name_hy})` : i18n.language === "ru" ? ` (${brand.name_ru})` : ""}
+              </h2>
             </Link>
             {brand.description && (
               <p className="text-gray-600 text-center mb-2">{brand.description}</p>
