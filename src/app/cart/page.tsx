@@ -30,15 +30,15 @@ export default function CartPage() {
   };
 
   const handlePayOnline = async () => {
-    // Send cart and form data to your backend API to create a Stripe Checkout session
+    const accountId = localStorage.getItem("accountId");
     const res = await fetch("/api/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ cart, form, deliveryType }),
+      body: JSON.stringify({ cart, form, deliveryType, accountId }),
     });
     const data = await res.json();
     if (data.url) {
-      window.location.href = data.url; // Redirect to Stripe Checkout
+      window.location.href = data.url;
     } else {
       alert("Payment error. Please try again.");
     }

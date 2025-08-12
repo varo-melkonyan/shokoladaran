@@ -8,6 +8,16 @@ const AccountSchema = new mongoose.Schema({
   phoneNumber: String,
   country: String,
   deliveryAddress: String,
+  orders: [
+    {
+      id: Number,
+      cart: Array,
+      form: Object,
+      deliveryType: String,
+      status: String,
+      createdAt: String,
+    }
+  ],
 });
 
 export default mongoose.models.Account || mongoose.model("Account", AccountSchema);
