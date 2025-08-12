@@ -1,6 +1,6 @@
 "use client";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
@@ -8,7 +8,8 @@ import i18n from "@/i18n";
 export default function CartPage() {
   const { t } = useTranslation();
   const { cart, addToCart, removeFromCart } = useCart();
-  const [showCheckout, setShowCheckout] = useState(false);
+  const router = useRouter();
+  const [showThankYou, setShowThankYou] = useState(false);
   const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">("delivery");
   const [form, setForm] = useState({
     address: "",
@@ -16,7 +17,6 @@ export default function CartPage() {
     phone: "",
   });
 
-  // Calculate total for both grams and quantity products
   const total = cart.reduce((sum, item) => {
     if (typeof item.grams === "number") {
       const unitPrice = item.discount ?? item.price ?? 0;
@@ -60,6 +60,27 @@ export default function CartPage() {
     }
   };
 
+  useEffect(() => {
+    // Check for success query param after checkout
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("success") === "1") {
+        setShowThankYou(true);
+        setTimeout(() => {
+          router.push("/");
+        }, 1000);
+      }
+    }
+  }, [router]);
+
+  if (showThankYou) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center">
+        <h1 className="text-3xl font-bold text-chocolate mb-4">{t("thank_you")}</h1>
+      </div>
+    );
+  }
+
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-chocolate mb-8">{t("your_cart")}</h1>
@@ -68,7 +89,6 @@ export default function CartPage() {
       ) : (
         <div className="space-y-6">
           {cart.map((item, idx) => {
-            // Calculate item price
             let itemPrice = 0;
             if (typeof item.grams === "number") {
               itemPrice = Math.round(((item.discount ?? item.price ?? 0) / 100) * item.grams);

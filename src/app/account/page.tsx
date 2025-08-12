@@ -38,13 +38,75 @@ export default function AccountPage() {
       </div>
     );
   }
-
+  console.log(account.item.gramms);
   return (
-    <div className="min-h-[70vh] bg-white flex">
-      {/* Sidebar */}
-      <aside className="w-72 bg-white border-r border-gray-200 py-10 px-8 flex flex-col gap-2">
+    <div className="min-h-[70vh] bg-white flex flex-col md:flex-row">
+      {/* Mobile Header Navigation */}
+      <header className="md:hidden flex items-center justify-between px-4 py-2 border-b border-gray-200 bg-white">
         <button
-          className={`flex items-center gap-3 py-3 px-4 rounded font-medium ${
+          className={`flex items-center gap-2 px-2 py-1 rounded font-medium ${
+            view === "orders" ? "bg-chocolate/10 text-chocolate" : "text-chocolate"
+          }`}
+          onClick={() => setView("orders")}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 3v4m8-4v4"/></svg>
+          Orders
+        </button>
+        <button
+          className={`flex items-center gap-2 px-2 py-1 rounded font-medium ${
+            view === "details" ? "bg-chocolate/10 text-chocolate" : "text-chocolate"
+          }`}
+          onClick={() => setView("details")}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20v-2a4 4 0 014-4h8a4 4 0 014 4v2"/></svg>
+          Account
+        </button>
+        <button
+          className="flex items-center gap-2 px-2 py-1 rounded text-chocolate"
+          onClick={() => {
+            localStorage.removeItem("accountId");
+            router.push("/account/login");
+          }}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><rect x="3" y="5" width="4" height="14" rx="2"/></svg>
+          Exit
+        </button>
+      </header>
+      {/* Mobile Sidebar Navigation */}
+      <nav className="md:hidden flex w-full bg-white border-b border-gray-200 px-2 py-2 gap-2 justify-around pt-6">
+        <button
+          className={`flex flex-col items-center gap-1 px-2 py-1 rounded font-medium ${
+            view === "orders" ? "bg-chocolate/10 text-chocolate" : "text-chocolate"
+          }`}
+          onClick={() => setView("orders")}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 3v4m8-4v4"/></svg>
+          <span className="text-xs">Orders</span>
+        </button>
+        <button
+          className={`flex flex-col items-center gap-1 px-2 py-1 rounded font-medium ${
+            view === "details" ? "bg-chocolate/10 text-chocolate" : "text-chocolate"
+          }`}
+          onClick={() => setView("details")}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20v-2a4 4 0 014-4h8a4 4 0 014 4v2"/></svg>
+          <span className="text-xs">Account</span>
+        </button>
+        <button
+          className="flex flex-col items-center gap-1 px-2 py-1 rounded text-chocolate"
+          onClick={() => {
+            localStorage.removeItem("accountId");
+            router.push("/account/login");
+          }}
+        >
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><rect x="3" y="5" width="4" height="14" rx="2"/></svg>
+          <span className="text-xs">Exit</span>
+        </button>
+      </nav>
+      {/* Sidebar for desktop */}
+      <aside className="hidden md:flex w-72 bg-white border-r border-gray-200 py-10 px-8 flex-col gap-2">
+        <button
+          className={`flex items-center gap-3 py-3 px-4 rounded font-medium w-full ${
             view === "orders" ? "bg-chocolate/10 text-chocolate" : "hover:bg-chocolate/10 text-chocolate"
           }`}
           onClick={() => setView("orders")}
@@ -53,10 +115,11 @@ export default function AccountPage() {
             {/* Order History Icon */}
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M8 3v4m8-4v4"/></svg>
           </span>
-          Order History
+          <span className="hidden md:inline">Order History</span>
+          <span className="md:hidden">Orders</span>
         </button>
         <button
-          className={`flex items-center gap-3 py-3 px-4 rounded font-medium ${
+          className={`flex items-center gap-3 py-3 px-4 rounded font-medium w-full ${
             view === "details" ? "bg-chocolate/10 text-chocolate" : "hover:bg-chocolate/10 text-chocolate"
           }`}
           onClick={() => setView("details")}
@@ -65,10 +128,11 @@ export default function AccountPage() {
             {/* Account Icon */}
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20v-2a4 4 0 014-4h8a4 4 0 014 4v2"/></svg>
           </span>
-          Account Details
+          <span className="hidden md:inline">Account Details</span>
+          <span className="md:hidden">Account</span>
         </button>
         <button
-          className="flex items-center gap-3 py-3 px-4 rounded hover:bg-chocolate/10 text-chocolate font-medium mt-8"
+          className="flex items-center gap-3 py-3 px-4 rounded hover:bg-chocolate/10 text-chocolate font-medium mt-4 md:mt-8 w-full"
           onClick={() => {
             localStorage.removeItem("accountId");
             router.push("/account/login");
@@ -78,11 +142,12 @@ export default function AccountPage() {
             {/* Logout Icon */}
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 16l4-4m0 0l-4-4m4 4H7"/><rect x="3" y="5" width="4" height="14" rx="2"/></svg>
           </span>
-          Logout
+          <span className="hidden md:inline">Logout</span>
+          <span className="md:hidden">Exit</span>
         </button>
       </aside>
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-start py-16 px-8">
+      <main className="flex-1 flex flex-col items-center justify-start pt-8 md:pt-16 px-2 md:px-8 mt-4 md:mt-0">
         {view === "details" && (
           <>
             <h1 className="text-4xl font-bold mb-10 text-chocolate">Account Details</h1>
@@ -175,7 +240,9 @@ export default function AccountPage() {
                                     {item.name_en}
                                   </span>
                                 </a>
-                                <span className="ml-auto text-gray-700">x {item.quantity}</span>
+                                <span className="ml-auto text-gray-700">
+                                  x {item.quantity} {item.gramms ? "kg" : "Piece"}
+                                </span>
                               </li>
                             ))}
                           </ul>
