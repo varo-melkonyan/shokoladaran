@@ -38,7 +38,7 @@ export default function AccountPage() {
       </div>
     );
   }
-  console.log(account.item.gramms);
+
   return (
     <div className="min-h-[70vh] bg-white flex flex-col md:flex-row">
       {/* Mobile Header Navigation */}
@@ -241,7 +241,7 @@ export default function AccountPage() {
                                   </span>
                                 </a>
                                 <span className="ml-auto text-gray-700">
-                                  x {item.quantity} {item.gramms ? "kg" : "Piece"}
+                                  x {item.grams ? `${item.grams} g` : `${item.quantity} Piece`}
                                 </span>
                               </li>
                             ))}

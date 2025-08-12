@@ -185,6 +185,8 @@
   "payment_method": "Payment Method",
   "place_order": "Place Order",
   "order_confirmation": "Order Confirmation",
+  "piece": "Piece",
+  "weight_kg": "Weight (g)",
   "thank_you": "Thank You for Your Order!",
   "order_number": "Order Number",
   "track_order": "Track Order",

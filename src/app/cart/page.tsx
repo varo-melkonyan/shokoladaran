@@ -68,7 +68,7 @@ export default function CartPage() {
         setShowThankYou(true);
         setTimeout(() => {
           router.push("/");
-        }, 1000);
+        }, 300);
       }
     }
   }, [router]);
