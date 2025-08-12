@@ -96,6 +96,14 @@ export default function LoginPage() {
             )}
           </button>
           {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+          {/* Mobile Register Button */}
+          <button
+            type="button"
+            className="md:hidden border-2 border-chocolate text-chocolate rounded-lg px-8 py-3 text-lg font-semibold hover:bg-chocolate hover:text-white transition mt-6"
+            onClick={() => router.push("/account/register")}
+          >
+            Create an Account
+          </button>
         </form>
       </div>
       {/* Register Benefits Section */}
