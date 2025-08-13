@@ -1,13 +1,13 @@
 "use client";
 import { useCart } from "@/context/CartContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
 
 export default function CartPage() {
   const { t } = useTranslation();
-  const { cart, addToCart, removeFromCart } = useCart();
+  const { cart, addToCart, removeFromCart, clearCart } = useCart();
   const router = useRouter();
   const [showThankYou, setShowThankYou] = useState(false);
   const [deliveryType, setDeliveryType] = useState<"delivery" | "pickup">("delivery");
@@ -16,6 +16,24 @@ export default function CartPage() {
     name: "",
     phone: "",
   });
+  const handledSuccess = useRef(false);
+
+  // Fetch account info and prefill form
+  useEffect(() => {
+    const accountId = localStorage.getItem("accountId");
+    if (!accountId) return;
+    fetch(`/api/account/info?id=${accountId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.account) {
+          setForm({
+            address: data.account.deliveryAddress || "",
+            name: `${data.account.firstName || ""} ${data.account.lastName || ""}`.trim(),
+            phone: data.account.phoneNumber || "",
+          });
+        }
+      });
+  }, []);
 
   const total = cart.reduce((sum, item) => {
     if (typeof item.grams === "number") {
@@ -38,6 +56,7 @@ export default function CartPage() {
     });
     const data = await res.json();
     if (data.url) {
+      clearCart();
       window.location.href = data.url;
     } else {
       alert("Payment error. Please try again.");
@@ -61,17 +80,18 @@ export default function CartPage() {
   };
 
   useEffect(() => {
-    // Check for success query param after checkout
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && !handledSuccess.current) {
       const params = new URLSearchParams(window.location.search);
       if (params.get("success") === "1") {
         setShowThankYou(true);
+        clearCart();
+        handledSuccess.current = true;
         setTimeout(() => {
-          router.push("/");
-        }, 300);
+          router.replace("/"); // Use replace to avoid going back to cart
+        }, 1000);
       }
     }
-  }, [router]);
+  }, [router, clearCart]);
 
   if (showThankYou) {
     return (

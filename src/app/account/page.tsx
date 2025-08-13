@@ -196,7 +196,9 @@ export default function AccountPage() {
                 <div className="text-gray-500">No orders found.</div>
               ) : (
                 <div className="space-y-6">
-                  {account.orders.map((order: any) => {
+                  {[...account.orders]
+                    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .map((order: any) => {
                     // Calculate total
                     const total = order.cart.reduce(
                       (sum: number, item: any) => sum + (item.price || 0) * (item.quantity || 1),
