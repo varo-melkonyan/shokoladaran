@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function ActivatePage() {
+function ActivateContent() {
   const [message, setMessage] = useState("Activating your account...");
   const [activated, setActivated] = useState(false);
   const searchParams = useSearchParams();
@@ -41,5 +41,13 @@ export default function ActivatePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ActivatePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ActivateContent />
+    </Suspense>
   );
 }
