@@ -10,15 +10,12 @@ export async function POST(req: NextRequest) {
   }
 
   // Find by email or phoneNumber
-  const account = await Account.findOne({
-    $or: [
-      { email: identifier },
-      { phoneNumber: identifier }
-    ]
-  });
-
+  const account = await Account.findOne({ email: identifier });
   if (!account) {
-    return NextResponse.json({ error: "Account not found." }, { status: 404 });
+    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+  }
+  if (!account.isActive) {
+    return NextResponse.json({ error: "Account not activated. Please check your email." }, { status: 403 });
   }
 
   const isMatch = await bcrypt.compare(password, account.password);

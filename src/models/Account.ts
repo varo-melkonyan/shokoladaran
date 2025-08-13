@@ -8,6 +8,9 @@ const AccountSchema = new mongoose.Schema({
   phoneNumber: String,
   country: String,
   deliveryAddress: String,
+  isActive: { type: Boolean, default: false },
+  activationToken: String,
+  activationTokenExpires: Date,
   orders: [
     {
       id: Number,

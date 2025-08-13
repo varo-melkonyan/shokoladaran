@@ -6,119 +6,135 @@ const countries = [
 ];
 
 export default function AccountRegisterPage() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [regPassword, setRegPassword] = useState("");
-  const [regPhoneNumber, setRegPhoneNumber] = useState("");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
-  const [country, setCountry] = useState("");
-  const [regError, setRegError] = useState("");
-  const [regSuccess, setRegSuccess] = useState("");
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [email, setEmail] = useState("");
+	const [regPassword, setRegPassword] = useState("");
+	const [regPhoneNumber, setRegPhoneNumber] = useState("");
+	const [deliveryAddress, setDeliveryAddress] = useState("");
+	const [country, setCountry] = useState("");
+	const [regError, setRegError] = useState("");
+	const [regSuccess, setRegSuccess] = useState("");
 
-  async function handleRegister(e: React.FormEvent) {
-    e.preventDefault();
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !regPassword ||
-      !regPhoneNumber ||
-      !deliveryAddress ||
-      !country
-    ) {
-      setRegError("Please fill in all fields.");
-      setRegSuccess("");
-      return;
-    }
-    setRegError("");
-    const res = await fetch("/api/account/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        password: regPassword,
-        phoneNumber: regPhoneNumber,
-        deliveryAddress,
-        country,
-      }),
-    });
-    const data = await res.json();
-    if (data.error) {
-      setRegError(data.error);
-      setRegSuccess("");
-      return;
-    }
-    setRegSuccess("Account registered successfully!");
-    localStorage.setItem("accountId", data.account._id);
-    // Optionally redirect to login or account page here
-  }
+	async function handleRegister(e: React.FormEvent) {
+		e.preventDefault();
+		if (
+			!firstName ||
+			!lastName ||
+			!email ||
+			!regPassword ||
+			!regPhoneNumber ||
+			!deliveryAddress ||
+			!country
+		) {
+			setRegError("Please fill in all fields.");
+			setRegSuccess("");
+			return;
+		}
+		setRegError("");
+		const res = await fetch("/api/account/register", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				firstName,
+				lastName,
+				email,
+				password: regPassword,
+				phoneNumber: regPhoneNumber,
+				deliveryAddress,
+				country,
+			}),
+		});
+		const data = await res.json();
+		if (data.error) {
+			setRegError(data.error);
+			setRegSuccess("");
+			return;
+		}
+		setRegSuccess(
+			"Account registered! Please check your email to activate your account."
+		);
+	}
 
-  return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-4">Create Account</h1>
-      <form onSubmit={handleRegister} className="flex flex-col gap-4 mb-8">
-        <input
-          type="text"
-          value={firstName}
-          onChange={e => setFirstName(e.target.value)}
-          placeholder="First Name"
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          value={lastName}
-          onChange={e => setLastName(e.target.value)}
-          placeholder="Last Name"
-          className="border p-2 rounded"
-        />
-        <input
-          type="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          placeholder="Email Address"
-          className="border p-2 rounded"
-        />
-        <input
-          type="password"
-          value={regPassword}
-          onChange={e => setRegPassword(e.target.value)}
-          placeholder="Password"
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          value={regPhoneNumber}
-          onChange={e => setRegPhoneNumber(e.target.value)}
-          placeholder="Phone Number"
-          className="border p-2 rounded"
-        />
-        <input
-          type="text"
-          value={deliveryAddress}
-          onChange={e => setDeliveryAddress(e.target.value)}
-          placeholder="Delivery Default Address"
-          className="border p-2 rounded"
-        />
-        <select
-          value={country}
-          onChange={e => setCountry(e.target.value)}
-          className="border p-2 rounded"
-          required
-        >
-          <option value="">Select Country of Residence</option>
-          {countries.map(c => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        <button type="submit" className="bg-chocolate text-white px-4 py-2 rounded">
-          Register
-        </button>
-        {regError && <div className="text-red-500">{regError}</div>}
-        {regSuccess && <div className="text-green-500">{regSuccess}</div>}
-      </form>
-    </div>
-  );
+	return (
+		<div className="max-w-md mx-auto mt-10">
+			<h1 className="text-2xl font-bold mb-4">Create Account</h1>
+			<form onSubmit={handleRegister} className="flex flex-col gap-4 mb-8">
+				<input
+					type="text"
+					value={firstName}
+					onChange={(e) => setFirstName(e.target.value)}
+					placeholder="First Name"
+					className="border p-2 rounded"
+				/>
+				<input
+					type="text"
+					value={lastName}
+					onChange={(e) => setLastName(e.target.value)}
+					placeholder="Last Name"
+					className="border p-2 rounded"
+				/>
+				<input
+					type="email"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					placeholder="Email Address"
+					className="border p-2 rounded"
+				/>
+				<input
+					type="password"
+					value={regPassword}
+					onChange={(e) => setRegPassword(e.target.value)}
+					placeholder="Password"
+					className="border p-2 rounded"
+				/>
+				<input
+					type="text"
+					value={regPhoneNumber}
+					onChange={(e) => setRegPhoneNumber(e.target.value)}
+					placeholder="Phone Number"
+					className="border p-2 rounded"
+				/>
+				<input
+					type="text"
+					value={deliveryAddress}
+					onChange={(e) => setDeliveryAddress(e.target.value)}
+					placeholder="Delivery Default Address"
+					className="border p-2 rounded"
+				/>
+				<select
+					value={country}
+					onChange={(e) => setCountry(e.target.value)}
+					className="border p-2 rounded"
+					required
+				>
+					<option value="">Select Country of Residence</option>
+					{countries.map((c) => (
+						<option key={c} value={c}>
+							{c}
+						</option>
+					))}
+				</select>
+				<button
+					type="submit"
+					className="bg-chocolate text-white px-4 py-2 rounded"
+				>
+					Register
+				</button>
+				{regError && <div className="text-red-500">{regError}</div>}
+				{regSuccess && (
+					<div className="text-green-500">
+						{regSuccess}
+						<br />
+						<a
+							href="/account/login"
+							className="underline text-chocolate"
+						>
+							Go to Login
+						</a>
+					</div>
+				)}
+			</form>
+		</div>
+	);
 }
