@@ -11,3 +11,43 @@
 .no-spinner {
   -moz-appearance: textfield;
 }
+
+.add-btn, .qty-control {
+    border: 1px solid chocolate;
+    background: none;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+.qty-control {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.qty-control button {
+    border: none;
+    background: none;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.qty-controlKg {
+    border: 1px solid chocolate;
+    background: none;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.qty-controlKg button {
+    border: none;
+    background: none;
+    font-size: 10px;
+    cursor: pointer;
+}

@@ -259,6 +259,7 @@
   "compare_no_products": "No products selected for comparison.",
   "compare_error": "Error comparing products. Please try again.",
   "wishlist_add": "Add to Wishlist",
+  "add": "Add",
   "wishlist_remove": "Remove from Wishlist",
   "wishlist_empty": "Your Wishlist is empty.",
   "wishlist_success": "Product added to your Wishlist.",

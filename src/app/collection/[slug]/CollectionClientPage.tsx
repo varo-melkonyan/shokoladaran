@@ -107,50 +107,74 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
             const cartItem = cart.find((item) => item._id === product._id);
             
             return (
-              <div key={product._id} className="bg-white shadow rounded-lg overflow-hidden p-4 relative">
-                <div className="relative">
-                  <a href={`/product/${product._id}`}>
+              <div
+                key={product._id}
+                className="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 overflow-hidden transition relative flex flex-col"
+              >
+                {/* Full image as card background */}
+                <div className="relative w-full aspect-[3/4]">
+                  <a href={`/product/${product._id}`} className="block w-full h-full">
                     <img
                       src={product.images?.[0] || "/placeholder.png"}
                       alt={product.name_en}
-                      className="w-full h-40 object-cover mb-2 cursor-pointer"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </a>
+                  {/* Discount badge */}
+                  {product.discount && (
+                    <span className="absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10 opacity-0 group-hover:opacity-100 transition">
+                      -{Math.round(100 - (product.discount / product.price) * 100)}%
+                    </span>
+                  )}
+                  {/* Brand */}
+                  {product.brand && (
+                    <span className="absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10 opacity-0 group-hover:opacity-100 transition">
+                      {product.brand}
+                    </span>
+                  )}
+                  {/* Price badge */}
+                  <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">
+                    {product.discount ? (
+                      <>
+                        <span className="line-through text-gray-400 text-sm mr-2">{product.price} {t("amd")}</span>
+                        <span className="text-chocolate font-bold">{product.discount} {t("amd")}</span>
+                      </>
+                    ) : (
+                      <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
+                    )}
+                  </span>
                 </div>
-                <h2 className="text-lg font-bold">{
-                    i18n.language === "hy"
+
+                {/* Product info always visible below the image */}
+                <div className="p-4 flex flex-col items-start">
+                  <h2 className="text-base font-semibold mb-1 line-clamp-2 min-h-[40px]">
+                    {i18n.language === "hy"
                       ? product.name_hy
                       : i18n.language === "ru"
                       ? product.name_ru
-                      : product.name_en
-                  }</h2>
-                <div className="mt-2">
-                  {product.discount ? (
-                    <>
-                      <span className="line-through text-gray-400 mr-2">{product.price} {t("amd")}</span>
-                      <span className="text-chocolate font-bold">{product.discount} {t("amd")}</span>
-                    </>
-                  ) : (
-                    <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
-                  )}
-                </div>
-                
-                {/* Cart controls */}
-                <div className="mt-2">
-                  {product.quantityType === "kg" ? (
-                    <KgCartControl
-                      product={product}
-                      cartItem={cartItem}
-                      addToCart={addToCart}
-                    />
-                  ) : (
-                    <PieceCartControl
-                      product={product}
-                      cartItem={cartItem}
-                      addToCart={addToCart}
-                      removeFromCart={removeFromCart}
-                    />
-                  )}
+                      : product.name_en}
+                  </h2>
+                  <div className="flex items-center gap-2 mt-2 w-full justify-end">
+                    {/* Cart controls now next to the price */}
+                    <div
+                      className=" transition pointer-events-none group-hover:pointer-events-auto"
+                    >
+                      {product.quantityType === "kg" ? (
+                        <KgCartControl
+                          product={product}
+                          cartItem={cart.find((item) => item._id === product._id)}
+                          addToCart={addToCart}
+                        />
+                      ) : (
+                        <PieceCartControl
+                          product={product}
+                          cartItem={cart.find((item) => item._id === product._id)}
+                          addToCart={addToCart}
+                          removeFromCart={removeFromCart}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             );
