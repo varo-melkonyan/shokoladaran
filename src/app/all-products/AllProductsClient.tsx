@@ -49,8 +49,8 @@ export default function AllProductsClient({ products }: { products: any[] }) {
         (p.collectionType && typeof p.collectionType === "object"
           ? p.collectionType.name_en === collectionFilter
           : p.collectionType === collectionFilter))
+          
   );
-
   if (sortBy === "price-asc") filtered = [...filtered].sort((a, b) => a.price - b.price);
   if (sortBy === "price-desc") filtered = [...filtered].sort((a, b) => b.price - a.price);
   if (sortBy === "name-asc") filtered = [...filtered].sort((a, b) =>
@@ -148,14 +148,25 @@ export default function AllProductsClient({ products }: { products: any[] }) {
                       transition
                     "
                   >
-                    {/* Brand */}
-                    {product.brand && typeof product.brand === "object"
-                    ? i18n.language === "hy"
-                      ? product.brand.name_hy
-                      : i18n.language === "ru"
-                      ? product.brand.name_ru
-                      : product.brand.name_en
-                    : product.brand}
+                    {(() => {
+                      if (product.brand && typeof product.brand === "object") {
+                        return i18n.language === "hy"
+                          ? product.brand.name_hy
+                          : i18n.language === "ru"
+                          ? product.brand.name_ru
+                          : product.brand.name_en;
+                      }
+                      // If brand is a string, look up in brands array by English name
+                      const found = brands.find(b => b.en === product.brand || b.value === product.brand);
+                      if (found) {
+                        return i18n.language === "hy"
+                          ? found.hy
+                          : i18n.language === "ru"
+                          ? found.ru
+                          : found.en;
+                      }
+                      return product.brand || "";
+                    })()}
                   </span>
                   {/* Price badge */}
                   <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">

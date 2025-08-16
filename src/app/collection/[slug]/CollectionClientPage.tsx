@@ -6,7 +6,6 @@ import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
 
 type CollectionType = {
   _id: string;
@@ -16,16 +15,23 @@ type CollectionType = {
   type: "collection" | "children" | "dietary";
 };
 
+type Brand = {
+  _id: string;
+  brand_en: string;
+  brand_hy: string;
+  brand_ru: string;
+};
+
 export default function CollectionClientPage({ slug }: { slug: string }) {
   const { addToCart, removeFromCart, cart } = useCart();
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
-  const [brands, setBrands] = useState<any[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [brandFilter, setBrandFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     Promise.all([
@@ -77,7 +83,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
       
       setBrands(
         brandsRaw.map((b: any) => ({
-          brand: b.name_en,
+          _id: b._id || b.id,
           brand_en: b.name_en,
           brand_hy: b.name_hy,
           brand_ru: b.name_ru,
@@ -89,11 +95,45 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   }, [slug]);
 
 
+  // Helper: resolve brand _id from product.brand (object or string)
+  const getBrandId = (brand: unknown): string | null => {
+    if (!brand) return null;
+    if (typeof brand === "object" && brand !== null) {
+      const obj = brand as Record<string, unknown>;
+      return typeof obj._id === "string" ? obj._id : null;
+    }
+    const s = String(brand);
+    const found = brands.find((b) => b._id === s || b.brand_en === s);
+    return found?._id ?? null;
+  };
+
+  // Helper: get brand label in current language (handles object or string)
+  const getBrandLabel = (brand: unknown): string => {
+    if (!brand) return "";
+    if (typeof brand === "object" && brand !== null) {
+      const obj = brand as Record<string, string | undefined>;
+      const en = obj.brand_en ?? obj.name_en ?? "";
+      const hy = obj.brand_hy ?? obj.name_hy ?? en;
+      const ru = obj.brand_ru ?? obj.name_ru ?? en;
+      return i18n.language === "hy" ? hy : i18n.language === "ru" ? ru : en;
+    }
+    const s = String(brand);
+    const found = brands.find((b) => b._id === s || b.brand_en === s);
+    if (!found) return s;
+    return i18n.language === "hy"
+      ? found.brand_hy
+      : i18n.language === "ru"
+      ? found.brand_ru
+      : found.brand_en;
+  };
+
   // Apply filter and sort
   let displayedProducts = [...products];
 
   if (brandFilter) {
-    displayedProducts = displayedProducts.filter((p) => p.brand === brandFilter);
+    displayedProducts = displayedProducts.filter(
+      (p) => getBrandId(p.brand) === brandFilter
+    );
   }
 
   if (sortBy === "price-asc") {
@@ -143,7 +183,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
         >
           <option value="">{t("all_brands")}</option>
           {brands.map(b => (
-            <option key={b.brand} value={b.brand}>
+            <option key={b._id} value={b._id}>
               {i18n.language === "hy"
                 ? b.brand_hy
                 : i18n.language === "ru"
@@ -197,16 +237,14 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                     </span>
                   )}
 
+                  {/* Brand badge: replace your existing badge with this */}
                   <span
                     className="
                       absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10
-                      opacity-100
-                      sm:opacity-0 sm:group-hover:opacity-100
-                      transition
+                      opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition
                     "
                   >
-                    {/* Brand */}
-                    {product.brand}
+                    {getBrandLabel(product.brand)}
                   </span>
                   {/* Price badge */}
                   <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">

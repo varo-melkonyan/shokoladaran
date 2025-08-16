@@ -15,10 +15,17 @@ type CollectionType = {
   type: "collection" | "children" | "dietary";
 };
 
+type Brand = {
+  _id: string;
+  brand_en: string;
+  brand_hy: string;
+  brand_ru: string;
+};
+
 export default function DiscountsClient({ discounted }: { discounted: any[] }) {
   const { addToCart, removeFromCart, cart } = useCart();
   const { t } = useTranslation();
-  const [brands, setBrands] = useState<any[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
 
   const [collections, setCollectionTypes] = useState<CollectionType[]>([]);
 
@@ -81,17 +88,40 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
       );
       
       setBrands(
-        brandsRaw.map((b: any) => ({
-          brand: b.name_en,
-          brand_en: b.name_en,
-          brand_hy: b.name_hy,
-          brand_ru: b.name_ru,
-        }))
+        (brandsRaw as Array<{ _id?: string; id?: string; name_en: string; name_hy: string; name_ru: string }>)
+          .map((b) => ({
+            _id: (b._id || b.id) as string,
+            brand_en: b.name_en,
+            brand_hy: b.name_hy,
+            brand_ru: b.name_ru,
+          }))
       );
 
       setLoading(false);
     });
   }, [discounted]);
+
+  // Helper: get brand label in current language (handles object or string)
+  const getBrandLabel = (brand: unknown): string => {
+    if (!brand) return "";
+    // Brand is object with brand_* or name_* keys
+    if (typeof brand === "object" && brand !== null) {
+      const obj = brand as Record<string, string | undefined>;
+      const en = obj.brand_en ?? obj.name_en ?? "";
+      const hy = obj.brand_hy ?? obj.name_hy ?? en;
+      const ru = obj.brand_ru ?? obj.name_ru ?? en;
+      return i18n.language === "hy" ? hy : i18n.language === "ru" ? ru : en;
+    }
+    // Brand is string: try to resolve by _id or English name
+    const s = String(brand);
+    const found = brands.find((b) => b._id === s || b.brand_en === s);
+    if (!found) return s;
+    return i18n.language === "hy"
+      ? found.brand_hy
+      : i18n.language === "ru"
+      ? found.brand_ru
+      : found.brand_en;
+  };
 
   let filtered = discounted.filter(
     p =>
@@ -119,7 +149,7 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
         >
           <option value="">{t("all_brands")}</option>
           {brands.map(b => (
-            <option key={b.brand} value={b.brand}>
+            <option key={b._id} value={b._id}>
               {i18n.language === "hy"
                 ? b.brand_hy
                 : i18n.language === "ru"
@@ -158,102 +188,99 @@ export default function DiscountsClient({ discounted }: { discounted: any[] }) {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
         {filtered.map((product) => {
-
           return (
-              <div
-                key={product._id}
-                className="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 overflow-hidden transition relative flex flex-col"
-              >
-                {/* Full image as card background */}
-                <div className="relative w-full aspect-[3/4]">
-                  <a href={`/product/${product._id}`} className="block w-full h-full">
-                    <img
-                      src={product.images?.[0] || "/placeholder.png"}
-                      alt={product.name_en}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                    />
-                  </a>
-                  {product.discount && (
-                    <span
-                      className="
-                        absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10
-                        opacity-100
-                        sm:opacity-0 sm:group-hover:opacity-100
-                        transition
-                      "
-                    >
-                      -{Math.round(100 - (product.discount / product.price) * 100)}%
-                    </span>
-                  )}
-
+            <div
+              key={product._id}
+              className="group bg-white rounded-2xl shadow-sm hover:shadow-lg border border-gray-100 overflow-hidden transition relative flex flex-col"
+            >
+              <div className="relative w-full aspect-[3/4]">
+                <a href={`/product/${product._id}`} className="block w-full h-full">
+                  <img
+                    src={product.images?.[0] || "/placeholder.png"}
+                    alt={product.name_en}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  />
+                </a>
+                {product.discount && (
                   <span
                     className="
-                      absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10
+                      absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10
                       opacity-100
                       sm:opacity-0 sm:group-hover:opacity-100
                       transition
                     "
                   >
-                    {/* Brand */}
-                    {product.brand}
+                    -{Math.round(100 - (product.discount / product.price) * 100)}%
                   </span>
-                  {/* Price badge */}
-                  <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">
-                    {product.discount ? (
-                      <>
-                        <span className="line-through text-gray-400 text-sm mr-2">
-                          {product.price} {t("amd")}
-                        </span>
-                        <span className="text-chocolate font-bold">
-                          {product.discount} {t("amd")}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-chocolate font-bold">
+                )}
+
+                <span
+                  className="
+                    absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10
+                    opacity-100
+                    sm:opacity-0 sm:group-hover:opacity-100
+                    transition
+                  "
+                >
+                  {getBrandLabel(product.brand)}
+                </span>
+                {/* Price badge */}
+                <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">
+                  {product.discount ? (
+                    <>
+                      <span className="line-through text-gray-400 text-sm mr-2">
                         {product.price} {t("amd")}
                       </span>
-                    )}
-                  </span>
-                </div>
+                      <span className="text-chocolate font-bold">
+                        {product.discount} {t("amd")}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-chocolate font-bold">
+                      {product.price} {t("amd")}
+                    </span>
+                  )}
+                </span>
+              </div>
 
-                {/* Product info always visible below the image */}
-                <div className="p-2 sm:p-4 flex flex-col items-start">
-                  <h2 className="text-xs sm:text-base font-semibold mb-1 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
-                    {i18n.language === "hy"
-                      ? product.name_hy
-                      : i18n.language === "ru"
-                      ? product.name_ru
-                      : product.name_en}
-                  </h2>
-                  <div className="flex items-center gap-2 mt-2 w-full justify-end">
-                    <div
-                      className="
-                        transition
-                        pointer-events-auto opacity-100
-                        sm:pointer-events-none sm:group-hover:pointer-events-auto
-                        sm:opacity-0 sm:group-hover:opacity-100
-                      "
-                    >
-                      {/* Cart controls */}
-                      {product.quantityType === "kg" ? (
-                        <KgCartControl
-                          product={product}
-                          cartItem={cart.find((item) => item._id === product._id)}
-                          addToCart={addToCart}
-                        />
-                      ) : (
-                        <PieceCartControl
-                          product={product}
-                          cartItem={cart.find((item) => item._id === product._id)}
-                          addToCart={addToCart}
-                          removeFromCart={removeFromCart}
-                        />
-                      )}
-                    </div>
+              {/* Product info always visible below the image */}
+              <div className="p-2 sm:p-4 flex flex-col items-start">
+                <h2 className="text-xs sm:text-base font-semibold mb-1 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
+                  {i18n.language === "hy"
+                    ? product.name_hy
+                    : i18n.language === "ru"
+                    ? product.name_ru
+                    : product.name_en}
+                </h2>
+                <div className="flex items-center gap-2 mt-2 w-full justify-end">
+                  <div
+                    className="
+                      transition
+                      pointer-events-auto opacity-100
+                      sm:pointer-events-none sm:group-hover:pointer-events-auto
+                      sm:opacity-0 sm:group-hover:opacity-100
+                    "
+                  >
+                    {/* Cart controls */}
+                    {product.quantityType === "kg" ? (
+                      <KgCartControl
+                        product={product}
+                        cartItem={cart.find((item) => item._id === product._id)}
+                        addToCart={addToCart}
+                      />
+                    ) : (
+                      <PieceCartControl
+                        product={product}
+                        cartItem={cart.find((item) => item._id === product._id)}
+                        addToCart={addToCart}
+                        removeFromCart={removeFromCart}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
-            );
+            </div>
+          );
         })}
       </div>
       {filtered.length === 0 && (
