@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
+import Link from "next/link";
 
 type Ad = {
   images: string[];
@@ -27,7 +27,7 @@ export default function SectionGrid({
 
   // Pick a random ad for mobile (client-only)
   const [randomAd, setRandomAd] = useState<null | { img: string; link?: string; key: string }>(null);
-  const { t } = useTranslation();
+  const { t, i18n: i18next } = useTranslation();
 
   useEffect(() => {
     if (!ads.length) return;
@@ -42,6 +42,30 @@ export default function SectionGrid({
     setRandomAd(flatAds[Math.floor(Math.random() * flatAds.length)]);
   }, [ads]);
 
+  // Helpers
+  const hasValidDiscount = (item: any) =>
+    typeof item?.discount === "number" &&
+    typeof item?.price === "number" &&
+    item.discount > 0 &&
+    item.discount < item.price;
+
+  const discountPercent = (item: any) =>
+    hasValidDiscount(item) ? Math.round(100 - (item.discount / item.price) * 100) : 0;
+
+  const getBrandLabel = (brand: unknown): string => {
+    if (!brand) return "";
+    if (typeof brand === "object" && brand !== null) {
+      const obj = brand as Record<string, string | undefined>;
+      const en = obj.brand_en ?? obj.name_en ?? "";
+      const hy = obj.brand_hy ?? obj.name_hy ?? en;
+      const ru = obj.brand_ru ?? obj.name_ru ?? en;
+      return i18next.language === "hy" ? hy : i18next.language === "ru" ? ru : en;
+    }
+    return String(brand);
+  };
+
+  const productHref = (it: any) => `/product/${it._id || it.id}`;
+
   return (
     <>
       {/* Desktop/Tablet: All Ads */}
@@ -49,7 +73,7 @@ export default function SectionGrid({
         <section className="max-w-7xl mx-auto px-4 mb-10 hidden md:block">
           <div className="flex gap-6 flex-wrap justify-center">
             {ads.map((ad, idx) =>
-              ad.images.map((img, i) => (
+              ad.images.map((img, i) =>
                 ad.link ? (
                   <a key={idx + "-" + i} href={ad.link} target="_blank" rel="noopener noreferrer">
                     <img
@@ -66,7 +90,7 @@ export default function SectionGrid({
                     className="rounded-xl shadow-lg w-auto h-64 object-cover"
                   />
                 )
-              ))
+              )
             )}
           </div>
         </section>
@@ -97,61 +121,80 @@ export default function SectionGrid({
         </section>
       )}
 
-      {/* Slider Section */}
+      {/* Slider Section (Desktop/Tablet) */}
       <section className="py-6 bg-white hidden md:block">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-chocolate mb-8 text-center">{title}</h2>
           <Slider
             dots={false}
-            infinite={true}
+            infinite
             speed={2000}
             slidesToShow={4}
             slidesToScroll={1}
-            autoplay={true}
+            autoplay
             autoplaySpeed={10}
-            pauseOnHover={true}
-            arrows={true}
+            pauseOnHover
+            arrows
             responsive={[
-              { breakpoint: 1024, settings: { slidesToShow: 1 } },
+              { breakpoint: 1280, settings: { slidesToShow: 3 } },
+              { breakpoint: 1024, settings: { slidesToShow: 2 } },
               { breakpoint: 640, settings: { slidesToShow: 1 } }
             ]}
           >
             {items.map((item, i) => {
               const cartItem = cart.find((ci) => ci._id === item._id);
+
               return (
                 <div key={i} className="px-2">
-                  <div className="bg-gray-50 rounded-xl shadow-md overflow-hidden">
+                  <div className="group bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition">
                     <div className="relative">
-                      <a href={`/product/${item._id || item.id}`}>
+                      <Link href={productHref(item)}>
                         <img
                           src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
-                          alt={item.name_en || item.title}
-                          className="w-full h-48 object-cover cursor-pointer"
+                          alt={item.name_en || item.title || "Product"}
+                          className="w-full h-64 object-cover cursor-pointer transition-transform duration-200 group-hover:scale-105"
                           onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
                         />
-                      </a>
-                    </div>
-                    <div className="p-4">
-                      <h2 className="font-semibold text-chocolate text-base md:text-l lg:text-l">
-                        {
-                          i18n.language === "hy"
-                            ? item.name_hy
-                            : i18n.language === "ru"
-                            ? item.name_ru
-                            : item.name_en
-                        }
-                      </h2>
-                      <p className="text-chocolate font-bold mt-2">
-                        {item.discount ? (
+                      </Link>
+
+                      {/* Discount percent badge */}
+                      {hasValidDiscount(item) && (
+                        <span className="absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10 opacity-100 transition">
+                          -{discountPercent(item)}%
+                        </span>
+                      )}
+
+                      {/* Brand badge (3-language) */}
+                      {item.brand && (
+                        <span className="absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+                          {getBrandLabel(item.brand)}
+                        </span>
+                      )}
+
+                      {/* Price badge */}
+                      <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-sm font-bold px-3 py-1 rounded shadow z-10">
+                        {hasValidDiscount(item) ? (
                           <>
                             <span className="line-through text-gray-400 mr-2">{item.price} ֏</span>
-                            <span className="text-red-600 font-extrabold">{item.discount} ֏</span>
+                            <span className="text-chocolate font-extrabold">{item.discount} ֏</span>
                           </>
                         ) : (
-                          item.price ? `${item.price} ֏` : "Price not available"
+                          <span className="text-chocolate font-extrabold">
+                            {item.price ? `${item.price} ֏` : t("price_not_available") || "Price not available"}
+                          </span>
                         )}
-                      </p>
-                      <div className="mt-3">
+                      </span>
+                    </div>
+
+                    <div className="p-4 flex flex-col">
+                      <h2 className="font-semibold text-chocolate text-base line-clamp-2 min-h-[44px]">
+                        {i18next.language === "hy"
+                          ? item.name_hy
+                          : i18next.language === "ru"
+                          ? item.name_ru
+                          : item.name_en}
+                      </h2>
+                      <div className="mt-3 self-end pointer-events-auto opacity-100">
                         {item.quantityType === "kg" ? (
                           <KgCartControl
                             product={item}
@@ -180,76 +223,96 @@ export default function SectionGrid({
       <section className="py-4 bg-white block md:hidden">
         <div className="max-w-full mx-auto px-2">
           <h2 className="text-2xl font-bold text-chocolate mb-4 text-center">{title}</h2>
-          <Slider
-            infinite={true}
-            speed={500}
-            slidesToShow={2}
-            slidesToScroll={1}
-            autoplay={true}
-            autoplaySpeed={3000}
-            pauseOnHover={true}
-            arrows={false}
-            centerMode={false}
-            centerPadding="0px"
-          >
-            {items.map((item, i) => {
-              const cartItem = cart.find((ci) => ci._id === item._id);
-              return (
-                <div key={i} className="px-1">
-                  <div className="bg-gray-50 rounded-xl shadow-md overflow-hidden">
-                    <div className="relative">
-                      <a href={`/product/${item._id || item.id}`}>
-                        <img
-                          src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
-                          alt={item.name_en || item.title}
-                          className="w-full h-40 object-cover cursor-pointer"
-                          onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
+        </div>
+        <Slider
+          infinite
+          speed={500}
+          slidesToShow={2}
+          slidesToScroll={1}
+          autoplay
+          autoplaySpeed={3000}
+          pauseOnHover
+          arrows={false}
+          centerMode={false}
+          centerPadding="0px"
+        >
+          {items.map((item, i) => {
+            const cartItem = cart.find((ci) => ci._id === item._id);
+            const qty = cartItem?.quantity ?? 0;
+            const grams = (cartItem as any)?.grams as number | undefined;
+
+            return (
+              <div key={i} className="px-1">
+                <div className="group bg-white rounded-2xl shadow-md overflow-hidden">
+                  <div className="relative">
+                    <Link href={productHref(item)}>
+                      <img
+                        src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
+                        alt={item.name_en || item.title || "Product"}
+                        className="w-full h-44 object-cover cursor-pointer transition-transform duration-200 group-hover:scale-105"
+                        onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
+                      />
+                    </Link>
+
+                    {/* Discount percent badge */}
+                    {hasValidDiscount(item) && (
+                      <span className="absolute top-2 left-2 bg-chocolate text-white text-[10px] font-bold px-2 py-0.5 rounded z-10">
+                        -{discountPercent(item)}%
+                      </span>
+                    )}
+
+                    {/* Brand badge */}
+                    {item.brand && (
+                      <span className="absolute top-2 right-2 bg-white/80 text-chocolate text-[10px] font-semibold px-2 py-0.5 rounded z-10">
+                        {getBrandLabel(item.brand)}
+                      </span>
+                    )}
+
+                    {/* Price badge */}
+                    <span className="absolute bottom-2 left-2 bg-white/90 text-chocolate text-xs font-bold px-2 py-0.5 rounded shadow z-10">
+                      {hasValidDiscount(item) ? (
+                        <>
+                          <span className="line-through text-gray-400 mr-1">{item.price} ֏</span>
+                          <span className="text-chocolate font-extrabold">{item.discount} ֏</span>
+                        </>
+                      ) : (
+                        <span className="text-chocolate font-extrabold">
+                          {item.price ? `${item.price} ֏` : t("price_not_available") || "Price not available"}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+
+                  <div className="p-3">
+                    <h2 className="font-semibold text-chocolate text-base text-center line-clamp-2 min-h-[44px]">
+                      {i18next.language === "hy"
+                        ? item.name_hy
+                        : i18next.language === "ru"
+                        ? item.name_ru
+                        : item.name_en}
+                    </h2>
+                    <div className="mt-3 flex justify-center">
+                      {item.quantityType === "kg" ? (
+                        <KgCartControl
+                          product={item}
+                          cartItem={cartItem}
+                          addToCart={addToCart}
                         />
-                      </a>
-                    </div>
-                    <div className="p-3">
-                      <h2 className="font-semibold text-chocolate text-base text-center">
-                        {
-                          i18n.language === "hy"
-                            ? item.name_hy
-                            : i18n.language === "ru"
-                            ? item.name_ru
-                            : item.name_en
-                        }
-                      </h2>
-                      <p className="text-chocolate font-bold mt-2 text-center">
-                        {item.discount ? (
-                          <>
-                            <span className="line-through text-gray-400 mr-2">{item.price} ֏</span>
-                            <span className="text-red-600 font-extrabold">{item.discount} ֏</span>
-                          </>
-                        ) : (
-                          item.price ? `${item.price} ֏` : "Price not available"
-                        )}
-                      </p>
-                      <div className="mt-3 flex justify-center">
-                        {item.quantityType === "kg" ? (
-                          <KgCartControl
-                            product={item}
-                            cartItem={cartItem}
-                            addToCart={addToCart}
-                          />
-                        ) : (
-                          <PieceCartControl
-                            product={item}
-                            cartItem={cartItem}
-                            addToCart={addToCart}
-                            removeFromCart={removeFromCart}
-                          />
-                        )}
-                      </div>
+                      ) : (
+                        <PieceCartControl
+                          product={item}
+                          cartItem={cartItem}
+                          addToCart={addToCart}
+                          removeFromCart={removeFromCart}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
-              );
-            })}
-          </Slider>
-        </div>
+              </div>
+            );
+          })}
+        </Slider>
       </section>
     </>
   );

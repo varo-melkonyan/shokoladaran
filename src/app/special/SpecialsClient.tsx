@@ -208,14 +208,7 @@ export default function SpecialsClient() {
                     : product.name_en}
                 </h2>
                 <div className="flex items-center gap-2 mt-2 w-full justify-end">
-                  <div
-                    className="
-                      transition
-                      pointer-events-auto opacity-100
-                      sm:pointer-events-none sm:group-hover:pointer-events-auto
-                      sm:opacity-0 sm:group-hover:opacity-100
-                    "
-                  >
+                  <div className="mt-3 self-end pointer-events-auto opacity-100">
                     <PieceCartControl
                       product={product}
                       cartItem={cartItem}
