@@ -102,7 +102,7 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
       {products.length === 0 ? (
         <div className="text-gray-500">{t("no_products_found")}</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {products.map((product) => {
             const cartItem = cart.find((item) => item._id === product._id);
             
@@ -120,18 +120,30 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </a>
-                  {/* Discount badge */}
                   {product.discount && (
-                    <span className="absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10 opacity-0 group-hover:opacity-100 transition">
+                    <span
+                      className="
+                        absolute top-3 left-3 bg-chocolate text-white text-xs font-bold px-2 py-1 rounded z-10
+                        opacity-100
+                        sm:opacity-0 sm:group-hover:opacity-100
+                        transition
+                      "
+                    >
                       -{Math.round(100 - (product.discount / product.price) * 100)}%
                     </span>
                   )}
-                  {/* Brand */}
-                  {product.brand && (
-                    <span className="absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10 opacity-0 group-hover:opacity-100 transition">
-                      {product.brand}
-                    </span>
-                  )}
+
+                  <span
+                    className="
+                      absolute top-3 right-3 bg-white/80 text-chocolate text-xs font-semibold px-2 py-1 rounded z-10
+                      opacity-100
+                      sm:opacity-0 sm:group-hover:opacity-100
+                      transition
+                    "
+                  >
+                    {/* Brand */}
+                    {product.brand}
+                  </span>
                   {/* Price badge */}
                   <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">
                     {product.discount ? (
@@ -146,8 +158,8 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                 </div>
 
                 {/* Product info always visible below the image */}
-                <div className="p-4 flex flex-col items-start">
-                  <h2 className="text-base font-semibold mb-1 line-clamp-2 min-h-[40px]">
+                <div className="p-2 sm:p-4 flex flex-col items-start">
+                  <h2 className="text-sm sm:text-base font-semibold mb-1 line-clamp-2 min-h-[32px] sm:min-h-[40px]">
                     {i18n.language === "hy"
                       ? product.name_hy
                       : i18n.language === "ru"
@@ -155,10 +167,15 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                       : product.name_en}
                   </h2>
                   <div className="flex items-center gap-2 mt-2 w-full justify-end">
-                    {/* Cart controls now next to the price */}
                     <div
-                      className=" transition pointer-events-none group-hover:pointer-events-auto"
+                      className="
+                        transition
+                        pointer-events-auto opacity-100
+                        sm:pointer-events-none sm:group-hover:pointer-events-auto
+                        sm:opacity-0 sm:group-hover:opacity-100
+                      "
                     >
+                      {/* Cart controls */}
                       {product.quantityType === "kg" ? (
                         <KgCartControl
                           product={product}
