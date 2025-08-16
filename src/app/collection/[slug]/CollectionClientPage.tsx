@@ -22,14 +22,17 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
   const [matched, setMatched] = useState<CollectionType | null>(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
+  const [brandFilter, setBrandFilter] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<string | null>(null);
   const { t } = useTranslation();
-
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/admin/products").then(res => res.json()),
-      fetch("/api/admin/collection-types").then(res => res.json()),
-    ]).then(([productsRaw, collectionsRaw]) => {
+      fetch("/api/admin/products").then((res) => res.json()),
+      fetch("/api/admin/collection-types").then((res) => res.json()),
+      fetch("/api/admin/brands").then((res) => res.json()),
+    ]).then(([productsRaw, collectionsRaw, brandsRaw]) => {
       const products = productsRaw.map((p: any) => ({
         _id: p._id || p.id,
         name_en: p.name_en,
@@ -71,9 +74,40 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
           ? products.filter((p: Product) => p.collectionType === matchedCollection.name_en)
           : []
       );
+      
+      setBrands(
+        brandsRaw.map((b: any) => ({
+          brand: b.name_en,
+          brand_en: b.name_en,
+          brand_hy: b.name_hy,
+          brand_ru: b.name_ru,
+        }))
+      );
+
       setLoading(false);
     });
   }, [slug]);
+
+
+  // Apply filter and sort
+  let displayedProducts = [...products];
+
+  if (brandFilter) {
+    displayedProducts = displayedProducts.filter((p) => p.brand === brandFilter);
+  }
+
+  if (sortBy === "price-asc") {
+    displayedProducts.sort((a, b) => (a.discount || a.price) - (b.discount || b.price));
+  } else if (sortBy === "price-desc") {
+    displayedProducts.sort((a, b) => (b.discount || b.price) - (a.discount || a.price));
+  } else if (sortBy === "discount") {
+    displayedProducts.sort(
+      (a, b) =>
+        (b.discount ? b.price - b.discount : 0) - (a.discount ? a.price - a.discount : 0)
+    );
+  } else if (sortBy === "latest") {
+    displayedProducts = displayedProducts.slice().reverse(); // or use a date field if available
+  }
 
   if (loading) {
     return <div className="max-w-7xl mx-auto px-4 py-12">{t("loading")}</div>;
@@ -96,16 +130,46 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
           ? matched.name_hy
           : i18n.language === "ru"
           ? matched.name_ru
-          : matched.name_en} {t("handcrafted_chocolates")}.
+          : matched.name_en}{" "}
+        {t("handcrafted_chocolates")}.
       </p>
 
-      {products.length === 0 ? (
+      {/* Filter and sort controls */}
+      <div className="flex flex-wrap gap-4 mb-8">
+        <select
+          className="border p-2 rounded"
+          value={brandFilter ?? ""}
+          onChange={e => setBrandFilter(e.target.value)}
+        >
+          <option value="">{t("all_brands")}</option>
+          {brands.map(b => (
+            <option key={b.brand} value={b.brand}>
+              {i18n.language === "hy"
+                ? b.brand_hy
+                : i18n.language === "ru"
+                ? b.brand_ru
+                : b.brand_en}
+            </option>
+          ))}
+        </select>
+        <select
+          className="border p-2 rounded"
+          value={sortBy ?? ""}
+          onChange={e => setSortBy(e.target.value)}
+        >
+          <option value="name-asc">{t("sort_options.name_asc")}</option>
+          <option value="name-desc">{t("sort_options.name_desc")}</option>
+          <option value="price-asc">{t("sort_options.price_low_to_high")}</option>
+          <option value="price-desc">{t("sort_options.price_high_to_low")}</option>
+        </select>
+      </div>
+
+      {displayedProducts.length === 0 ? (
         <div className="text-gray-500">{t("no_products_found")}</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {products.map((product) => {
-            const cartItem = cart.find((item) => item._id === product._id);
-            
+          {displayedProducts.map((product) => {
+
             return (
               <div
                 key={product._id}
@@ -148,11 +212,17 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                   <span className="absolute bottom-3 left-3 bg-white/90 text-chocolate text-base font-bold px-3 py-1 rounded shadow z-10">
                     {product.discount ? (
                       <>
-                        <span className="line-through text-gray-400 text-sm mr-2">{product.price} {t("amd")}</span>
-                        <span className="text-chocolate font-bold">{product.discount} {t("amd")}</span>
+                        <span className="line-through text-gray-400 text-sm mr-2">
+                          {product.price} {t("amd")}
+                        </span>
+                        <span className="text-chocolate font-bold">
+                          {product.discount} {t("amd")}
+                        </span>
                       </>
                     ) : (
-                      <span className="text-chocolate font-bold">{product.price} {t("amd")}</span>
+                      <span className="text-chocolate font-bold">
+                        {product.price} {t("amd")}
+                      </span>
                     )}
                   </span>
                 </div>

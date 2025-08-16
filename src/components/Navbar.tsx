@@ -318,12 +318,7 @@ export default function Navbar() {
                   {collections.map((col) => (
                     <li key={col.id}>
                       <Link
-                        href={`/collection/${(i18n.language === "hy"
-                          ? col.name_hy
-                          : i18n.language === "ru"
-                          ? col.name_ru
-                          : col.name_en
-                        ).toLowerCase().replace(/\s+/g, "-")}`}
+                        href={`/collection/${col.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                         className="block text-[15px] text-chocolate hover:underline"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -355,13 +350,7 @@ export default function Navbar() {
                   {childrenTypes.map((type) => (
                     <li key={type.id}>
                       <Link
-                        href={`/collection/${(
-                          i18n.language === "hy"
-                            ? type.name_hy
-                            : i18n.language === "ru"
-                            ? type.name_ru
-                            : type.name_en
-                        ).toLowerCase().replace(/\s+/g, "-")}`}
+                        href={`/collection/${type.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                         className="block text-[15px] text-chocolate hover:underline"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -394,13 +383,7 @@ export default function Navbar() {
                     {dietaryTypes.map((type) => (
                       <li key={type.id}>
                         <Link
-                          href={`/collection/${(
-                            i18n.language === "hy"
-                              ? type.name_hy
-                              : i18n.language === "ru"
-                              ? type.name_ru
-                              : type.name_en
-                          ).toLowerCase().replace(/\s+/g, "-")}`}
+                          href={`/collection/${type.name_en.toLowerCase().replace(/\s+/g, "-")}`}
                           className="block text-[15px] text-chocolate hover:underline"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
