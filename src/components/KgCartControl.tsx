@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 export default function KgCartControl({ product, cartItem, addToCart, removeFromCart }: any) {
   const { t } = useTranslation();
-  const minGrams = 10;
+  const minGrams = 100;
   const maxGrams = Number(product.weight) || 10000;
   const grams = Number(cartItem?.grams ?? 0);
 

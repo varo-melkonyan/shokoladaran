@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import AiAssistantWidget from "./AiAssistantWidget";
 
 type ProductLite = {
@@ -10,13 +10,13 @@ type ProductLite = {
   name_ru?: string;
   price?: number;
   discount?: number | null;
-  brand?: any;
-  collectionType?: any;
+  brand?: { _id: string; name_en?: string; name_hy?: string; name_ru?: string; brand_en?: string; brand_hy?: string; brand_ru?: string; };
+  collectionType?: { _id: string; name_en?: string; name_hy?: string; name_ru?: string; };
   images?: string[];
 };
 
 export default function AiAssistantWidgetProvider() {
-  const [raw, setRaw] = useState<ProductLite[] | null>(null);
+  const [products, setProducts] = useState<ProductLite[] | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -33,28 +33,24 @@ export default function AiAssistantWidgetProvider() {
           price: p.price,
           discount: p.discount,
           images: p.images,
-          brand:
-            typeof p.brand === "object" && p.brand
-              ? {
-                  _id: p.brand._id || p.brand.id,
-                  name_en: p.brand.name_en ?? p.brand.brand_en,
-                  name_hy: p.brand.name_hy ?? p.brand.brand_hy,
-                  name_ru: p.brand.name_ru ?? p.brand.brand_ru,
-                }
-              : p.brand,
-          collectionType:
-            typeof p.collectionType === "object" && p.collectionType
-              ? {
-                  _id: p.collectionType._id || p.collectionType.id,
-                  name_en: p.collectionType.name_en,
-                  name_hy: p.collectionType.name_hy,
-                  name_ru: p.collectionType.name_ru,
-                }
-              : p.collectionType,
-        }));
-        setRaw(mapped);
-      } catch {
-        setRaw([]);
+          brand: typeof p.brand === "object" && p.brand ? { _id: p.brand._id || p.brand.id, name_en: p.brand.name_en ?? p.brand.brand_en, name_hy: p.brand.name_hy ?? p.brand.brand_hy, name_ru: p.brand.name_ru ?? p.brand.brand_ru, } : p.brand,
+          collectionType: typeof p.collectionType === "object" && p.collectionType ? { _id: p.collectionType._id || p.collectionType.id, name_en: p.collectionType.name_en, name_hy: p.collectionType.name_hy, name_ru: p.collectionType.name_ru, } : p.collectionType,
+        })).filter(Boolean);
+        
+        const seen = new Set<string>();
+        const uniqueProducts: ProductLite[] = [];
+        for (const p of mapped) {
+            const id = p._id;
+            if (!id || seen.has(id)) continue;
+            seen.add(id);
+            uniqueProducts.push(p);
+            if (uniqueProducts.length >= 200) break;
+        }
+        
+        setProducts(uniqueProducts);
+      } catch (e) {
+        console.error("Failed to fetch or map products:", e);
+        if (alive) setProducts([]);
       }
     })();
     return () => {
@@ -62,20 +58,9 @@ export default function AiAssistantWidgetProvider() {
     };
   }, []);
 
-  // de-duplicate by _id and limit payload
-  const products = useMemo(() => {
-    if (!raw) return [] as ProductLite[];
-    const seen = new Set<string>();
-    const out: ProductLite[] = [];
-    for (const p of raw) {
-      const id = p._id;
-      if (!id || seen.has(id)) continue;
-      seen.add(id);
-      out.push(p);
-      if (out.length >= 200) break; // keep widget light
-    }
-    return out;
-  }, [raw]);
+  if (!products) {
+    return null;
+  }
 
   return <AiAssistantWidget products={products} />;
 }

@@ -205,6 +205,16 @@ export default function SectionGrid({
                     </div>
 
                     <div className="p-4 flex flex-col">
+                      <h2 className="font-semibold text-chocolate text-base line-clamp-2 min-h-[44px]">
+                        <Link href={productHref(item)} className="hover:underline">
+                          {i18next.language === "hy"
+                            ? (item.name_hy || item.name_en || item.title || "Product")
+                            : i18next.language === "ru"
+                            ? (item.name_ru || item.name_en || item.title || "Product")
+                            : (item.name_en || item.title || "Product")}
+                        </Link>
+                      </h2>
+
                       <div className="mt-3 self-end pointer-events-auto opacity-100">
                         {item.quantityType === "kg" ? (
                           <KgCartControl product={item} cartItem={cartItem} addToCart={addToCart} />
