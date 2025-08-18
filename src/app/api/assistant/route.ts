@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import OpenAI from "openai";
 import { ChatCompletionMessageToolCall } from "openai/resources/chat/completions";
+import { Suggestion } from "@/types/suggestion";
 
 export const runtime = "edge";
 
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
       const t = text.toLowerCase();
       const keywords: string[] = [];
       if (/(վեգան|vegan)/i.test(t)) keywords.push("vegan");
-      if (/(կաթնային|milk|молочн)/i.test(t)) keywords.push("milk");
+      if (/(կաթնային|milk|молочն)/i.test(t)) keywords.push("milk");
       if (/(սև|դառը|dark|горьկ)/i.test(t)) keywords.push("dark");
       if (/(սպիտակ|white|беլ)/i.test(t)) keywords.push("white");
       if (/(նշանավոր|լեգենդ|legend)/i.test(t)) keywords.push("legend");
@@ -185,7 +186,10 @@ export async function POST(req: NextRequest) {
         model: "gpt-4o-mini",
         temperature: 0.7,
         max_tokens: 700,
-        messages: [{ role: "system", content: "You are a helpful chocolate shop assistant. You respond to user queries about products and make recommendations. If you need to suggest products, call the `get_product_recommendations` function. Provide a natural language response to the user, not a code block or function call itself." }, ...messages.slice(-5)],
+        messages: [{
+            role: "system",
+            content: `You are a helpful and friendly chocolate shop assistant. When asked for product recommendations, respond with a single short, cheerful phrase in ${locale === 'hy' ? 'Armenian' : locale === 'ru' ? 'Russian' : 'English'}. For example, in English, you could say 'I think you'll love these!', 'Here are some tempting suggestions just for you!', or 'Take a look at these delicious options:'. Do not list the products or their prices. If you need to answer a general question, do so naturally in the user's language.`
+        }, ...messages.slice(-5)],
         tools: tools,
         tool_choice: "auto",
       });
@@ -195,13 +199,6 @@ export async function POST(req: NextRequest) {
       
       let dynamicPrompts: string[] = [];
       let reply = responseMessage.content || "I'm sorry, I couldn't find a suitable recommendation.";
-      type Suggestion = {
-        id: string;
-        href: string;
-        image: string;
-        name: string;
-        price: number | null;
-      };
       let suggestions: Suggestion[] = [];
 
       if (toolCalls && toolCalls.length > 0) {
@@ -219,7 +216,8 @@ export async function POST(req: NextRequest) {
                 const matchesMinBudget = !budget_min || (typeof pr === "number" && pr >= budget_min);
                 const matchesMaxBudget = !budget_max || (typeof pr === "number" && pr <= budget_max);
                 const matchesKeywords = !keywords || keywords.every((keyword: string) => JSON.stringify(p).toLowerCase().includes(keyword.toLowerCase()));
-                return matchesMinBudget && matchesMaxBudget && matchesKeywords;
+                const matchesDiscount = price_intent !== "discount" || (typeof p.discount === "number" && p.discount > 0);
+                return matchesMinBudget && matchesMaxBudget && matchesKeywords && matchesDiscount;
               });
 
               const sorted = filtered.slice().sort((a, b) => {
@@ -243,7 +241,7 @@ export async function POST(req: NextRequest) {
               const secondCompletion = await openai.chat.completions.create({
                 model: "gpt-4o-mini",
                 messages: [
-                  { role: "system", content: "You are a helpful chocolate shop assistant. You respond to user queries about products and make recommendations. Use the provided product list to answer the user naturally." },
+                  { role: "system", content: `You are a helpful and friendly chocolate shop assistant. When asked for product recommendations, respond with a single short, cheerful phrase in ${locale === 'hy' ? 'Armenian' : locale === 'ru' ? 'Russian' : 'English'}. For example, in English, you could say 'I think you'll love these!', 'Here are some tempting suggestions just for you!', or 'Take a look at these delicious options:'. Do not list the products or their prices. If you need to answer a general question, do so naturally in the user's language.` },
                   ...messages.slice(-5),
                   responseMessage,
                   {
@@ -264,61 +262,45 @@ export async function POST(req: NextRequest) {
         const priceIntent = detectPriceIntent(safeUser);
         const keywords = detectKeywords(safeUser);
         dynamicPrompts = generatePrompts(keywords, priceIntent);
-      }
 
-      return new Response(JSON.stringify({
-        reply: reply.slice(0, MAX_CHARS),
-        suggestions,
-        prompts: dynamicPrompts,
-      }), {
+        const filtered = products.filter((p: any) => {
+          const pr = effPrice(p);
+          const matchesMinBudget = !budgetMin || (typeof pr === "number" && pr >= budgetMin);
+          const matchesMaxBudget = !budgetMax || (typeof pr === "number" && pr <= budgetMax);
+          const matchesKeywords = keywords.every(kw => JSON.stringify(p).toLowerCase().includes(kw.toLowerCase()));
+          const matchesDiscount = priceIntent !== "discount" || (typeof p.discount === "number" && p.discount > 0);
+          return matchesMinBudget && matchesMaxBudget && matchesKeywords && matchesDiscount;
+        });
+
+        const sorted = filtered.slice().sort((a, b) => {
+          if (priceIntent === "expensive") return (effPrice(b) ?? 0) - (effPrice(a) ?? 0);
+          if (priceIntent === "cheap") return (effPrice(a) ?? 0) - (effPrice(b) ?? 0);
+          return (b.price - (b.discount ?? 0)) - (a.price - (a.discount ?? 0));
+        });
+
+        const picked = sorted.slice(0, 6);
+        suggestions = picked.map((p) => ({
+          id: String(p._id || p.id || ""),
+          href: `/product/${p._id || p.id}`,
+          image: toImage(p),
+          name: toName(p),
+          price: effPrice(p) ?? null,
+        }));
+        
+        const header =
+          priceIntent === "expensive"
+            ? locale === "hy" ? "Ահա ամենաթանկ տարբերակները." : locale === "ru" ? "Вот самые дорогие варианты." : "Here are the most expensive picks."
+            : priceIntent === "cheap"
+            ? locale === "hy" ? "Ահա ամենաէժան տարբերակները." : locale === "ru" ? "Вот самые недорогие տարբերակները." : "Here are the cheapest picks."
+            : locale === "hy" ? "Ահա առաջարկներ լավագույն զեղչերով." : locale === "ru" ? "Вот варианты с лучшими скидками." : "Here are a few picks with the best discounts.";
+        
+        reply = header.slice(0, MAX_CHARS);
+      }
+      return new Response(JSON.stringify({ reply, suggestions, prompts: dynamicPrompts }), {
         status: 200,
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    const { min: budgetMin, max: budgetMax } = parsePriceRange(safeUser);
-    const priceIntent = detectPriceIntent(safeUser);
-    const keywords = detectKeywords(safeUser);
-
-    const filtered = products.filter((p: any) => {
-      const pr = effPrice(p);
-      const matchesMinBudget = !budgetMin || (typeof pr === "number" && pr >= budgetMin);
-      const matchesMaxBudget = !budgetMax || (typeof pr === "number" && pr <= budgetMax);
-      const matchesKeywords = keywords.every(kw => JSON.stringify(p).toLowerCase().includes(kw.toLowerCase()));
-      return matchesMinBudget && matchesMaxBudget && matchesKeywords;
-    });
-
-    const sorted = filtered.slice().sort((a, b) => {
-      if (priceIntent === "expensive") return (effPrice(b) ?? 0) - (effPrice(a) ?? 0);
-      if (priceIntent === "cheap") return (effPrice(a) ?? 0) - (effPrice(b) ?? 0);
-      return (b.price - (b.discount ?? 0)) - (a.price - (a.discount ?? 0));
-    });
-
-    const picked = sorted.slice(0, 6);
-    const suggestions = picked.map((p) => ({
-      id: String(p._id || p.id || ""),
-      href: `/product/${p._id || p.id}`,
-      image: toImage(p),
-      name: toName(p),
-      price: effPrice(p) ?? null,
-    }));
-    
-    const dynamicPrompts = generatePrompts(keywords, priceIntent);
-
-    const header =
-      priceIntent === "expensive"
-        ? locale === "hy" ? "Ահա ամենաթանկ տարբերակները." : locale === "ru" ? "Вот самые дорогие варианты." : "Here are the most expensive picks."
-        : priceIntent === "cheap"
-        ? locale === "hy" ? "Ահա ամենաէժան տարբերակները." : locale === "ru" ? "Вот самые недорогие варианты." : "Here are the cheapest picks."
-        : locale === "hy" ? "Ահա առաջարկներ լավագույն զեղչերով." : locale === "ru" ? "Вот варианты с лучшими скидками." : "Here are a few picks with the best discounts.";
-    
-    const reply = header.slice(0, MAX_CHARS);
-
-    return new Response(JSON.stringify({ reply, suggestions, prompts: dynamicPrompts }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-
   } catch (e) {
     console.error("Assistant API Error:", e);
     return new Response(JSON.stringify({ reply: "Assistant error. Please try again.", suggestions: [], prompts: [] }), {

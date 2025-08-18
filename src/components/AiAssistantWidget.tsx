@@ -66,6 +66,7 @@ export default function AiAssistantWidget({ products = [] as ProductLite[] }) {
         name_hy: p.name_hy,
         name_ru: p.name_ru,
         price: p.price,
+        images: p.images,
         discount: p.discount,
         brand: typeof p.brand === "object" && p.brand ? { _id: p.brand._id, name_en: p.brand.name_en ?? p.brand.brand_en, name_hy: p.brand.name_hy ?? p.brand.brand_hy, name_ru: p.brand.name_ru ?? p.brand.brand_ru, } : p.brand,
         collectionType: typeof p.collectionType === "object" && p.collectionType ? { _id: p.collectionType._id, name_en: p.collectionType.name_en, name_hy: p.collectionType.name_hy, name_ru: p.collectionType.name_ru, } : p.collectionType,
@@ -132,7 +133,7 @@ export default function AiAssistantWidget({ products = [] as ProductLite[] }) {
       <button
         onClick={() => {
           setOpen((v) => !v);
-          if (!open) {
+          if (!open) { // <-- Correct way to check the boolean state
             setDynamicPrompts(initialPrompts);
           }
         }}

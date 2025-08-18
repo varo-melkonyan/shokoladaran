@@ -18,11 +18,11 @@ const translitMap: TranslitMap = {
     ru: { a: "а", b: "б", v: "в", g: "г", d: "д", e: "е", yo: "ё", zh: "ж", z: "з", i: "и", j: "й", k: "к", l: "л", m: "м", n: "н", o: "о", p: "п", r: "р", s: "с", t: "т", u: "у", f: "ф", h: "х", ts: "ц", ch: "ч", sh: "ш", shch: "щ", y: "ы", ye: "э", yu: "ю", ya: "я" }
   },
   ru: {
-    hy: { а: "ա", б: "բ", в: "վ", г: "գ", д: "դ", е: "ե", ё: "յո", ж: "ժ", з: "զ", и: "ի", й: "յ", к: "կ", л: "լ", м: "մ", н: "ն", о: "ո", п: "պ", р: "ր", с: "ս", т: "տ", у: "ու", ф: "ֆ", х: "խ", ц: "ց", ч: "չ", ш: "շ", щ: "շչ", ы: "ը", э: "է", ю: "յու", я: "յա" }
+    hy: { а: "ա", б: "բ", в: "վ", г: "գ", д: "դ", е: "ե", ё: "յո", ж: "ժ", з: "զ", и: "ի", й: "й", к: "կ", л: "լ", м: "մ", н: "ն", о: "ո", п: "պ", р: "ր", с: "ս", т: "տ", у: "ու", ф: "ֆ", х: "խ", ц: "ց", ч: "չ", ш: "շ", щ: "շչ", ы: "ը", э: "է", ю: "յու", я: "յա" }
   },
   hy: {
     en: { ա: "a", բ: "b", գ: "g", դ: "d", ե: "e", զ: "z", ը: "y", թ: "t", ժ: "j", ի: "i", լ: "l", խ: "x", ծ: "ts", կ: "k", հ: "h", մ: "m", ն: "n", ո: "o", պ: "p", ս: "s", վ: "v", ր: "r", ֆ: "f", շ: "sh", չ: "ch", ջ: "jh", ք: "q", ու: "oo", օ: "o2", յ: "j", տ: "t" },
-    ru: { ա: "а", բ: "б", գ: "г", դ: "д", ե: "е", զ: "з", ը: "ы", թ: "т", ժ: "ж", ի: "и", լ: "л", խ: "х", ծ: "ц", կ: "к", հ: "х", մ: "մ", ն: "ն", ո: "о", պ: "п", ս: "с", վ: "в", ր: "р", ֆ: "ф", շ: "ш", չ: "ч", ջ: "дж", ք: "к", ու: "у", օ: "о", յ: "й", տ: "т" }
+    ru: { ա: "а", բ: "б", գ: "г", դ: "д", ե: "е", զ: "з", ը: "ы", թ: "т", ժ: "ж", ի: "и", լ: "л", խ: "х", ծ: "ц", կ: "к", հ: "х", մ: "м", ն: "н", ո: "о", պ: "п", ս: "с", վ: "в", ր: "р", ֆ: "ф", շ: "ш", չ: "ч", ջ: "дж", ք: "к", ու: "у", օ: "о", յ: "й", տ: "т" }
   }
 };
 function transliterate(input: string, from: Lang, to: Lang): string {
@@ -128,6 +128,13 @@ export default function SectionHero() {
     }
   }
 
+  // price helpers
+  const hasValidDiscount = (p: any) =>
+    typeof p?.discount === "number" &&
+    typeof p?.price === "number" &&
+    p.discount > 0 &&
+    p.discount < p.price;
+
   return (
     <section
       className="w-full min-h-[500px] py-12 flex flex-col items-center justify-center bg-cover bg-center relative"
@@ -208,7 +215,22 @@ export default function SectionHero() {
                             : item.name_en}
                         </div>
                         <div className="text-gray-700 text-center mt-1">
-                          {item.price ? `${t("amd")} ${item.price.toFixed(2)}` : ""}
+                          {hasValidDiscount(item) ? (
+                            <>
+                              <span className="line-through text-gray-400 mr-2">
+                                {t("amd")} {Number(item.price).toFixed(0)}
+                              </span>
+                              <span className="text-chocolate font-semibold">
+                                {t("amd")} {Number(item.discount).toFixed(0)}
+                              </span>
+                            </>
+                          ) : typeof item.price === "number" ? (
+                            <span className="text-chocolate font-semibold">
+                              {t("amd")} {Number(item.price).toFixed(0)}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </div>
                       </button>
                     ))}
