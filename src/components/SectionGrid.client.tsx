@@ -14,6 +14,15 @@ type Ad = {
   link?: string;
 };
 
+// Inline fallback (no 404s)
+const FALLBACK_IMG = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%239ca3af'>No image</text></svg>`;
+
+const safeImg = (src?: string) => {
+  if (!src || src.trim() === "") return FALLBACK_IMG;
+  if (src.startsWith("http") || src.startsWith("data:") || src.startsWith("blob:") || src.startsWith("/")) return src;
+  return `/${src}`; // make relative paths site-relative
+};
+
 export default function SectionGrid({
   title,
   items,
@@ -75,7 +84,12 @@ export default function SectionGrid({
             {ads.map((ad, idx) =>
               ad.images.map((img, i) =>
                 ad.link ? (
-                  <a key={idx + "-" + i} href={ad.link} target="_blank" rel="noopener noreferrer">
+                  <a
+                    key={`${idx}-${i}`}
+                    href={ad.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <img
                       src={img}
                       alt="Advertisement"
@@ -84,7 +98,7 @@ export default function SectionGrid({
                   </a>
                 ) : (
                   <img
-                    key={idx + "-" + i}
+                    key={`${idx}-${i}`}
                     src={img}
                     alt="Advertisement"
                     className="rounded-xl shadow-lg w-auto h-64 object-cover"
@@ -150,10 +164,14 @@ export default function SectionGrid({
                     <div className="relative">
                       <Link href={productHref(item)}>
                         <img
-                          src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
+                          src={safeImg(item.images?.[0])}
                           alt={item.name_en || item.title || "Product"}
                           className="w-full h-64 object-cover cursor-pointer transition-transform duration-200 group-hover:scale-105"
-                          onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            img.onerror = null;
+                            img.src = FALLBACK_IMG;
+                          }}
                         />
                       </Link>
 
@@ -187,20 +205,9 @@ export default function SectionGrid({
                     </div>
 
                     <div className="p-4 flex flex-col">
-                      <h2 className="font-semibold text-chocolate text-base line-clamp-2 min-h-[44px]">
-                        {i18next.language === "hy"
-                          ? item.name_hy
-                          : i18next.language === "ru"
-                          ? item.name_ru
-                          : item.name_en}
-                      </h2>
                       <div className="mt-3 self-end pointer-events-auto opacity-100">
                         {item.quantityType === "kg" ? (
-                          <KgCartControl
-                            product={item}
-                            cartItem={cartItem}
-                            addToCart={addToCart}
-                          />
+                          <KgCartControl product={item} cartItem={cartItem} addToCart={addToCart} />
                         ) : (
                           <PieceCartControl
                             product={item}
@@ -247,10 +254,14 @@ export default function SectionGrid({
                   <div className="relative">
                     <Link href={productHref(item)}>
                       <img
-                        src={item.images?.[0] && item.images[0].trim() !== "" ? item.images[0] : "/placeholder.png"}
+                        src={safeImg(item.images?.[0])}
                         alt={item.name_en || item.title || "Product"}
                         className="w-full h-44 object-cover cursor-pointer transition-transform duration-200 group-hover:scale-105"
-                        onError={e => { (e.currentTarget as HTMLImageElement).src = "/placeholder.png"; }}
+                        onError={(e) => {
+                          const img = e.currentTarget;
+                          img.onerror = null;
+                          img.src = FALLBACK_IMG;
+                        }}
                       />
                     </Link>
 

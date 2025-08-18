@@ -22,6 +22,13 @@ type Brand = {
   brand_ru: string;
 };
 
+const FALLBACK_IMG = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%239ca3af'>No image</text></svg>`;
+const safeImg = (src?: string) => {
+  if (!src || src.trim() === "") return FALLBACK_IMG;
+  if (src.startsWith("http") || src.startsWith("data:") || src.startsWith("blob:") || src.startsWith("/")) return src;
+  return `/${src}`;
+};
+
 export default function CollectionClientPage({ slug }: { slug: string }) {
   const { addToCart, removeFromCart, cart } = useCart();
   const [collectionTypes, setCollectionTypes] = useState<CollectionType[]>([]);
@@ -219,9 +226,14 @@ export default function CollectionClientPage({ slug }: { slug: string }) {
                 <div className="relative w-full aspect-[3/4]">
                   <a href={`/product/${product._id}`} className="block w-full h-full">
                     <img
-                      src={product.images?.[0] || "/placeholder.png"}
+                      src={safeImg(product.images?.[0])}
                       alt={product.name_en}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        img.onerror = null;
+                        img.src = FALLBACK_IMG;
+                      }}
                     />
                   </a>
                   {product.discount && (

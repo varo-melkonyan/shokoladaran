@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import { CartProvider } from "../context/CartContext";
 import Footer from "@/components/Footer";
-
+import AiAssistantWidgetProvider from "@/components/AiAssistantWidgetProvider.client";
 export const metadata = { 
   title: 'Shokoladaran',
   description: 'Chocolate Marketplace',
@@ -20,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
           </main>
         </CartProvider>
+        <AiAssistantWidgetProvider />
         <Footer />
       </body>
     </html>
