@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const MAX_CHARS = 2400;
     const safeUser = String(user).slice(0, MAX_CHARS);
 
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY4 });
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const hasApiKey = !!process.env.OPENAI_API_KEY;
 
     // Helper functions
