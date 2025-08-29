@@ -11,16 +11,31 @@ export default function AccountPage() {
   useEffect(() => {
     const accountId = typeof window !== "undefined" ? localStorage.getItem("accountId") : null;
     if (!accountId) {
-      router.push("/account/login");
+      router.replace("/account/login");
       return;
     }
-    fetch(`/api/account/profile?accountId=${accountId}`)
-      .then(res => res.json())
-      .then(data => {
+    (async () => {
+      try {
+        const res = await fetch(`/api/account/profile?accountId=${accountId}`, { cache: "no-store" });
+        if (!res.ok) {
+          localStorage.removeItem("accountId");
+          router.replace("/account/login");
+          return;
+        }
+        const data = await res.json();
+        if (!data?.account) {
+          localStorage.removeItem("accountId");
+          router.replace("/account/login");
+          return;
+        }
         setAccount(data.account);
+      } catch {
+        localStorage.removeItem("accountId");
+        router.replace("/account/login");
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      }
+    })();
   }, [router]);
 
   if (loading) {
@@ -31,13 +46,7 @@ export default function AccountPage() {
     );
   }
 
-  if (!account) {
-    return (
-      <div className="flex items-center justify-center min-h-[70vh]">
-        <span className="text-red-500 text-xl">Account not found.</span>
-      </div>
-    );
-  }
+  if (!account) return null;
 
   return (
     <div className="min-h-[70vh] bg-white flex flex-col md:flex-row">
