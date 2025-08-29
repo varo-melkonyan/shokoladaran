@@ -143,7 +143,7 @@ export default function SpecialsClient() {
             >
               {/* Image and badges */}
               <div className="relative w-full aspect-[3/4]">
-                <Link href={product.link || `/special/${product._id}`}>
+                <Link href={`/special/${product._id}`}>
                   <img
                     src={product.images[0]}
                     alt={product.name_en}

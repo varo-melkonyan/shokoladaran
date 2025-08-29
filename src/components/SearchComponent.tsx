@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import PieceCartControl from "@/components/PieceCartControl";
 import { useTranslation } from "react-i18next";
-import i18n from "@/i18n";
 
 type Brand = {
   brand_en: string;
@@ -109,7 +108,7 @@ export default function SearchComponent() {
               >
                 {/* Image and badges */}
                 <div className="relative w-full aspect-[3/4]">
-                  <Link href={product.link || `/product/${product._id}`}>
+                  <Link href={`/product/${product._id}`}>
                     <img
                       src={product.images?.[0] || "/placeholder.png"}
                       alt={product.name_en}
