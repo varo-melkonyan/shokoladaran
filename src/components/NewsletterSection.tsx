@@ -66,7 +66,7 @@ export default function NewsletterSection() {
               {error && <div className="text-red-500 mt-2">{error}</div>}
               <p className="text-xs text-gray-500 mt-3 max-w-md text-center md:text-right">
                 {t("by_subscribing")}{" "}
-                <a href="/privacy" className="underline">{t("privacy_policy")}</a>. {t("unsubscribe_info")}
+                <a href="/privacy-policy" className="underline">{t("privacy_policy")}</a>. {t("unsubscribe_info")}
               </p>
             </>
           ) : (

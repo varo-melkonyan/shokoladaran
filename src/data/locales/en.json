@@ -280,5 +280,66 @@
   "by_subscribing": "By subscribing, you consent to receiving personalized communications from us and agree to our",
   "thank_you_for_subscribing": "Thank you for subscribing!",
   "home_banner_small": "Curated collections from Armenian brands – pure indulgence in every bite.",
-  "footer_text": "Your trusted destination for handcrafted and imported international chocolate brands, connecting lovers of sweets to the best artisans."
+  "footer_text": "Your trusted destination for handcrafted and imported international chocolate brands, connecting lovers of sweets to the best artisans.",
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdatedLabel": "Last Updated",
+    "lastUpdatedDate": "August 30, 2025",
+    "intro": "This Privacy Policy describes how Shokoladaran (\"we,\" \"us,\" or \"our\") collects, uses, and discloses your personal information when you visit or make a purchase from our website at shokoladaran.am (the \"Site\").",
+    "s1": {
+      "title": "1. Information We Collect",
+      "lead": "We collect information from you in several ways to provide our services and improve your experience.",
+      "p1": {
+        "title": "Information You Provide:",
+        "i1": { "h": "Account Registration:", "t": "If you choose to create an account, we collect your name, email address, and password." },
+        "i2": { "h": "Purchases:", "t": "When you make a purchase, whether you are a registered user or a guest, we collect your name, billing and shipping addresses, email address, phone number, and payment information (such as credit card details, which are processed by our secure third-party payment processor and are not stored on our servers)." },
+        "i3": { "h": "Communications:", "t": "If you contact us via email, customer support chat, or any other means, we collect the content of those communications." }
+      },
+      "p2": {
+        "title": "Automatically Collected Information:",
+        "i1": { "h": "Device Information:", "t": "IP address, browser type, operating system, and device identifiers." },
+        "i2": { "h": "Usage Data:", "t": "Pages you view, the time and date of your visit, and the referring website." },
+        "i3": { "h": "Cookies:", "t": "We use cookies and similar tracking technologies to track your activity on our Site and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Site." }
+      }
+    },
+    "s2": {
+      "title": "2. How We Use Your Information",
+      "i1": { "h": "To Fulfill Orders:", "t": "We use your personal information to process your payments, arrange for shipping, and provide you with invoices and order confirmations." },
+      "i2": { "h": "To Provide and Improve Our Services:", "t": "This includes managing your account, providing customer support, and improving the functionality and user experience of our Site." },
+      "i3": { "h": "For Communication:", "t": "We use your contact information to communicate with you about your orders, account, or to send you marketing and promotional materials (you can opt out of these at any time)." },
+      "i4": { "h": "For Security:", "t": "We use this information to detect, prevent, and respond to potential fraud, unauthorized access, or other malicious activity." },
+      "i5": { "h": "For Analytics:", "t": "We use information to understand how users interact with our Site, which helps us improve our products and services." }
+    },
+    "s3": {
+      "title": "3. How We Share Your Information",
+      "lead": "We do not sell your personal information. We may share your information with third parties only in the following circumstances:",
+      "i1": { "h": "Service Providers:", "t": "We may share your information with third-party vendors and service providers who perform services on our behalf, such as payment processing, shipping, data analysis, and email delivery. These providers are obligated to protect your information and use it only for the purposes for which it was disclosed." },
+      "i2": { "h": "Legal Compliance and Protection:", "t": "We may disclose your information if required to do so by law or in the good faith belief that such action is necessary to comply with a legal obligation, protect and defend the rights or property of Shokoladaran, or protect the personal safety of users of the Site or the public." },
+      "i3": { "h": "Business Transfers:", "t": "In the event of a merger, acquisition, or sale of assets, your personal information may be transferred to a new owner as part of the transaction." }
+    },
+    "s4": {
+      "title": "4. Your Rights and Choices",
+      "i1": { "h": "Access and Correction:", "t": "If you have a registered account, you can access and update your personal information by logging into your account." },
+      "i2": { "h": "Opt-Out:", "t": "You can opt out of receiving marketing emails from us by following the unsubscribe instructions in those emails." },
+      "i3": { "h": "Do Not Track:", "t": "We do not respond to \"Do Not Track\" signals." }
+    },
+    "s5": {
+      "title": "5. Data Security",
+      "text": "We take reasonable measures, including administrative, technical, and physical safeguards, to protect your personal information from loss, theft, misuse, and unauthorized access. However, no method of transmission over the Internet or electronic storage is 100% secure."
+    },
+    "s6": {
+      "title": "6. Children's Privacy",
+      "text": "Our Site is not intended for individuals under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us."
+    },
+    "s7": {
+      "title": "7. Changes to This Privacy Policy",
+      "text": "We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last Updated\" date at the top. You are advised to review this Privacy Policy periodically for any changes."
+    },
+    "s8": {
+      "title": "8. Contact Us",
+      "lead": "If you have any questions about this Privacy Policy, please contact us at:",
+      "i1": { "h": "Email:", "v": "support@shokoladaran.am" },
+      "i2": { "h": "Address:", "v": "Yerevan, Armenia" }
+    }
+  }
 }
