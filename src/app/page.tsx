@@ -35,8 +35,8 @@ async function fetchCollection(path: string, fallback: readonly any[] = []) {
   try {
     if (!baseUrl) return [...fallback];
     const res = await fetch(`${baseUrl}${path}`, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(6000),
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(1500),
     });
     if (!res.ok) return [...fallback];
     const data = await res.json();

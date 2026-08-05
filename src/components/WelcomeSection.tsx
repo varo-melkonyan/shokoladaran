@@ -1,8 +1,28 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function WelcomeSection() {
   const { t } = useTranslation();
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+
+  useEffect(() => {
+    const element = videoContainerRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoadVideo(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "120px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section className="w-full py-12 bg-white flex items-center justify-center">
@@ -13,15 +33,20 @@ export default function WelcomeSection() {
             <p className="text-lg text-gray-700 max-w-xl">{t("welcome_messages")}</p>
             </div>
             {/* Right: Image */}
-            <div className="flex-1 flex justify-center items-center">
-                <video
-                    src="/assets/animation_chocolate.mov"
-                    className="w-full max-h-[620px] rounded-xl "
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                />
+            <div ref={videoContainerRef} className="flex-1 flex justify-center items-center min-h-72">
+                {shouldLoadVideo && (
+                  <video
+                      className="w-full max-h-[620px] rounded-xl"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="metadata"
+                      aria-label={t("welcome_title")}
+                  >
+                    <source src="/assets/animation_chocolate.webm" type="video/webm" />
+                  </video>
+                )}
             </div>
       </div>
     </section>

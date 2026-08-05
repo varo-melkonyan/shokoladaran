@@ -7,8 +7,8 @@ async function fetchProducts() {
   try {
     if (!baseUrl) return [...fallbackProducts];
     const res = await fetch(`${baseUrl}/api/admin/products`, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(6000),
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(1500),
     });
     if (!res.ok) return [...fallbackProducts];
     const data = await res.json();

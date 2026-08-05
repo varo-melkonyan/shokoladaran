@@ -138,7 +138,7 @@ export default function SectionHero() {
   return (
     <section
       className="w-full min-h-[500px] py-12 flex flex-col items-center justify-center bg-cover bg-center relative"
-      style={{ backgroundImage: "url('/assets/hero.png')" }}
+      style={{ backgroundImage: "url('/assets/hero.webp')" }}
     >
       <h1 className="text-2xl md:text-3xl font-bold mb-2 text-center text-white drop-shadow">
         {t("home_banner_big")}
