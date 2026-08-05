@@ -5,7 +5,10 @@ async function fetchProducts() {
 
   try {
     if (!baseUrl) return [];
-    const res = await fetch(`${baseUrl}/api/admin/products`, { cache: "no-store" });
+    const res = await fetch(`${baseUrl}/api/admin/products`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(6000),
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];

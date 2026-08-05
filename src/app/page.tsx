@@ -29,7 +29,10 @@ async function fetchCollection(path: string) {
 
   try {
     if (!baseUrl) return [];
-    const res = await fetch(`${baseUrl}${path}`, { cache: "no-store" });
+    const res = await fetch(`${baseUrl}${path}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(6000),
+    });
     if (!res.ok) return [];
     const data = await res.json();
     return Array.isArray(data) ? data : [];
