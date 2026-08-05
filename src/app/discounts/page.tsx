@@ -13,6 +13,13 @@ function serializeProduct(product) {
 }
 
 export default async function DiscountsPage() {
-  const discounted = (await getAllDiscountedProducts()).map(serializeProduct);
+  let discounted: any[] = [];
+
+  try {
+    discounted = (await getAllDiscountedProducts()).map(serializeProduct);
+  } catch {
+    // Render the page without products while MongoDB is temporarily unavailable.
+  }
+
   return <DiscountsClient discounted={discounted} />;
 }
