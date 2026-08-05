@@ -146,7 +146,7 @@ export default function SectionGrid({
             slidesToShow={4}
             slidesToScroll={1}
             autoplay
-            autoplaySpeed={10}
+            autoplaySpeed={3500}
             pauseOnHover
             arrows
             responsive={[

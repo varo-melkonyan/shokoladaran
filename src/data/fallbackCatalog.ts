@@ -144,9 +144,17 @@ function makeProduct(index: number): DemoProduct {
 export const fallbackProducts: DemoProduct[] = Array.from({ length: 150 }, (_, index) => makeProduct(index + 1));
 
 // Every storefront rail uses its own product range, avoiding repeated cards on the homepage.
-export const fallbackBestSellers = fallbackProducts.slice(0, 15);
-export const fallbackNewsProducts = fallbackProducts.slice(15, 30);
-export const fallbackExclusivesProducts = fallbackProducts.slice(30, 45);
+// Each rail contains one image from every base photo family. Keeping the rail at
+// exactly 12 also prevents a repeated family from meeting itself at the loop seam.
+export const fallbackBestSellers = fallbackProducts.slice(0, 12);
+export const fallbackNewsProducts = [
+  ...fallbackProducts.slice(18, 24),
+  ...fallbackProducts.slice(12, 18),
+];
+export const fallbackExclusivesProducts = [
+  ...fallbackProducts.slice(34, 36),
+  ...fallbackProducts.slice(24, 34),
+];
 export const fallbackGifts = fallbackProducts.slice(45, 65);
 export const fallbackSpecials = fallbackProducts.slice(65, 85);
 
