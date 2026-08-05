@@ -12,13 +12,13 @@ async function connectDB() {
 
 // GET all specials
 export async function GET() {
-  await connectDB();
-  const specials = await Specials.find().sort({ order: 1 }).lean();
-  const plainSpecials = specials.map((g: any) => ({
-    ...g,
-    _id: g._id.toString(),
-  }));
-  return NextResponse.json(plainSpecials);
+  try {
+    await connectDB();
+    const specials = await Specials.find().sort({ order: 1 }).lean();
+    return NextResponse.json(specials.map((g: any) => ({ ...g, _id: g._id.toString() })));
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 // POST a new special

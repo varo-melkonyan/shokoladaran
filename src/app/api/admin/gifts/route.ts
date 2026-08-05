@@ -12,13 +12,13 @@ async function connectDB() {
 
 // GET all gifts
 export async function GET() {
-  await connectDB();
-  const gifts = await Gifts.find().sort({ order: 1 }).lean();
-  const plainGifts = gifts.map((g: any) => ({
-    ...g,
-    _id: g._id.toString(),
-  }));
-  return NextResponse.json(plainGifts);
+  try {
+    await connectDB();
+    const gifts = await Gifts.find().sort({ order: 1 }).lean();
+    return NextResponse.json(gifts.map((g: any) => ({ ...g, _id: g._id.toString() })));
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 // POST a new gift
