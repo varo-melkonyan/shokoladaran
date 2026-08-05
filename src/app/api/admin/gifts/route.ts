@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import Gifts from "@/models/Gifts";
 import { connectDB } from "@/lib/mongodb";
+import { fallbackGifts } from "@/data/fallbackCatalog";
 
 // GET all gifts
 export async function GET() {
   try {
     await connectDB();
     const gifts = await Gifts.find().sort({ order: 1 }).lean();
-    return NextResponse.json(gifts.map((g: any) => ({ ...g, _id: g._id.toString() })));
+    const normalized = gifts.map((g: any) => ({ ...g, _id: g._id.toString() }));
+    return NextResponse.json(normalized.length ? normalized : fallbackGifts);
   } catch {
-    return NextResponse.json([]);
+    return NextResponse.json(fallbackGifts);
   }
 }
 
