@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
+const RETIRED_CLUSTER_HOST = "shokoladaran.mkhr68x.mongodb.net";
 const RETRY_COOLDOWN_MS = 30_000;
 
 let connectionPromise: Promise<typeof mongoose> | null = null;
@@ -11,6 +12,11 @@ if (!MONGODB_URI) {
 }
 
 export async function connectDB() {
+  // The retired Atlas cluster no longer resolves. Do not make every request wait
+  // for DNS while Hostinger is still carrying that old environment value.
+  if (MONGODB_URI.includes(RETIRED_CLUSTER_HOST)) {
+    throw new Error("The configured MongoDB cluster has been retired");
+  }
   if (mongoose.connection.readyState === 1) return;
   if (Date.now() < retryAfter) {
     throw new Error("MongoDB is temporarily unavailable");

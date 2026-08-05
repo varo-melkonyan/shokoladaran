@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/clientPromise";
+import mongoose from "mongoose";
+import { connectDB } from "@/lib/mongodb";
+
+async function getDatabase() {
+  await connectDB();
+  if (!mongoose.connection.db) throw new Error("MongoDB is unavailable");
+  return mongoose.connection.db;
+}
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db();
+    const db = await getDatabase();
     const ads = await db.collection("ads").find({}).toArray();
     return NextResponse.json(ads);
   } catch {
@@ -14,8 +20,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const client = await clientPromise;
-  const db = client.db();
+  const db = await getDatabase();
   const result = await db.collection("ads").insertOne({
     images: body.images || [],
     place: body.place || "news",
@@ -31,8 +36,7 @@ export async function PUT(req: Request) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   const body = await req.json();
-  const client = await clientPromise;
-  const db = client.db();
+  const db = await getDatabase();
   const { ObjectId } = await import("mongodb");
 
   if ("_id" in body) delete body._id;
@@ -54,8 +58,7 @@ export async function DELETE(req: Request) {
   const id = searchParams.get("id");
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
-  const client = await clientPromise;
-  const db = client.db();
+  const db = await getDatabase();
   const { ObjectId } = await import("mongodb");
 
   try {
