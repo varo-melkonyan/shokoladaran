@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import i18n from "@/i18n";
+import { fallbackBrands } from "@/data/fallbackCatalog";
 
 type Brand = {
   _id: string;
@@ -14,23 +15,15 @@ type Brand = {
   website?: string;
 };
 
-type Collection = {
-  _id: string;
-  name: string;
-  brand: string;
-};
-
 export default function BrandsPage() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [collections, setCollections] = useState<Collection[]>([]);
+  const [brands, setBrands] = useState<Brand[]>(fallbackBrands);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/admin/brands")
+    fetch("/api/admin/brands")
         .then(res => res.json())
-        .then(data => setBrands(data.map((b: any) => ({
+        .then(data => Array.isArray(data) && data.length && setBrands(data.map((b: any) => ({
           _id: b._id || b.id,
           name_en: b.name_en,
           name_hy: b.name_hy,
@@ -38,17 +31,9 @@ export default function BrandsPage() {
           image: b.image,
           description: b.description,
           website: b.website,
-        })))),
-      fetch("/api/admin/collection-types")
-        .then(res => res.json())
-        .then(data => setCollections(data.map((c: any) => ({
-          _id: c._id || c.id,
-          name_en: c.name_en,
-          name_hy: c.name_hy,
-          name_ru: c.name_ru,
-          brand: c.brand,
         }))))
-    ]).finally(() => setLoading(false));
+        .catch(() => {})
+        .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="max-w-7xl mx-auto px-6 py-12">{t("loading")}</div>;

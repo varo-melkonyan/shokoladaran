@@ -1,12 +1,17 @@
 import SectionHero from "@/components/SectionHero";
 import SectionGrid from "@/components/SectionGrid.client";
 import HomePageClient from "@/components/HomePageClient";
+import {
+  fallbackBestSellers,
+  fallbackExclusivesProducts,
+  fallbackNewsProducts,
+} from "@/data/fallbackCatalog";
 
 export default async function HomePage() {
   const [bestSellers, newsProducts, exclusivesProducts, ads] = await Promise.all([
-    fetchCollection("/api/admin/best-sellers"),
-    fetchCollection("/api/admin/news-products"),
-    fetchCollection("/api/admin/exclusives-products"),
+    fetchCollection("/api/admin/best-sellers", fallbackBestSellers),
+    fetchCollection("/api/admin/news-products", fallbackNewsProducts),
+    fetchCollection("/api/admin/exclusives-products", fallbackExclusivesProducts),
     fetchCollection("/api/admin/ads"),
   ]);
 
@@ -24,20 +29,20 @@ export default async function HomePage() {
   );
 }
 
-async function fetchCollection(path: string) {
+async function fetchCollection(path: string, fallback: readonly any[] = []) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL?.replace(/\/$/, "");
 
   try {
-    if (!baseUrl) return [];
+    if (!baseUrl) return [...fallback];
     const res = await fetch(`${baseUrl}${path}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(6000),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return [...fallback];
     const data = await res.json();
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data) && data.length ? data : [...fallback];
   } catch {
     // Keep the storefront available during a temporary database outage.
-    return [];
+    return [...fallback];
   }
 }

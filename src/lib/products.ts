@@ -1,5 +1,6 @@
 import { connectDB } from "./mongodb";
 import mongoose from "mongoose";
+import { fallbackProducts } from "@/data/fallbackCatalog";
 
 export type Product = {
   _id: string;
@@ -23,36 +24,31 @@ export type Product = {
 };
 
 export async function getProductById(id: string): Promise<Product | null> {
-  await connectDB();
-  const db = mongoose.connection?.db;
-  if (!db) throw new Error("DB not connected");
+  const fallback = fallbackProducts.find((product) => product._id === id) as Product | undefined;
 
-  const product = await db
-    .collection("products")
-    .findOne({ _id: new mongoose.Types.ObjectId(id) });
+  try {
+    await connectDB();
+    const db = mongoose.connection?.db;
+    if (!db || !mongoose.Types.ObjectId.isValid(id)) return fallback || null;
 
-  if (!product) return null;
+    const product = await db
+      .collection("products")
+      .findOne({ _id: new mongoose.Types.ObjectId(id) });
 
-  return {
-    _id: product._id.toString(),
-    name_en: product.name_en,
-    name_hy: product.name_hy,
-    name_ru: product.name_ru,
-    price: product.price,
-    weight: product.weight,
-    discount: product.discount,
-    collectionType: product.collectionType,
-    brand: product.brand,
-    status: product.status,
-    readyAfter: product.readyAfter,
-    images: product.images,
-    ingredients: product.ingredients,
-    quantityType: product.quantityType || "pieces",
-    shelfLife: product.shelfLife,
-    nutritionFacts: product.nutritionFacts,
-    link: product.link,
-    description: product.description,
-  };
+    if (!product) return fallback || null;
+
+    return {
+      _id: product._id.toString(), name_en: product.name_en, name_hy: product.name_hy,
+      name_ru: product.name_ru, price: product.price, weight: product.weight,
+      discount: product.discount, collectionType: product.collectionType, brand: product.brand,
+      status: product.status, readyAfter: product.readyAfter, images: product.images,
+      ingredients: product.ingredients, quantityType: product.quantityType || "piece",
+      shelfLife: product.shelfLife, nutritionFacts: product.nutritionFacts,
+      link: product.link, description: product.description,
+    };
+  } catch {
+    return fallback || null;
+  }
 }
 
 export async function getAllProducts(): Promise<Product[]> {

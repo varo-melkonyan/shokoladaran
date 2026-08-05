@@ -5,13 +5,14 @@ import { useCart } from "@/context/CartContext";
 import KgCartControl from "@/components/KgCartControl";
 import PieceCartControl from "@/components/PieceCartControl";
 import i18n from "@/i18n";
+import { fallbackBrands, fallbackCollectionTypes } from "@/data/fallbackCatalog";
 
 export default function AllProductsClient({ products }: { products: any[] }) {
   const [brandFilter, setBrandFilter] = useState("");
   const [collectionFilter, setCollectionFilter] = useState("");
   const [sortBy, setSortBy] = useState("name-asc");
-  const [brands, setBrands] = useState<any[]>([]);
-  const [collections, setCollections] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>(fallbackBrands.map((b) => ({ value: b.name_en, en: b.name_en, hy: b.name_hy, ru: b.name_ru })));
+  const [collections, setCollections] = useState<any[]>(fallbackCollectionTypes.map((c) => ({ value: c.name_en, en: c.name_en, hy: c.name_hy, ru: c.name_ru })));
   const { t } = useTranslation();
   const { addToCart, removeFromCart, cart } = useCart();
   
@@ -20,6 +21,7 @@ export default function AllProductsClient({ products }: { products: any[] }) {
         fetch("/api/admin/brands").then((res) => res.json()),
         fetch("/api/admin/collection-types").then((res) => res.json()),
       ]).then(([brandsRaw, collectionsRaw]) => {
+        if (!Array.isArray(brandsRaw) || !brandsRaw.length || !Array.isArray(collectionsRaw) || !collectionsRaw.length) return;
         setBrands(
           brandsRaw.map((b: any) => ({
             value: b.name_en,
@@ -36,7 +38,7 @@ export default function AllProductsClient({ products }: { products: any[] }) {
             ru: c.name_ru,
           }))
         );
-      });
+      }).catch(() => {});
     }, []);
 
   let filtered = products.filter(

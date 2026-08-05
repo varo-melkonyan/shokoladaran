@@ -10,11 +10,15 @@ export default async function ProductPage({params}: {params: Promise<{ id: strin
 
   let recommendations: Awaited<ReturnType<typeof getProductsByIds>> = [];
   if (product.collectionType) {
-    const recDoc = await getRecommendations(product.collectionType);
-    const recommendedIds: string[] = recDoc?.recommendedByCollection?.[product.collectionType] || [];
-    recommendations = recommendedIds.length
-      ? await getProductsByIds(recommendedIds.filter(id => id !== product._id))
-      : [];
+    try {
+      const recDoc = await getRecommendations(product.collectionType);
+      const recommendedIds: string[] = recDoc?.recommendedByCollection?.[product.collectionType] || [];
+      recommendations = recommendedIds.length
+        ? await getProductsByIds(recommendedIds.filter(id => id !== product._id))
+        : [];
+    } catch {
+      // The product page remains usable while optional recommendations are offline.
+    }
   }
 
   return <ProductClient product={product} recommendations={recommendations} />;
