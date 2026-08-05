@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import Gifts from "@/models/Gifts";
-
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-async function connectDB() {
-  if (mongoose.connection.readyState !== 1) {
-    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 800, connectTimeoutMS: 800 });
-  }
-}
+import { connectDB } from "@/lib/mongodb";
 
 // GET all gifts
 export async function GET() {

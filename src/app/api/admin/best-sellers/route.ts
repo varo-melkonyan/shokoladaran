@@ -1,23 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import BestSellersProduct from "@/models/BestSellersProduct";
-
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-async function connectDB() {
-  if (mongoose.connection.readyState !== 1) {
-    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 800, connectTimeoutMS: 800 });
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { fallbackBestSellers } from "@/data/fallbackCatalog";
 
 export async function GET() {
-  await connectDB();
-  const products = await BestSellersProduct.find().sort({ order: 1 }).lean();
-  const plainProducts = products.map((p: any) => ({
-    ...p,
-    _id: p._id.toString(),
-  }));
-  return NextResponse.json(plainProducts);
+  try {
+    await connectDB();
+    const products = await BestSellersProduct.find().sort({ order: 1 }).lean();
+    return NextResponse.json(products.length ? products.map((p: any) => ({ ...p, _id: p._id.toString() })) : fallbackBestSellers);
+  } catch {
+    return NextResponse.json(fallbackBestSellers);
+  }
 }
 
 export async function POST(req: NextRequest) {

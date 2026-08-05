@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import clientPromise from "@/lib/clientPromise";
 
 export async function GET() {
-  const client = await clientPromise;
-  const db = client.db();
-  const ads = await db.collection("ads").find({}).toArray();
-  return NextResponse.json(ads);
+  try {
+    const client = await clientPromise;
+    const db = client.db();
+    const ads = await db.collection("ads").find({}).toArray();
+    return NextResponse.json(ads);
+  } catch {
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(req: Request) {

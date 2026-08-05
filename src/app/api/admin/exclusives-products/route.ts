@@ -1,23 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from "mongoose";
 import ExclusivesProduct from "@/models/ExclusivesProduct";
-
-const MONGODB_URI = process.env.MONGODB_URI as string;
-
-async function connectDB() {
-  if (mongoose.connection.readyState !== 1) {
-    await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 800, connectTimeoutMS: 800 });
-  }
-}
+import { connectDB } from "@/lib/mongodb";
+import { fallbackExclusivesProducts } from "@/data/fallbackCatalog";
 
 export async function GET() {
-  await connectDB();
-  const products = await ExclusivesProduct.find().sort({ order: 1 }).lean();
-  const plainProducts = products.map((p: any) => ({
-    ...p,
-    _id: p._id.toString(),
-  }));
-  return NextResponse.json(plainProducts);
+  try {
+    await connectDB();
+    const products = await ExclusivesProduct.find().sort({ order: 1 }).lean();
+    return NextResponse.json(products.length ? products.map((p: any) => ({ ...p, _id: p._id.toString() })) : fallbackExclusivesProducts);
+  } catch {
+    return NextResponse.json(fallbackExclusivesProducts);
+  }
 }
 
 export async function POST(req: NextRequest) {
