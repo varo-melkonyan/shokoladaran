@@ -141,12 +141,11 @@ export default function SectionGrid({
           <h2 className="text-3xl font-bold text-chocolate mb-8 text-center">{title}</h2>
           <Slider
             dots={false}
-            infinite
+            infinite={false}
             speed={2000}
             slidesToShow={4}
             slidesToScroll={1}
-            autoplay
-            autoplaySpeed={3500}
+            autoplay={false}
             pauseOnHover
             arrows
             responsive={[

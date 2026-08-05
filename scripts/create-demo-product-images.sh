@@ -32,9 +32,22 @@ for index in {1..150}; do
   angle=$(awk "BEGIN { printf \"%.4f\", (($index % 7) - 3) * 0.004 }")
   accent_index=$(( (index - 1) % 8 + 1 ))
   accent=${accents[$accent_index]}
+  unique_r=$(( (index * 53) % 206 + 25 ))
+  unique_g=$(( (index * 97) % 206 + 25 ))
+  unique_b=$(( (index * 149) % 206 + 25 ))
+  unique_color=$(printf "%02X%02X%02X" "$unique_r" "$unique_g" "$unique_b")
+  layout=$(( ((index - 1) / 12) % 6 ))
   filename=$(printf "product-%03d.webp" "$index")
 
-  ffmpeg -hide_banner -loglevel error -y -i "$source_image" \
-    -vf "scale=720*${zoom}:720*${zoom},crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},eq=brightness=${brightness}:contrast=1.03,rotate=${angle}:fillcolor=0xF7F0E8,drawbox=x=0:y=0:w=640:h=10:color=0x${accent}@0.82:t=fill" \
-    -quality 76 "$output_dir/$filename"
+  case $layout in
+    0) filter="scale=720*${zoom}:720*${zoom},crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},eq=brightness=${brightness}:contrast=1.03" ;;
+    1) filter="scale=550:550,hue=h=${hue}:s=${saturation},pad=640:640:45:45:0xF4E8DC,drawbox=x=20:y=20:w=600:h=600:color=0x${accent}@0.95:t=12" ;;
+    2) filter="scale=720:720,crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},drawbox=x=0:y=0:w=105:h=640:color=0x${accent}@0.82:t=fill,drawbox=x=105:y=0:w=8:h=640:color=white@0.75:t=fill" ;;
+    3) filter="scale=720:720,crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},drawbox=x=0:y=500:w=640:h=140:color=0x${accent}@0.84:t=fill,drawbox=x=0:y=488:w=640:h=12:color=white@0.72:t=fill" ;;
+    4) filter="scale=760:760,crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},vignette=PI/5,drawbox=x=0:y=0:w=640:h=640:color=0x${accent}@0.78:t=18" ;;
+    *) filter="scale=720:720,crop=640:640:${x_shift}:${y_shift},hue=h=${hue}:s=${saturation},eq=brightness=${brightness}:contrast=1.08,drawbox=x=36:y=36:w=568:h=568:color=white@0.64:t=6,drawbox=x=48:y=48:w=544:h=544:color=0x${accent}@0.72:t=8" ;;
+  esac
+  filter="${filter},drawbox=x=0:y=636:w=640:h=4:color=0x${unique_color}@0.95:t=fill"
+
+  ffmpeg -hide_banner -loglevel error -y -i "$source_image" -vf "$filter" -quality 76 "$output_dir/$filename"
 done
